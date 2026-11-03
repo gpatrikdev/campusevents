@@ -1,6 +1,5 @@
 import { Button } from '@astryxdesign/core/Button';
 import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
-import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
@@ -11,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '../domain/format';
 import { useMock } from '../mocks/hooks';
+import { EmptyNotice } from './Feedback';
 
 export function TicketDialog({
   registrationId,
@@ -95,7 +95,7 @@ export function TicketDialog({
                   </Text>
                 </>
               ) : (
-                <EmptyState
+                <EmptyNotice
                   title={t('Ticket unavailable')}
                   description={t(
                     'This ticket is cancelled, invalidated, or the event was deleted.',

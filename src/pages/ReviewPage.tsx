@@ -1,4 +1,3 @@
-import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -7,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Model } from 'survey-core';
 import 'survey-core/i18n/hungarian';
 import { Survey } from 'survey-react-ui';
-import { DataBoundary, UnavailableEvent } from '../components/Feedback';
+import { DataBoundary, EmptyNotice, UnavailableEvent } from '../components/Feedback';
 import { formatDate } from '../domain/format';
 import { reviewCutoff, reviewIssue } from '../domain/rules';
 import { useMock } from '../mocks/hooks';
@@ -58,7 +57,7 @@ export function ReviewPage({ eventId }: { eventId: string }) {
       </VStack>
       <DataBoundary>
         {issue ? (
-          <EmptyState title={t(issue)} />
+          <EmptyNotice title={t(issue)} />
         ) : (
           <>
             <Text type="supporting">

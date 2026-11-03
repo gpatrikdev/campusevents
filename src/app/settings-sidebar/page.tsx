@@ -1,7 +1,6 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import { Button } from '@astryxdesign/core/Button';
-import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
@@ -14,6 +13,7 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { belowNavHeight, EmptyNotice } from '../../components/Feedback';
 import { useMock } from '../../mocks/hooks';
 
 export default function ProfilePage() {
@@ -23,7 +23,8 @@ export default function ProfilePage() {
   const [section, setSection] = useState('account');
   if (!user)
     return (
-      <EmptyState
+      <EmptyNotice
+        minHeight={belowNavHeight}
         headingLevel={1}
         title={t('Sign in to continue.')}
         actions={<Button label={t('Sign in')} href="/sign-in" />}
@@ -31,7 +32,8 @@ export default function ProfilePage() {
     );
   if (!user.profileComplete)
     return (
-      <EmptyState
+      <EmptyNotice
+        minHeight={belowNavHeight}
         headingLevel={1}
         title={t('Complete your profile')}
         description={t('Confirm your profile name first.')}

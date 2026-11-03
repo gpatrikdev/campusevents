@@ -1,5 +1,4 @@
 import { Button } from '@astryxdesign/core/Button';
-import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
@@ -11,7 +10,7 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { DataBoundary, EmptyNotice } from '../components/Feedback';
+import { belowNavHeight, DataBoundary, EmptyNotice } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
 import {
@@ -132,7 +131,8 @@ export function RegistrationsPage() {
   const [certificate, setCertificate] = useState<string | null>(null);
   if (!user)
     return (
-      <EmptyState
+      <EmptyNotice
+        minHeight={belowNavHeight}
         headingLevel={1}
         title={t('Sign in to continue.')}
         description={t('Tickets, attendance and follow-up actions in one place.')}
@@ -141,7 +141,8 @@ export function RegistrationsPage() {
     );
   if (!user.profileComplete)
     return (
-      <EmptyState
+      <EmptyNotice
+        minHeight={belowNavHeight}
         headingLevel={1}
         title={t('Complete your profile')}
         description={t('Confirm your profile name first.')}

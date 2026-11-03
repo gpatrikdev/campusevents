@@ -11,6 +11,9 @@ import { useTranslation } from 'react-i18next';
 import { useMock } from '../mocks/hooks';
 import { UserBlobatar } from './UserBlobatar';
 
+/** The window height left under SiteShell's top nav (3rem) and content padding (6). */
+export const belowNavHeight = 'calc(100dvh - var(--spacing-12) - 2 * var(--spacing-6))';
+
 /** A roomy, centred notice topped with the signed-in user's blobatar. */
 export function EmptyNotice({
   fallbackIcon,
@@ -66,10 +69,10 @@ export function DataBoundary({
     );
   if (dataState === 'error')
     return (
-      <EmptyState
+      <EmptyNotice
+        fallbackIcon={<Icon icon="error" />}
         title={t('Sample data could not be loaded')}
         description={t('This is a simulated error. Try again to restore the ready state.')}
-        icon={<Icon icon="error" />}
         actions={<Button label={t('Try again')} onClick={() => setDataState('ready')} />}
       />
     );
@@ -81,7 +84,8 @@ export function DataBoundary({
 export function AccessNotice({ admin = false }: { admin?: boolean }) {
   const { t } = useTranslation();
   return (
-    <EmptyState
+    <EmptyNotice
+      minHeight={belowNavHeight}
       headingLevel={1}
       title={t('Access unavailable')}
       description={t(admin ? 'Admin access is required.' : 'Staff access is required.')}
@@ -97,7 +101,8 @@ export function AccessNotice({ admin = false }: { admin?: boolean }) {
 export function UnavailableEvent() {
   const { t } = useTranslation();
   return (
-    <EmptyState
+    <EmptyNotice
+      minHeight={belowNavHeight}
       headingLevel={1}
       title={t('This event is unavailable.')}
       description={t('It may be a staff-only draft or have been deleted.')}
