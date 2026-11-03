@@ -19,6 +19,7 @@ import { formatDate } from '../domain/format';
 import { isStaff } from '../domain/rules';
 import { useMock } from '../mocks/hooks';
 import { OutcomeNotice } from './Feedback';
+import { HungaryFlag, UnitedKingdomFlag } from './Flags';
 
 const ClientLink = forwardRef<HTMLAnchorElement, ComponentProps<'a'>>(({ href, ...props }, ref) => (
   <RouterLink to={href ?? '/'} {...props} ref={ref} />
@@ -36,8 +37,8 @@ export function LanguagePicker() {
       size="sm"
       value={i18n.language}
       options={[
-        { value: 'en', label: 'English' },
-        { value: 'hu', label: 'Magyar' },
+        { value: 'en', label: 'English', icon: UnitedKingdomFlag },
+        { value: 'hu', label: 'Magyar', icon: HungaryFlag },
       ]}
       onChange={(language) => {
         void i18n.changeLanguage(language);
