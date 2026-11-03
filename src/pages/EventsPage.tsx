@@ -148,6 +148,7 @@ function PublicEventListItem({
   return (
     <ListItem
       interactiveRef={link}
+      className={ongoing ? 'live-row' : undefined}
       align="start"
       startContent={
         !compact && (

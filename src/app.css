@@ -87,6 +87,13 @@ html {
   color: var(--color-text-success);
 }
 
+/* A green stripe on an ongoing event's row, in the same green as its "Happening
+   now" text. An inset shadow draws it, so the row's content doesn't move and
+   the stripe doesn't meet the bottom divider at an angle. */
+.live-row {
+  box-shadow: inset calc(3 * var(--border-width)) 0 0 var(--color-border-success);
+}
+
 .form-page {
   margin-inline: auto;
 }
