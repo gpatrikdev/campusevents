@@ -1,0 +1,22 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "!src/routeTree.gen.ts",
+      "!src/astryx-themes.js",
+      "!dist",
+      "!node_modules",
+      "!.agents",
+      "!.codex",
+      "!.scaffold",
+      "!AGENTS.md",
+      "!agent-tooling-status.md",
+      "!rebuild-handoff.md"
+    ]
+  },
+  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
+  "javascript": { "formatter": { "quoteStyle": "single", "semicolons": "always" } },
+  "linter": { "enabled": true, "rules": { "preset": "recommended" } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } }
+}

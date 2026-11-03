@@ -1,0 +1,12 @@
+allowBuilds:
+  "@astryxdesign/cli": false
+  "@astryxdesign/core": false
+  lefthook: false
+minimumReleaseAgeExclude:
+  - "@astryxdesign/core@0.7.6"
+  - "@astryxdesign/richtext@0.7.6"
+  - "@astryxdesign/theme-neutral@0.7.6"
+  - "@astryxdesign/cli@0.7.6"
+  - "@vitest/mocker@5.1.0"
+  - "@vitest/spy@5.1.0"
+  - vitest@5.1.0
