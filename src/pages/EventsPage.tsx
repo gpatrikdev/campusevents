@@ -13,6 +13,7 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DataBoundary } from '../components/Feedback';
+import { UserBlobatar } from '../components/UserBlobatar';
 import { formatDate, formatDateRange } from '../domain/format';
 import { instant, registrationCutoff } from '../domain/rules';
 import type { CampusEvent } from '../domain/types';
@@ -20,7 +21,7 @@ import { useEvents, useMock } from '../mocks/hooks';
 
 export function EventsPage() {
   const { t } = useTranslation();
-  const { now } = useMock();
+  const { now, user } = useMock();
   const query = useEvents();
   const narrow = useMediaQuery('(max-width: 56rem)');
   const compact = useMediaQuery('(max-width: 42rem)');
@@ -48,9 +49,12 @@ export function EventsPage() {
       header={
         <LayoutHeader hasDivider>
           <VStack gap={3} paddingBlockStart={compact ? 4 : 0} paddingBlockEnd={4}>
-            <Heading level={1} type={compact ? 'display-3' : 'display-2'}>
-              {t('University events')}
-            </Heading>
+            <HStack gap={4} vAlign="center" hAlign="between">
+              <Heading level={1} type={compact ? 'display-3' : 'display-2'}>
+                {t('University events')}
+              </Heading>
+              {user?.profileComplete && <UserBlobatar name={user.name} size={compact ? 48 : 72} />}
+            </HStack>
             <Text as="p" type="large" color="secondary" weight="normal">
               {t('Lectures, workshops and conversations across the university.')}
             </Text>
