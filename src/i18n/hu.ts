@@ -5,7 +5,6 @@ export const hu: Record<string, string> = {
   Organizers: 'Szervezők',
   'Sign in': 'Bejelentkezés',
   'Sign out': 'Kijelentkezés',
-  'Account menu': 'Fiókmenü',
   Language: 'Nyelv',
   'Main navigation': 'Fő navigáció',
   'UI preview · Sample data only': 'Felületi előnézet · Csak mintaadatok',

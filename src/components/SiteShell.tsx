@@ -1,7 +1,5 @@
 import { AppShell, useAppShellMobile } from '@astryxdesign/core/AppShell';
-import { Avatar } from '@astryxdesign/core/Avatar';
 import { Button } from '@astryxdesign/core/Button';
-import { DropdownMenu } from '@astryxdesign/core/DropdownMenu';
 import { Grid } from '@astryxdesign/core/Grid';
 import { HStack } from '@astryxdesign/core/HStack';
 import { Icon } from '@astryxdesign/core/Icon';
@@ -164,22 +162,24 @@ function PreviewSettings({ onClose }: { onClose: () => void }) {
   );
 }
 
-function DesktopAccountMenu({ name, onSignOut }: { name?: string; onSignOut: () => void }) {
+function DesktopAccountLinks({
+  isSignedIn,
+  isProfileSelected,
+  onSignOut,
+}: {
+  isSignedIn: boolean;
+  isProfileSelected: boolean;
+  onSignOut: () => void;
+}) {
   const { t } = useTranslation();
   const { isMobile } = useAppShellMobile();
   if (isMobile) return null;
-  if (name === undefined) return <Button label={t('Sign in')} href="/sign-in" size="sm" />;
+  if (!isSignedIn) return <Button label={t('Sign in')} href="/sign-in" size="sm" />;
   return (
-    <DropdownMenu
-      alignment="end"
-      renderTrigger={(props) => (
-        <Avatar {...props} name={name} alt={t('Account menu')} size="md" tooltip={false} />
-      )}
-      items={[
-        { label: t('Profile'), href: '/profile' },
-        { label: t('Sign out'), onClick: onSignOut },
-      ]}
-    />
+    <>
+      <TopNavItem label={t('Profile')} href="/profile" isSelected={isProfileSelected} />
+      <Button label={t('Sign out')} variant="ghost" size="sm" onClick={onSignOut} />
+    </>
   );
 }
 
@@ -314,7 +314,11 @@ export function SiteShell() {
               endContent={
                 <>
                   <LanguagePicker />
-                  <DesktopAccountMenu name={user?.name} onSignOut={signOut} />
+                  <DesktopAccountLinks
+                    isSignedIn={!!user}
+                    isProfileSelected={pathname.startsWith('/profile')}
+                    onSignOut={signOut}
+                  />
                 </>
               }
             />
