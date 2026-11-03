@@ -203,6 +203,11 @@ export function SiteShell() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const publicPage = isPublicEventPage(pathname);
   const authPage = /^\/(sign-in|complete-profile)\/?$/.test(pathname);
+  const notFound = useRouterState({
+    select: (state) => state.matches.some((match) => match._notFound),
+  });
+  // Sign-in, profile completion and unknown URLs render without navigation.
+  const bare = authPage || notFound;
   const pageFrame = useRef<HTMLDivElement>(null);
   const eventTitle =
     publicPage &&
@@ -213,23 +218,25 @@ export function SiteShell() {
     document.documentElement.dir = 'ltr';
   }, [i18n.language]);
   useEffect(() => {
-    const title = pathname.startsWith('/staff')
-      ? t('Staff dashboard')
-      : pathname.startsWith('/admin')
-        ? t('Organizers')
-        : pathname.startsWith('/registrations')
-          ? t('Registrations')
-          : pathname.startsWith('/profile')
-            ? t('Profile')
-            : pathname.startsWith('/sign-in')
-              ? t('Sign in')
-              : pathname.startsWith('/complete-profile')
-                ? t('Complete your profile')
-                : pathname.startsWith('/review')
-                  ? t('Review this event')
-                  : t('Events');
+    const title = notFound
+      ? t('Page not found')
+      : pathname.startsWith('/staff')
+        ? t('Staff dashboard')
+        : pathname.startsWith('/admin')
+          ? t('Organizers')
+          : pathname.startsWith('/registrations')
+            ? t('Registrations')
+            : pathname.startsWith('/profile')
+              ? t('Profile')
+              : pathname.startsWith('/sign-in')
+                ? t('Sign in')
+                : pathname.startsWith('/complete-profile')
+                  ? t('Complete your profile')
+                  : pathname.startsWith('/review')
+                    ? t('Review this event')
+                    : t('Events');
     document.title = `${eventTitle || title} · ${t('UI preview · Sample data only')}`;
-  }, [eventTitle, pathname, t]);
+  }, [eventTitle, notFound, pathname, t]);
   useEffect(
     () =>
       router.subscribe('onRendered', ({ fromLocation, toLocation, pathChanged }) => {
@@ -279,9 +286,9 @@ export function SiteShell() {
       <AppShell
         height="auto"
         variant="surface"
-        contentPadding={authPage ? 0 : 6}
+        contentPadding={bare ? 0 : 6}
         mobileNav={
-          authPage
+          bare
             ? false
             : {
                 breakpoint: 'md',
@@ -307,7 +314,7 @@ export function SiteShell() {
               }
         }
         topNav={
-          !authPage && (
+          !bare && (
             <TopNav
               label={t('Main navigation')}
               startContent={navItems.map((item) => <TopNavItem key={item.href} {...item} />)}
@@ -326,10 +333,10 @@ export function SiteShell() {
         }
       >
         <VStack
-          gap={authPage ? 6 : 10}
-          minHeight={authPage ? '100dvh' : undefined}
-          padding={authPage ? 6 : undefined}
-          vAlign={authPage ? 'center' : undefined}
+          gap={bare ? 6 : 10}
+          minHeight={bare ? '100dvh' : undefined}
+          padding={bare ? 6 : undefined}
+          vAlign={bare ? 'center' : undefined}
           className="page-frame"
           ref={pageFrame}
         >

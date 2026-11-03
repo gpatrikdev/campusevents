@@ -319,7 +319,8 @@ export const hu: Record<string, string> = {
   'Simulated action failed. No change was saved.':
     'A szimulált művelet sikertelen. Nem mentettünk módosítást.',
   'Page not found': 'Az oldal nem található',
-  'Choose a page from the main navigation.': 'Válasszon oldalt a fő navigációból.',
+  'Check the address, or go back to the events list.':
+    'Ellenőrizze a címet, vagy térjen vissza az eseménylistához.',
   'Something went wrong': 'Hiba történt',
   'Reload this local preview to start again.': 'Az újrakezdéshez töltse újra a helyi előnézetet.',
   'Reload preview': 'Előnézet újratöltése',
