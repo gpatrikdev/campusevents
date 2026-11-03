@@ -52,7 +52,7 @@ export function EventsPage() {
               <Heading level={1} type={compact ? 'display-3' : 'display-2'}>
                 {t('University events')}
               </Heading>
-              {user?.profileComplete && <UserBlobatar name={user.name} size={compact ? 48 : 72} />}
+              {user?.profileComplete && <UserBlobatar name={user.name} />}
             </HStack>
             <Text as="p" type="large" color="secondary" weight="normal">
               {t('Lectures, workshops and conversations across the university.')}

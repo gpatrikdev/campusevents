@@ -1,7 +1,6 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
-import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Skeleton } from '@astryxdesign/core/Skeleton';
 import { Text } from '@astryxdesign/core/Text';
@@ -24,18 +23,11 @@ export function EmptyNotice({
   minHeight?: string;
 }) {
   const { user } = useMock();
-  const compact = useMediaQuery('(max-width: 42rem)');
   return (
     <VStack minHeight={minHeight} vAlign="center" hAlign="center" paddingBlock={10}>
       <EmptyState
         {...props}
-        icon={
-          user?.profileComplete ? (
-            <UserBlobatar name={user.name} size={compact ? 72 : 96} />
-          ) : (
-            fallbackIcon
-          )
-        }
+        icon={user?.profileComplete ? <UserBlobatar name={user.name} /> : fallbackIcon}
       />
     </VStack>
   );
