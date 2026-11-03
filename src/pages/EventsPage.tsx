@@ -1,4 +1,3 @@
-import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
@@ -12,7 +11,7 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DataBoundary } from '../components/Feedback';
+import { DataBoundary, EmptyNotice } from '../components/Feedback';
 import { UserBlobatar } from '../components/UserBlobatar';
 import { formatDate, formatDateRange } from '../domain/format';
 import { instant, registrationCutoff } from '../domain/rules';
@@ -69,9 +68,9 @@ export function EventsPage() {
                 pending={query.isPending}
                 empty={events.length === 0}
                 emptyContent={
-                  <EmptyState
+                  <EmptyNotice
                     headingLevel={2}
-                    icon={<Icon icon="calendar" size="lg" />}
+                    fallbackIcon={<Icon icon="calendar" size="lg" />}
                     title={t('No upcoming events')}
                     description={t('Published events will appear here.')}
                   />

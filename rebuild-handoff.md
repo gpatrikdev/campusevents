@@ -173,7 +173,7 @@ Choose the **latest stable, mutually compatible versions when building**. Do not
 | UI | `@astryxdesign/core`, `@stylexjs/stylex`, `@astryxdesign/theme-neutral` |
 | UI styling | Astryx layout components and plain CSS. StyleX remains a required Astryx dependency; no additional custom StyleX build integration has been agreed. |
 | Icons/fonts | Use Astryx-supplied icons and theme fonts. PDF font is a separate bundled asset. |
-| Avatars | `blobatar`, `@blobatar/react`. The home page shows the signed-in user's blobatar, generated from their profile name, beside the main heading. |
+| Avatars | `blobatar`, `@blobatar/react`. Signed-in users with a confirmed profile name see their blobatar, generated from that name, beside the home heading and on top of empty, error and status notices. |
 | Editor | `@astryxdesign/richtext`, `lexical`, and the required `@lexical/*` peers for the selected release |
 | API | `hono`, `zod`; Hono's built-in typed client, no Axios or additional RPC framework |
 | API documentation | `hono-openapi`, `@scalar/hono-api-reference` |

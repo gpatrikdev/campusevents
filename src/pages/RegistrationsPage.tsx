@@ -11,7 +11,7 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { DataBoundary } from '../components/Feedback';
+import { DataBoundary, EmptyNotice } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
 import {
@@ -202,7 +202,7 @@ export function RegistrationsPage() {
               <DataBoundary
                 empty={registrations.length === 0}
                 emptyContent={
-                  <EmptyState
+                  <EmptyNotice
                     headingLevel={2}
                     title={t('No registrations yet')}
                     description={t(

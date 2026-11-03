@@ -2,6 +2,7 @@ import { Button } from '@astryxdesign/core/Button';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { createRootRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
+import { EmptyNotice } from '../components/Feedback';
 import { SiteShell } from '../components/SiteShell';
 
 function NotFound() {
@@ -18,7 +19,8 @@ function NotFound() {
 function ErrorPage() {
   const { t } = useTranslation();
   return (
-    <EmptyState
+    <EmptyNotice
+      minHeight="100dvh"
       headingLevel={1}
       title={t('Something went wrong')}
       description={t('Reload this local preview to start again.')}

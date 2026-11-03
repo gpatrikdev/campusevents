@@ -1,13 +1,42 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
+import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Skeleton } from '@astryxdesign/core/Skeleton';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMock } from '../mocks/hooks';
+import { UserBlobatar } from './UserBlobatar';
+
+/** A roomy, centred notice topped with the signed-in user's blobatar. */
+export function EmptyNotice({
+  fallbackIcon,
+  minHeight = '24rem',
+  ...props
+}: Omit<ComponentProps<typeof EmptyState>, 'icon'> & {
+  fallbackIcon?: ReactNode;
+  minHeight?: string;
+}) {
+  const { user } = useMock();
+  const compact = useMediaQuery('(max-width: 42rem)');
+  return (
+    <VStack minHeight={minHeight} vAlign="center" hAlign="center" paddingBlock={10}>
+      <EmptyState
+        {...props}
+        icon={
+          user?.profileComplete ? (
+            <UserBlobatar name={user.name} size={compact ? 72 : 96} />
+          ) : (
+            fallbackIcon
+          )
+        }
+      />
+    </VStack>
+  );
+}
 
 export function DataBoundary({
   children,
@@ -45,7 +74,7 @@ export function DataBoundary({
       />
     );
   if (dataState === 'empty' || empty)
-    return emptyContent ?? <EmptyState title={t(title)} description={t(description)} />;
+    return emptyContent ?? <EmptyNotice title={t(title)} description={t(description)} />;
   return children;
 }
 
