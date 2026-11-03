@@ -8,9 +8,30 @@
   margin-inline: auto;
 }
 
+.preview-controls-launcher {
+  position: fixed;
+  inset-inline-end: var(--spacing-4);
+  inset-block-end: max(var(--spacing-4), env(safe-area-inset-bottom));
+  z-index: 1;
+}
+
 .ticket-qr {
-  max-width: 100%;
-  height: auto;
+  max-inline-size: min(100%, 44dvh);
+  block-size: auto;
+}
+
+.event-description {
+  max-inline-size: 70ch;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.event-description :where(h2, h3, h4, p, ul, ol, blockquote) + :where(p, ul, ol, blockquote) {
+  margin-block-start: var(--spacing-2);
+}
+
+.event-description :where(p, ul, ol, blockquote) + :where(h2, h3, h4) {
+  margin-block-start: var(--spacing-5);
 }
 
 @media (max-width: 48rem) {

@@ -1,7 +1,5 @@
-import { Button } from '@astryxdesign/core/Button';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
-import { Link } from '@astryxdesign/core/Link';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useEffect, useMemo } from 'react';
@@ -49,9 +47,6 @@ export function ReviewPage({ eventId }: { eventId: string }) {
   const issue = reviewIssue(event, registration, now);
   return (
     <VStack gap={6} maxWidth={720} width="100%">
-      <Link href="/profile" isStandalone>
-        {t('Back to registrations')}
-      </Link>
       <VStack gap={3}>
         <Heading level={1}>{t('Review this event')}</Heading>
         <Text weight="semibold">{event.title}</Text>
@@ -63,10 +58,7 @@ export function ReviewPage({ eventId }: { eventId: string }) {
       </VStack>
       <DataBoundary>
         {issue ? (
-          <EmptyState
-            title={t(issue)}
-            actions={<Button label={t('Back to registrations')} href="/profile" />}
-          />
+          <EmptyState title={t(issue)} />
         ) : (
           <>
             <Text type="supporting">

@@ -27,7 +27,7 @@ pnpm preview
 
 - Public upcoming/ongoing events and event details. Past published pages remain accessible by direct link. Drafts stay out of the public listing.
 - Google sign-in simulation, magic-link email preview, immutable first-login name confirmation, and return to the original event before explicit registration.
-- Profile with Registrations and Account tabs, generated sample QR tickets, cancellation, review eligibility, and one-time certificate-request states.
+- Registrations with generated sample QR tickets, cancellation, review eligibility, and one-time certificate-request states. Profile contains account settings.
 - Staff event filters, draft creation/editing with Astryx RichText, shared public-page preview, publication controls, attendee search, scanner simulation, and anonymous review results.
 - Admin organizer-role changes. Admin accounts have no role-editing control. Promotion preserves existing registrations.
 - English and Hungarian product text, Astryx controls, and SurveyJS validation. Event content stays in its original language.
@@ -54,7 +54,7 @@ For scanner scenarios, select a staff identity and open **Dashboard → Open sci
 
 To inspect review results, use **Dashboard → Past → Research ethics roundtable → Review results**. Submit a review first as Eszter to see the local aggregate update. Names and email addresses are absent from the results view.
 
-To test promotion, grant Eszter organizer access as the admin, then switch back to Eszter. Her profile retains its tickets and post-event actions; new event registration is unavailable.
+To test promotion, grant Eszter organizer access as the admin, then switch back to Eszter. Her tickets and post-event actions remain under Registrations. New event registration is unavailable.
 
 ## Structure
 

@@ -11,18 +11,22 @@ import { useMock } from '../mocks/hooks';
 
 export function DataBoundary({
   children,
+  pending = false,
   empty = false,
+  emptyContent,
   title = 'No events in this view',
   description = 'Choose another filter or create a draft.',
 }: {
   children: ReactNode;
+  pending?: boolean;
   empty?: boolean;
+  emptyContent?: ReactNode;
   title?: string;
   description?: string;
 }) {
   const { t } = useTranslation();
   const { dataState, setDataState } = useMock();
-  if (dataState === 'loading')
+  if (dataState === 'loading' || (dataState === 'ready' && pending))
     return (
       <VStack gap={4} role="status" aria-busy="true">
         <Text>{t('Loading sample data…')}</Text>
@@ -41,7 +45,7 @@ export function DataBoundary({
       />
     );
   if (dataState === 'empty' || empty)
-    return <EmptyState title={t(title)} description={t(description)} />;
+    return emptyContent ?? <EmptyState title={t(title)} description={t(description)} />;
   return children;
 }
 
@@ -68,7 +72,6 @@ export function UnavailableEvent() {
       headingLevel={1}
       title={t('This event is unavailable.')}
       description={t('It may be a staff-only draft or have been deleted.')}
-      actions={<Button href="/" label={t('Back to events')} />}
     />
   );
 }

@@ -1,5 +1,4 @@
 import { Heading } from '@astryxdesign/core/Heading';
-import { Link } from '@astryxdesign/core/Link';
 import { List, ListItem } from '@astryxdesign/core/List';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
@@ -30,9 +29,6 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
     });
   return (
     <VStack gap={6}>
-      <Link href={`/staff/events/${eventId}`} isStandalone>
-        {t('Back to dashboard')}
-      </Link>
       <VStack gap={3}>
         <Heading level={1}>{t('Attendee list')}</Heading>
         <Text weight="semibold">{event.title}</Text>

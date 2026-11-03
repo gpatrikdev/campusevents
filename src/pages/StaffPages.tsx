@@ -3,7 +3,6 @@ import { Button } from '@astryxdesign/core/Button';
 import { Divider } from '@astryxdesign/core/Divider';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
-import { Link } from '@astryxdesign/core/Link';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
 import { Tab, TabList } from '@astryxdesign/core/TabList';
 import { Text } from '@astryxdesign/core/Text';
@@ -107,9 +106,6 @@ export function StaffEventPage({ eventId }: { eventId: string }) {
   return (
     <DataBoundary>
       <VStack gap={8}>
-        <Link href="/staff" isStandalone>
-          {t('Back to dashboard')}
-        </Link>
         <VStack gap={4}>
           <HStack gap={3}>
             <Badge label={t(event.status === 'draft' ? 'Draft' : 'Published')} />

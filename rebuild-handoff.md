@@ -85,7 +85,7 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 - Unlimited registrations; no capacity or remaining-spots behavior.
 - One active registration per user per event.
 - Joining sends a confirmation email containing the QR ticket.
-- The app also displays the QR ticket under Profile → Registrations.
+- The app also displays the QR ticket under Registrations.
 - Each active registration has its own ticket. Cancelled registrations and registrations cleared by unpublishing have invalid tickets.
 - Check-in opens **one hour before the start** and closes **at the event end**.
 - QR scanning only. No manual check-in and no undo check-in.
@@ -139,18 +139,16 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 - Return to the original event and confirm registration; do not register silently as a side effect of login.
 - Successful registration offers View ticket and sends the email containing the QR.
 
-### Profile
+### Registrations and profile
 
-- Tabs: **Registrations** and **Account**.
-- Registrations opens by default.
-- No standalone “My Events” or “My tickets” page in navigation.
+- **Registrations** is a standalone destination in signed-in navigation. Its list follows the public events layout.
 - Upcoming registrations first, showing title, date, location, and a prominent Show QR ticket action.
 - QR opens in a desktop dialog or full-screen ticket on mobile. Show QR, event title, attendee name, and time. Closing returns to the registrations list without losing the user's place.
 - Cancellation is secondary and disappears at the 24-hour cutoff.
 - Past registrations appear below upcoming ones, with eligible review and certificate actions.
 - Submitted/requested actions become status information, such as Review submitted or Certificate emailed after successful sending.
 - Clicking an event title opens its public event page.
-- Account contains account information and language preference. No name-editing control.
+- **Profile** contains account information and language preference. No name-editing control.
 - Promoted staff retain access to their existing registrations and post-event actions.
 
 ### Staff dashboard

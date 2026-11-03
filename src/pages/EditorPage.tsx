@@ -4,7 +4,6 @@ import { DateTimeInput, type ISODateTimeString } from '@astryxdesign/core/DateTi
 import { Grid } from '@astryxdesign/core/Grid';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
-import { Link } from '@astryxdesign/core/Link';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { type SearchSource, Typeahead } from '@astryxdesign/core/Typeahead';
@@ -122,9 +121,6 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
 
   return (
     <VStack gap={6} maxWidth={800} width="100%">
-      <Link href={initial ? `/staff/events/${initial.id}` : '/staff'} isStandalone>
-        {t('Back to dashboard')}
-      </Link>
       <VStack gap={3}>
         <Heading level={1}>{t(initial ? 'Edit draft' : 'Create an event')}</Heading>
         <Text color="secondary">

@@ -1,18 +1,21 @@
-import { AppShell } from '@astryxdesign/core/AppShell';
+import { AppShell, useAppShellMobile } from '@astryxdesign/core/AppShell';
+import { Avatar } from '@astryxdesign/core/Avatar';
 import { Button } from '@astryxdesign/core/Button';
-import { Divider } from '@astryxdesign/core/Divider';
+import { DropdownMenu } from '@astryxdesign/core/DropdownMenu';
 import { Grid } from '@astryxdesign/core/Grid';
 import { HStack } from '@astryxdesign/core/HStack';
 import { Icon } from '@astryxdesign/core/Icon';
 import { LinkProvider } from '@astryxdesign/core/Link';
-import { Section } from '@astryxdesign/core/Section';
+import { MobileNav } from '@astryxdesign/core/MobileNav';
+import { Popover } from '@astryxdesign/core/Popover';
 import { Selector } from '@astryxdesign/core/Selector';
+import { SideNavItem } from '@astryxdesign/core/SideNav';
 import { Switch } from '@astryxdesign/core/Switch';
 import { Text } from '@astryxdesign/core/Text';
-import { TopNav, TopNavHeading, TopNavItem } from '@astryxdesign/core/TopNav';
+import { TopNav, TopNavItem } from '@astryxdesign/core/TopNav';
 import { VStack } from '@astryxdesign/core/VStack';
-import { Outlet, Link as RouterLink, useRouterState } from '@tanstack/react-router';
-import { type ComponentProps, forwardRef, useEffect, useState } from 'react';
+import { Outlet, Link as RouterLink, useRouter, useRouterState } from '@tanstack/react-router';
+import { type ComponentProps, forwardRef, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '../domain/format';
 import { isStaff } from '../domain/rules';
@@ -22,6 +25,8 @@ import { OutcomeNotice } from './Feedback';
 const ClientLink = forwardRef<HTMLAnchorElement, ComponentProps<'a'>>(({ href, ...props }, ref) => (
   <RouterLink to={href ?? '/'} {...props} ref={ref} />
 ));
+
+const isPublicEventPage = (pathname: string) => pathname === '/' || pathname.startsWith('/events/');
 
 export function LanguagePicker() {
   const { t, i18n } = useTranslation();
@@ -44,10 +49,53 @@ export function LanguagePicker() {
 }
 
 function PreviewControls() {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  return (
+    <VStack className="preview-controls-launcher">
+      <Popover
+        label={t('Preview controls')}
+        placement="above"
+        alignment="end"
+        width="42rem"
+        padding={4}
+        isOpen={open}
+        onOpenChange={setOpen}
+        hasCloseButton={false}
+        content={<PreviewSettings onClose={() => setOpen(false)} />}
+      >
+        <Button
+          label={t('Preview controls')}
+          size="sm"
+          elevation="low"
+          icon={<Icon icon="wrench" />}
+        />
+      </Popover>
+    </VStack>
+  );
+}
+
+function PreviewSettings({ onClose }: { onClose: () => void }) {
   const { t, i18n } = useTranslation();
   const demo = useMock();
   return (
-    <VStack gap={4} paddingBlock={4}>
+    <VStack gap={4}>
+      <HStack gap={3} hAlign="between" vAlign="start">
+        <VStack gap={1}>
+          <Text type="label">{t('UI preview · Sample data only')}</Text>
+          <Text type="supporting">
+            {t('No real sign-in, email, attendance, or certificate issuance.')}
+          </Text>
+        </VStack>
+        <Button
+          label={t('Close controls')}
+          size="sm"
+          variant="ghost"
+          isIconOnly
+          icon={<Icon icon="close" />}
+          onClick={onClose}
+        />
+      </HStack>
       <Grid columns={{ minWidth: 200, max: 3 }} gap={4}>
         <Selector
           label={t('Demo identity')}
@@ -116,12 +164,50 @@ function PreviewControls() {
   );
 }
 
-// Top nav stays shallow. AppShell swaps it for mobile navigation below md.
+function DesktopAccountMenu({ name, onSignOut }: { name?: string; onSignOut: () => void }) {
+  const { t } = useTranslation();
+  const { isMobile } = useAppShellMobile();
+  if (isMobile) return null;
+  if (name === undefined) return <Button label={t('Sign in')} href="/sign-in" size="sm" />;
+  return (
+    <DropdownMenu
+      alignment="end"
+      renderTrigger={(props) => (
+        <Avatar {...props} name={name} alt={t('Account menu')} size="md" tooltip={false} />
+      )}
+      items={[
+        { label: t('Profile'), href: '/profile' },
+        { label: t('Sign out'), onClick: onSignOut },
+      ]}
+    />
+  );
+}
+
+function DrawerItem({ onClick, ...props }: ComponentProps<typeof SideNavItem>) {
+  const { closeMobileNav } = useAppShellMobile();
+  return (
+    <SideNavItem
+      {...props}
+      onClick={(event) => {
+        onClick?.(event);
+        closeMobileNav();
+      }}
+    />
+  );
+}
+
 export function SiteShell() {
   const { t, i18n } = useTranslation();
-  const { user } = useMock();
-  const [controlsOpen, setControlsOpen] = useState(false);
+  const { user, data, setIdentity, setOutcome } = useMock();
+  const router = useRouter();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const publicPage = isPublicEventPage(pathname);
+  const authPage = /^\/(sign-in|complete-profile)\/?$/.test(pathname);
+  const pageFrame = useRef<HTMLDivElement>(null);
+  const eventTitle =
+    publicPage &&
+    data.events.find((event) => event.status === 'published' && pathname === `/events/${event.id}`)
+      ?.title;
   useEffect(() => {
     document.documentElement.lang = i18n.language;
     document.documentElement.dir = 'ltr';
@@ -131,109 +217,122 @@ export function SiteShell() {
       ? t('Staff dashboard')
       : pathname.startsWith('/admin')
         ? t('Organizers')
-        : pathname.startsWith('/profile')
-          ? t('Profile')
-          : pathname.startsWith('/sign-in')
-            ? t('Sign in')
-            : pathname.startsWith('/complete-profile')
-              ? t('Complete your profile')
-              : pathname.startsWith('/review')
-                ? t('Review this event')
-                : t('Events');
-    document.title = `${title} · Campus Events · ${t('UI preview · Sample data only')}`;
-  }, [pathname, t]);
+        : pathname.startsWith('/registrations')
+          ? t('Registrations')
+          : pathname.startsWith('/profile')
+            ? t('Profile')
+            : pathname.startsWith('/sign-in')
+              ? t('Sign in')
+              : pathname.startsWith('/complete-profile')
+                ? t('Complete your profile')
+                : pathname.startsWith('/review')
+                  ? t('Review this event')
+                  : t('Events');
+    document.title = `${eventTitle || title} · ${t('UI preview · Sample data only')}`;
+  }, [eventTitle, pathname, t]);
+  useEffect(
+    () =>
+      router.subscribe('onRendered', ({ fromLocation, toLocation, pathChanged }) => {
+        if (
+          !pathChanged ||
+          !fromLocation ||
+          !isPublicEventPage(fromLocation.pathname) ||
+          !isPublicEventPage(toLocation.pathname)
+        )
+          return;
+        const heading = pageFrame.current?.querySelector('h1');
+        if (heading) {
+          heading.tabIndex = -1;
+          heading.focus({ preventScroll: true });
+        }
+      }),
+    [router],
+  );
+
+  const navItems = [{ label: t('Events'), href: '/', isSelected: publicPage }];
+  if (user)
+    navItems.push({
+      label: t('Registrations'),
+      href: '/registrations',
+      isSelected: pathname.startsWith('/registrations'),
+    });
+  if (isStaff(user))
+    navItems.push({
+      label: t('Dashboard'),
+      href: '/staff',
+      isSelected: pathname.startsWith('/staff'),
+    });
+  if (user?.role === 'admin')
+    navItems.push({
+      label: t('Organizers'),
+      href: '/admin',
+      isSelected: pathname.startsWith('/admin'),
+    });
+
+  function signOut() {
+    setIdentity('visitor');
+    setOutcome(null);
+  }
 
   return (
     <LinkProvider component={ClientLink}>
       <AppShell
         height="auto"
         variant="surface"
-        contentPadding={6}
-        mobileNav={{ breakpoint: 'md' }}
+        contentPadding={authPage ? 0 : 6}
+        mobileNav={
+          authPage
+            ? false
+            : {
+                breakpoint: 'md',
+                content: (
+                  <MobileNav header={t('Main navigation')}>
+                    {navItems.map((item) => (
+                      <DrawerItem key={item.href} {...item} />
+                    ))}
+                    {user ? (
+                      <>
+                        <DrawerItem
+                          label={t('Profile')}
+                          href="/profile"
+                          isSelected={pathname.startsWith('/profile')}
+                        />
+                        <DrawerItem label={t('Sign out')} onClick={signOut} />
+                      </>
+                    ) : (
+                      <DrawerItem label={t('Sign in')} href="/sign-in" />
+                    )}
+                  </MobileNav>
+                ),
+              }
+        }
         topNav={
-          <TopNav
-            label={t('Main navigation')}
-            heading={
-              <TopNavHeading
-                heading="Campus Events"
-                subheading={t('University event service')}
-                headingHref="/"
-                logo={<Icon icon="calendar" size="lg" />}
-              />
-            }
-            startContent={
-              <>
-                <TopNavItem
-                  label={t('Events')}
-                  href="/"
-                  isSelected={pathname === '/' || pathname.startsWith('/events')}
-                />
-                {user && (
-                  <TopNavItem
-                    label={t('Profile')}
-                    href="/profile"
-                    isSelected={pathname.startsWith('/profile')}
-                  />
-                )}
-                {isStaff(user) && (
-                  <TopNavItem
-                    label={t('Dashboard')}
-                    href="/staff"
-                    isSelected={pathname.startsWith('/staff')}
-                  />
-                )}
-                {user?.role === 'admin' && (
-                  <TopNavItem
-                    label={t('Organizers')}
-                    href="/admin"
-                    isSelected={pathname.startsWith('/admin')}
-                  />
-                )}
-              </>
-            }
-            endContent={
-              <>
-                <LanguagePicker />
-                {!user && <Button label={t('Sign in')} href="/sign-in" size="sm" />}
-              </>
-            }
-          />
+          !authPage && (
+            <TopNav
+              label={t('Main navigation')}
+              startContent={navItems.map((item) => <TopNavItem key={item.href} {...item} />)}
+              endContent={
+                <>
+                  <LanguagePicker />
+                  <DesktopAccountMenu name={user?.name} onSignOut={signOut} />
+                </>
+              }
+            />
+          )
         }
       >
-        <VStack gap={10} className="page-frame">
-          <Section variant="muted" padding={4}>
-            <HStack gap={4} hAlign="between" wrap="wrap" vAlign="center">
-              <VStack gap={1}>
-                <Text type="label">{t('UI preview · Sample data only')}</Text>
-                <Text type="supporting">
-                  {t('No real sign-in, email, attendance, or certificate issuance.')}
-                </Text>
-              </VStack>
-              <Button
-                label={t(controlsOpen ? 'Close controls' : 'Preview controls')}
-                size="sm"
-                variant="ghost"
-                onClick={() => setControlsOpen(!controlsOpen)}
-                aria-expanded={controlsOpen}
-                aria-controls="preview-controls"
-              />
-            </HStack>
-            {controlsOpen && (
-              <VStack id="preview-controls">
-                <PreviewControls />
-              </VStack>
-            )}
-          </Section>
+        <VStack
+          gap={authPage ? 6 : 10}
+          minHeight={authPage ? '100dvh' : undefined}
+          padding={authPage ? 6 : undefined}
+          vAlign={authPage ? 'center' : undefined}
+          className="page-frame"
+          ref={pageFrame}
+        >
           <OutcomeNotice />
           <Outlet />
-          <VStack as="footer" gap={4} paddingBlock={6}>
-            <Divider />
-            <HStack gap={4} wrap="wrap" hAlign="between">
-              <Text type="supporting">Campus Events · {t('University event service')}</Text>
-              <Text type="supporting">{t('All times are shown in the event timezone.')}</Text>
-            </HStack>
-          </VStack>
         </VStack>
+        {!authPage && <PreviewControls />}
       </AppShell>
     </LinkProvider>
   );

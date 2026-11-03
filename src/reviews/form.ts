@@ -43,6 +43,8 @@ export const reviewTheme: ITheme = {
     '--sjs2-color-border-basic-primary': 'var(--color-border-emphasized)',
     '--sjs2-color-border-basic-secondary': 'var(--color-border)',
     '--sjs2-color-utility-surface-survey': 'var(--color-background-surface)',
+    '--sjs2-layout-component-page-content-area-padding-horizontal': '0px',
+    '--sjs2-layout-component-survey-footer-padding-horizontal': '0px',
     '--sjs2-radius-form': 'var(--radius-2)',
   },
 };

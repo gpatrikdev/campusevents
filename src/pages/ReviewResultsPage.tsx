@@ -1,7 +1,6 @@
 import { Divider } from '@astryxdesign/core/Divider';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
-import { Link } from '@astryxdesign/core/Link';
 import { List, ListItem } from '@astryxdesign/core/List';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
 import { Text } from '@astryxdesign/core/Text';
@@ -24,9 +23,6 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
     : 0;
   return (
     <VStack gap={6} maxWidth={800} width="100%">
-      <Link href={`/staff/events/${eventId}`} isStandalone>
-        {t('Back to dashboard')}
-      </Link>
       <VStack gap={3}>
         <Heading level={1}>{t('Review results')}</Heading>
         <Text weight="semibold">{event.title}</Text>

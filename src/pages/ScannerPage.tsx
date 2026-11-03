@@ -3,7 +3,6 @@ import { Button } from '@astryxdesign/core/Button';
 import { Card } from '@astryxdesign/core/Card';
 import { Heading } from '@astryxdesign/core/Heading';
 import { Icon } from '@astryxdesign/core/Icon';
-import { Link } from '@astryxdesign/core/Link';
 import { Selector } from '@astryxdesign/core/Selector';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -43,9 +42,6 @@ export function ScannerPage({ eventId }: { eventId: string }) {
   return (
     <DataBoundary>
       <VStack gap={6} maxWidth={640} width="100%">
-        <Link href={`/staff/events/${eventId}`} isStandalone>
-          {t('Back to dashboard')}
-        </Link>
         <VStack gap={3}>
           <Heading level={1}>{t('QR scanner')}</Heading>
           <Text weight="semibold">{event.title}</Text>

@@ -3,6 +3,7 @@ import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
+import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import QRCode from 'qrcode';
@@ -49,55 +50,67 @@ export function TicketDialog({
       active = false;
     };
   }, [registration?.ticket]);
+  const handleOpenChange = (open: boolean) => {
+    if (!open) onClose();
+  };
   return (
     <Dialog
       isOpen={registrationId !== null}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
+      onOpenChange={handleOpenChange}
       variant={mobile ? 'fullscreen' : 'standard'}
       width="30rem"
+      maxHeight="90dvh"
     >
-      <DialogHeader
-        title={t('Demo QR ticket')}
-        onOpenChange={(open) => {
-          if (!open) onClose();
-        }}
+      <Layout
+        padding={4}
+        header={<DialogHeader title={t('Demo QR ticket')} onOpenChange={handleOpenChange} />}
+        content={
+          <LayoutContent>
+            <VStack gap={3} hAlign="center">
+              {event && registration && user ? (
+                <>
+                  <Heading level={3} justify="center" textWrap="balance">
+                    {event.title}
+                  </Heading>
+                  <Text weight="semibold">{user.name}</Text>
+                  <Text justify="center">
+                    {formatDate(event.start, event.timezone, i18n.language)} · {event.timezone}
+                  </Text>
+                  {qr ? (
+                    <img
+                      src={qr}
+                      alt={t('Demo QR ticket for {{name}}', { name: user.name })}
+                      className="ticket-qr"
+                      width={320}
+                      height={320}
+                    />
+                  ) : (
+                    <Text role="status">
+                      {t(failed ? 'QR code could not be generated.' : 'Loading sample data…')}
+                    </Text>
+                  )}
+                  <Text justify="center">{t('Present this ticket at the event entrance.')}</Text>
+                  <Text type="supporting" justify="center">
+                    {t('This sample QR code is valid only inside this local preview.')}
+                  </Text>
+                </>
+              ) : (
+                <EmptyState
+                  title={t('Ticket unavailable')}
+                  description={t(
+                    'This ticket is cancelled, invalidated, or the event was deleted.',
+                  )}
+                />
+              )}
+            </VStack>
+          </LayoutContent>
+        }
+        footer={
+          <LayoutFooter hasDivider>
+            <Button label={t('Close ticket')} onClick={onClose} width="100%" />
+          </LayoutFooter>
+        }
       />
-      <VStack gap={6} padding={6} hAlign="center">
-        {event && registration && user ? (
-          <>
-            <Heading level={3}>{event.title}</Heading>
-            <Text weight="semibold">{user.name}</Text>
-            <Text justify="center">
-              {formatDate(event.start, event.timezone, i18n.language)} · {event.timezone}
-            </Text>
-            {qr ? (
-              <img
-                src={qr}
-                alt={t('Demo QR ticket for {{name}}', { name: user.name })}
-                className="ticket-qr"
-                width={320}
-                height={320}
-              />
-            ) : (
-              <Text role="status">
-                {t(failed ? 'QR code could not be generated.' : 'Loading sample data…')}
-              </Text>
-            )}
-            <Text justify="center">{t('Present this ticket at the event entrance.')}</Text>
-            <Text type="supporting" justify="center">
-              {t('This sample QR code is valid only inside this local preview.')}
-            </Text>
-          </>
-        ) : (
-          <EmptyState
-            title={t('Ticket unavailable')}
-            description={t('This ticket is cancelled, invalidated, or the event was deleted.')}
-          />
-        )}
-        <Button label={t('Close ticket')} onClick={onClose} width="100%" />
-      </VStack>
     </Dialog>
   );
 }

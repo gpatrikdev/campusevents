@@ -1,26 +1,34 @@
-import { Card } from '@astryxdesign/core/Card';
-import { Divider } from '@astryxdesign/core/Divider';
+import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Heading } from '@astryxdesign/core/Heading';
+import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
-import { Layout, LayoutContent, LayoutPanel } from '@astryxdesign/core/Layout';
+import { Icon } from '@astryxdesign/core/Icon';
+import { Layout, LayoutContent, LayoutHeader, LayoutPanel } from '@astryxdesign/core/Layout';
+import { Link } from '@astryxdesign/core/Link';
+import { List, ListItem } from '@astryxdesign/core/List';
+import { Section } from '@astryxdesign/core/Section';
+import { StatusDot } from '@astryxdesign/core/StatusDot';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EventRow } from '../components/EventRow';
 import { DataBoundary } from '../components/Feedback';
-import { instant } from '../domain/rules';
+import { formatDate, formatDateRange } from '../domain/format';
+import { instant, registrationCutoff } from '../domain/rules';
+import type { CampusEvent } from '../domain/types';
 import { useEvents, useMock } from '../mocks/hooks';
 
 export function EventsPage() {
   const { t } = useTranslation();
   const { now } = useMock();
   const query = useEvents();
-  const mobile = useMediaQuery('(max-width: 48rem)');
+  const narrow = useMediaQuery('(max-width: 56rem)');
+  const compact = useMediaQuery('(max-width: 42rem)');
   const events = (query.data ?? [])
     .filter((event) => event.status === 'published' && instant(event.end) > now)
     .sort((a, b) => instant(a.start) - instant(b.start));
   const guidance = (
-    <Card variant="muted" padding={6}>
+    <Section variant="muted" padding={6}>
       <VStack gap={4}>
         <Heading level={2}>{t('Before you join')}</Heading>
         <Text as="p">{t('Everyone is welcome. A university email address is not required.')}</Text>
@@ -28,53 +36,138 @@ export function EventsPage() {
           {t('Registration and cancellation close 24 hours before an event starts.')}
         </Text>
         <Text as="p" color="secondary">
-          {t('Your QR ticket is available in Profile → Registrations.')}
+          {t('Your QR ticket is available under Registrations.')}
         </Text>
       </VStack>
-    </Card>
+    </Section>
   );
   return (
-    <VStack gap={8}>
-      <VStack gap={3}>
-        <Heading level={1}>{t('University events')}</Heading>
-        <Text as="p" color="secondary">
-          {t('Lectures, workshops and conversations across the university.')}
-        </Text>
-      </VStack>
-      <Layout
-        height="auto"
-        padding={6}
-        content={
-          <LayoutContent padding={6}>
-            <VStack gap={4}>
-              <Heading level={2}>{t('Upcoming and ongoing')}</Heading>
-              <Divider />
+    <Layout
+      height="auto"
+      padding={compact ? 4 : 6}
+      header={
+        <LayoutHeader hasDivider>
+          <VStack gap={3} paddingBlockStart={compact ? 4 : 0} paddingBlockEnd={4}>
+            <Heading level={1} type={compact ? 'display-3' : 'display-2'}>
+              {t('University events')}
+            </Heading>
+            <Text as="p" type="large" color="secondary" weight="normal">
+              {t('Lectures, workshops and conversations across the university.')}
+            </Text>
+          </VStack>
+        </LayoutHeader>
+      }
+      content={
+        <LayoutContent isScrollable={false}>
+          <VStack gap={8}>
+            <Section variant="transparent" padding={compact ? 4 : 6}>
               <DataBoundary
-                empty={!query.isPending && events.length === 0}
-                title="No upcoming events"
-                description="Published events will appear here."
+                pending={query.isPending}
+                empty={events.length === 0}
+                emptyContent={
+                  <EmptyState
+                    headingLevel={2}
+                    icon={<Icon icon="calendar" size="lg" />}
+                    title={t('No upcoming events')}
+                    description={t('Published events will appear here.')}
+                  />
+                }
               >
-                <VStack gap={0}>
-                  {events.map((event, index) => (
-                    <VStack gap={0} key={event.id}>
-                      <EventRow event={event} />
-                      {index < events.length - 1 && <Divider />}
-                    </VStack>
+                <List
+                  header={<Heading level={2}>{t('Upcoming and ongoing')}</Heading>}
+                  density="spacious"
+                  edge="outset"
+                  hasDividers
+                >
+                  {events.map((event) => (
+                    <PublicEventListItem key={event.id} event={event} now={now} compact={compact} />
                   ))}
-                </VStack>
+                </List>
               </DataBoundary>
-            </VStack>
-          </LayoutContent>
-        }
-        end={
-          !mobile && (
-            <LayoutPanel width={300} padding={6}>
-              {guidance}
-            </LayoutPanel>
-          )
-        }
-      />
-      {mobile && guidance}
-    </VStack>
+            </Section>
+            {narrow && guidance}
+          </VStack>
+        </LayoutContent>
+      }
+      end={
+        !narrow && (
+          <LayoutPanel width="18rem" padding={6} hasDivider isScrollable={false}>
+            {guidance}
+          </LayoutPanel>
+        )
+      }
+    />
+  );
+}
+
+function PublicEventListItem({
+  event,
+  now,
+  compact,
+}: {
+  event: CampusEvent;
+  now: number;
+  compact: boolean;
+}) {
+  const { t, i18n } = useTranslation();
+  const link = useRef<HTMLAnchorElement>(null);
+  const ongoing = now >= instant(event.start);
+  const closed = now >= registrationCutoff(event);
+  const status = t(closed ? 'Registration closed' : 'Registration open');
+  const registration = (
+    <HStack gap={2} vAlign="center">
+      <HStack aria-hidden="true">
+        <StatusDot variant={closed ? 'neutral' : 'success'} label={status} />
+      </HStack>
+      <Text type="supporting" weight="medium">
+        {status}
+      </Text>
+    </HStack>
+  );
+  return (
+    <ListItem
+      interactiveRef={link}
+      align="start"
+      startContent={
+        !compact && (
+          <VStack gap={1} width="7.5rem">
+            <Text weight="semibold">
+              {formatDate(event.start, event.timezone, i18n.language, false)}
+            </Text>
+            {ongoing && <Text type="supporting">{t('Ongoing')}</Text>}
+          </VStack>
+        )
+      }
+      label={
+        <Link ref={link} href={`/events/${event.id}`} size="lg" color="primary" weight="semibold">
+          {event.title}
+        </Link>
+      }
+      description={
+        <VStack gap={1} paddingBlockStart={1}>
+          <Text color="secondary">
+            {formatDateRange(event.start, event.end, event.timezone, i18n.language, compact)}
+          </Text>
+          <Text color="secondary">{event.location}</Text>
+          <Text type="supporting">{event.timezone}</Text>
+          {compact && (
+            <HStack gap={3} wrap="wrap" vAlign="center" paddingBlockStart={1}>
+              {registration}
+              {ongoing && (
+                <Text type="supporting" weight="semibold">
+                  {t('Ongoing')}
+                </Text>
+              )}
+            </HStack>
+          )}
+        </VStack>
+      }
+      endContent={
+        <HStack gap={3} vAlign="center">
+          {!compact && registration}
+          <Icon icon="chevronRight" color="secondary" size="sm" />
+        </HStack>
+      }
+    />
   );
 }

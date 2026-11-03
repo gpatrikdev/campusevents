@@ -1,3 +1,4 @@
+import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
 import { HStack } from '@astryxdesign/core/HStack';
@@ -10,7 +11,9 @@ export function ConfirmDialog({
   onOpenChange,
   title,
   description,
+  descriptionValues,
   label,
+  errorMessage,
   destructive = false,
   onConfirm,
 }: {
@@ -18,24 +21,30 @@ export function ConfirmDialog({
   onOpenChange: (open: boolean) => void;
   title: string;
   description: string;
+  descriptionValues?: Record<string, string>;
   label: string;
+  errorMessage?: string | null;
   destructive?: boolean;
-  onConfirm: () => void;
+  onConfirm: () => false | undefined;
 }) {
   const { t } = useTranslation();
   return (
     <Dialog isOpen={isOpen} onOpenChange={onOpenChange} purpose="form" width="30rem">
       <DialogHeader title={t(title)} onOpenChange={onOpenChange} />
       <VStack gap={6} padding={6}>
-        <Text as="p">{t(description)}</Text>
+        <Text as="p">{t(description, descriptionValues)}</Text>
+        {errorMessage && (
+          <VStack role="alert">
+            <Banner status="error" title={t(errorMessage)} />
+          </VStack>
+        )}
         <HStack gap={3} hAlign="end" wrap="wrap">
           <Button label={t('Cancel')} onClick={() => onOpenChange(false)} />
           <Button
             label={t(label)}
             variant={destructive ? 'destructive' : 'primary'}
             onClick={() => {
-              onConfirm();
-              onOpenChange(false);
+              if (onConfirm() !== false) onOpenChange(false);
             }}
           />
         </HStack>

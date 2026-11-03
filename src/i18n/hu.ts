@@ -1,12 +1,11 @@
 export const hu: Record<string, string> = {
-  'Campus Events': 'Campus Events',
-  'University event service': 'Egyetemi eseményszolgáltatás',
   Events: 'Események',
   Profile: 'Profil',
   Dashboard: 'Kezelőfelület',
   Organizers: 'Szervezők',
   'Sign in': 'Bejelentkezés',
-  'Sign out of preview': 'Kilépés a demóprofilból',
+  'Sign out': 'Kijelentkezés',
+  'Account menu': 'Fiókmenü',
   Language: 'Nyelv',
   'Main navigation': 'Fő navigáció',
   'UI preview · Sample data only': 'Felületi előnézet · Csak mintaadatok',
@@ -41,14 +40,12 @@ export const hu: Record<string, string> = {
   'Lectures, workshops and conversations across the university.':
     'Előadások, műhelyek és beszélgetések az egyetem közösségének.',
   'Upcoming and ongoing': 'Közelgő és folyamatban lévő események',
-  'All times are shown in the event timezone.': 'Minden időpont az esemény időzónájában látható.',
   'Before you join': 'Jelentkezés előtt',
   'Everyone is welcome. A university email address is not required.':
     'Bárki csatlakozhat. Nem szükséges egyetemi e-mail-cím.',
   'Registration and cancellation close 24 hours before an event starts.':
     'A jelentkezés és a lemondás az esemény kezdete előtt 24 órával zárul.',
-  'Your QR ticket is available in Profile → Registrations.':
-    'QR-jegye a Profil → Jelentkezések lapon található.',
+  'Your QR ticket is available under Registrations.': 'QR-jegye a Jelentkezések oldalon található.',
   'No upcoming events': 'Nincs közelgő esemény',
   'Published events will appear here.': 'A közzétett események itt jelennek meg.',
   'Loading sample data…': 'Mintaadatok betöltése…',
@@ -63,7 +60,6 @@ export const hu: Record<string, string> = {
   Past: 'Korábbi',
   Draft: 'Piszkozat',
   Published: 'Közzétéve',
-  'Back to events': 'Vissza az eseményekhez',
   'Event details': 'Az esemény adatai',
   'About this event': 'Az eseményről',
   'Date and time': 'Dátum és időpont',
@@ -72,9 +68,12 @@ export const hu: Record<string, string> = {
   'Registration deadline': 'Jelentkezési határidő',
   'Check-in window': 'Beléptetési időszak',
   'Take part': 'Részvétel',
+  'Registration actions are unavailable in staff preview.':
+    'A szervezői előnézetben nem lehet jelentkezni.',
   'Join event': 'Jelentkezés',
   'Confirm registration': 'Jelentkezés megerősítése',
-  'Confirm your registration for this event.': 'Erősítse meg jelentkezését erre az eseményre.',
+  '{{event}} starts on {{start}} ({{timezone}}). Your QR ticket will be available after you register.':
+    'A(z) „{{event}}” kezdési időpontja {{start}} ({{timezone}}). A QR-jegy a jelentkezés után lesz elérhető.',
   'Your name on the ticket': 'A jegyen szereplő neve',
   'You are registered in this preview.': 'Az előnézetben jelentkezett erre az eseményre.',
   'View ticket': 'Jegy megtekintése',
@@ -87,8 +86,8 @@ export const hu: Record<string, string> = {
   'Registration and cancellation are closed.': 'A jelentkezés és a lemondás lezárult.',
   'Staff cannot join new events.': 'Munkatársként nem jelentkezhet új eseményre.',
   'This event has ended.': 'Az esemény véget ért.',
-  'Find your review and certificate actions in your profile.':
-    'Az értékelés és az igazolás kérése a profiljában érhető el.',
+  'Find your review and certificate actions under Registrations.':
+    'Az értékelés és az igazolás kérése a Jelentkezések oldalon érhető el.',
   'This event is unavailable.': 'Az esemény nem érhető el.',
   'It may be a staff-only draft or have been deleted.':
     'Lehet, hogy munkatársaknak elérhető piszkozat, vagy már törölték.',
@@ -96,12 +95,11 @@ export const hu: Record<string, string> = {
   'Draft preview': 'Piszkozat előnézete',
   'This is the same event page visitors will see after publication.':
     'A látogatók közzététel után ugyanezt az eseményoldalt látják.',
-  'Back to dashboard': 'Vissza a kezelőfelületre',
   'Sign in to take part': 'Jelentkezzen be a részvételhez',
   'Use Google or an email magic link. Anyone can create an account.':
     'Használja Google-fiókját vagy az e-mailes belépési hivatkozást. Bárki létrehozhat fiókot.',
   'Simulate Google sign-in': 'Google-bejelentkezés szimulálása',
-  'or use email': 'vagy e-mail-cím',
+  'or continue with': 'vagy folytassa ezzel',
   'Email address': 'E-mail-cím',
   'Preview magic-link email': 'Belépési e-mail előnézete',
   'Email preview only': 'Csak e-mail-előnézet',
@@ -190,7 +188,6 @@ export const hu: Record<string, string> = {
   'Save demo review': 'Demóértékelés mentése',
   'Choose a rating from 1 to 5. Comments can contain up to 2,000 characters.':
     'Válasszon 1 és 5 közötti értékelést. A megjegyzés legfeljebb 2000 karakter lehet.',
-  'Back to registrations': 'Vissza a jelentkezésekhez',
   'Staff dashboard': 'Munkatársi kezelőfelület',
   'Manage university events': 'Egyetemi események kezelése',
   'All organizers and admins can manage every event.':
