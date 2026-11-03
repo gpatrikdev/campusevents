@@ -1,0 +1,9 @@
+# Agent tools only; no application dependencies.
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@0.0.84", "--headless", "--isolated", "--sandbox"]
+startup_timeout_sec = 60
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+startup_timeout_sec = 40
