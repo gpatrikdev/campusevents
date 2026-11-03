@@ -305,8 +305,8 @@ export const hu: Record<string, string> = {
   'Organizers manage all events. Existing attendee registrations are kept.':
     'A szervezők minden eseményt kezelhetnek. A meglévő résztvevői jelentkezéseik megmaradnak.',
   'Search accounts': 'Fiókok keresése',
-  'Grant organizer access': 'Szervezői jogosultság megadása',
-  'Remove organizer access': 'Szervezői jogosultság visszavonása',
+  Email: 'E-mail',
+  Role: 'Szerepkör',
   'Change organizer permission?': 'Módosítja a szervezői jogosultságot?',
   'Organizer access applies to every event. Removing it does not remove attendee registrations.':
     'A szervezői jogosultság minden eseményre vonatkozik. Visszavonása nem törli a résztvevői jelentkezéseket.',

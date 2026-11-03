@@ -1,7 +1,6 @@
-import { Button } from '@astryxdesign/core/Button';
 import { Heading } from '@astryxdesign/core/Heading';
-import { HStack } from '@astryxdesign/core/HStack';
-import { List, ListItem } from '@astryxdesign/core/List';
+import { SegmentedControl, SegmentedControlItem } from '@astryxdesign/core/SegmentedControl';
+import { proportional, Table } from '@astryxdesign/core/Table';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -22,6 +21,8 @@ export function OrganizersPage() {
       .toLocaleLowerCase(i18n.language)
       .includes(search.trim().toLocaleLowerCase(i18n.language)),
   );
+  // Table rows must be plain objects; User is an interface, so copy the fields.
+  const rows = accounts.map(({ id, name, email, role }) => ({ id, name, email, role }));
   return (
     <VStack gap={6}>
       <VStack gap={3}>
@@ -44,40 +45,62 @@ export function OrganizersPage() {
         title="No accounts found"
         description="Try another name or email, or check back after registrations."
       >
-        <List edge="flush" density="spacious" hasDividers>
-          {accounts.map((account) => (
-            <ListItem
-              key={account.id}
-              label={
-                <HStack gap={5} wrap="wrap" hAlign="between" vAlign="center">
-                  <VStack gap={2}>
-                    <Text weight="semibold">{account.name}</Text>
-                    <Text color="secondary">{account.email}</Text>
-                    <Text type="supporting">
-                      {t(
-                        account.role === 'admin'
-                          ? 'Admin'
-                          : account.role === 'organizer'
-                            ? 'Organizer'
-                            : 'Regular attendee',
-                      )}
-                    </Text>
-                  </VStack>
-                  {account.role !== 'admin' && (
-                    <Button
-                      label={t(
-                        account.role === 'organizer'
-                          ? 'Remove organizer access'
-                          : 'Grant organizer access',
-                      )}
-                      onClick={() => setTarget(account.id)}
-                    />
-                  )}
-                </HStack>
-              }
-            />
-          ))}
-        </List>
+        {/* The column floors add up to more than a phone's width, so on phones
+            the table scrolls sideways inside its own region. */}
+        <Table
+          data={rows}
+          idKey="id"
+          columns={[
+            {
+              key: 'name',
+              header: t('Name'),
+              width: proportional(1, { minWidth: 160 }),
+              renderCell: (account) => (
+                <Text type="inherit" weight="semibold">
+                  {account.name}
+                </Text>
+              ),
+            },
+            {
+              key: 'email',
+              header: t('Email'),
+              width: proportional(1, { minWidth: 200 }),
+              renderCell: (account) => (
+                <Text type="inherit" color="secondary">
+                  {account.email}
+                </Text>
+              ),
+            },
+            {
+              key: 'role',
+              header: t('Role'),
+              width: proportional(1, { minWidth: 300 }),
+              renderCell: (account) => {
+                const role = account.role ?? 'attendee';
+                return (
+                  <SegmentedControl
+                    label={`${t('Role')}: ${account.name}`}
+                    size="sm"
+                    value={role}
+                    isDisabled={role === 'admin'}
+                    disabledMessage={
+                      role === 'admin' ? t('Admin roles cannot be changed here.') : undefined
+                    }
+                    onChange={(next) => {
+                      // Admin can't be picked, so any change toggles organizer
+                      // access. The segment moves only after the dialog confirms.
+                      if (next !== role) setTarget(account.id);
+                    }}
+                  >
+                    <SegmentedControlItem value="attendee" label={t('Regular attendee')} />
+                    <SegmentedControlItem value="organizer" label={t('Organizer')} />
+                    <SegmentedControlItem value="admin" label={t('Admin')} isDisabled />
+                  </SegmentedControl>
+                );
+              },
+            },
+          ]}
+        />
       </DataBoundary>
       <Text type="supporting">
         {t('Admin roles are managed manually and cannot be changed here.')}
