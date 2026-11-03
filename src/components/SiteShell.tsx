@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../domain/format';
 import { isStaff } from '../domain/rules';
 import { useMock } from '../mocks/hooks';
-import { OutcomeNotice } from './Feedback';
+import { belowNavHeight, OutcomeNotice } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
 
 const ClientLink = forwardRef<HTMLAnchorElement, ComponentProps<'a'>>(({ href, ...props }, ref) => (
@@ -286,7 +286,7 @@ export function SiteShell() {
     <LinkProvider component={ClientLink}>
       <AppShell
         height="auto"
-        variant="surface"
+        variant="elevated"
         contentPadding={bare ? 0 : 6}
         mobileNav={
           bare
@@ -335,7 +335,8 @@ export function SiteShell() {
       >
         <VStack
           gap={bare ? 6 : 10}
-          minHeight={bare ? '100dvh' : undefined}
+          // Fills the window, so the shell's grey never shows under a short page.
+          minHeight={bare ? '100dvh' : belowNavHeight}
           padding={bare ? 6 : undefined}
           vAlign={bare ? 'center' : undefined}
           className="page-frame"
