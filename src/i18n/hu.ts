@@ -55,6 +55,7 @@ export const hu: Record<string, string> = {
   'Registration open': 'Lehet jelentkezni',
   'Registration closed': 'A jelentkezés lezárult',
   Ongoing: 'Folyamatban',
+  'Happening now': 'Most zajlik',
   Upcoming: 'Közelgő',
   Past: 'Korábbi',
   Draft: 'Piszkozat',

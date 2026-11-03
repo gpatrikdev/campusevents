@@ -127,6 +127,13 @@ function PublicEventListItem({
       </Text>
     </HStack>
   );
+  const live = ongoing && (
+    <HStack className="live-now">
+      <Text type="supporting" weight="semibold" color="inherit">
+        {t('Happening now')}
+      </Text>
+    </HStack>
+  );
   return (
     <ListItem
       interactiveRef={link}
@@ -137,7 +144,7 @@ function PublicEventListItem({
             <Text weight="semibold">
               {formatDate(event.start, event.timezone, i18n.language, false)}
             </Text>
-            {ongoing && <Text type="supporting">{t('Ongoing')}</Text>}
+            {live}
           </VStack>
         )
       }
@@ -155,12 +162,8 @@ function PublicEventListItem({
           <Text type="supporting">{event.timezone}</Text>
           {compact && (
             <HStack gap={3} wrap="wrap" vAlign="center" paddingBlockStart={1}>
+              {live}
               {registration}
-              {ongoing && (
-                <Text type="supporting" weight="semibold">
-                  {t('Ongoing')}
-                </Text>
-              )}
             </HStack>
           )}
         </VStack>

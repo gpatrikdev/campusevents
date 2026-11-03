@@ -13,6 +13,10 @@ html {
   margin-inline: auto;
 }
 
+.live-now {
+  color: var(--color-text-success);
+}
+
 .form-page {
   margin-inline: auto;
 }
