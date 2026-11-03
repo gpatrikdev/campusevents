@@ -1,3 +1,12 @@
+/* While a dialog or the mobile nav is open, Astryx holds the hidden scrollbar's
+   space open, and overlays can't paint into it, so a strip stays uncovered on
+   the right. Turning that off makes Astryx pad the page instead, which keeps
+   the layout still and lets overlays reach the edge. */
+html {
+  /* biome-ignore lint/complexity/noImportantStyles: only !important beats Astryx's inline style */
+  scrollbar-gutter: auto !important;
+}
+
 .page-frame {
   max-width: 1100px;
   width: 100%;
