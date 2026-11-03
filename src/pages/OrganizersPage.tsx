@@ -23,7 +23,7 @@ export function OrganizersPage() {
       .includes(search.trim().toLocaleLowerCase(i18n.language)),
   );
   return (
-    <VStack gap={6} maxWidth={880} width="100%">
+    <VStack gap={6}>
       <VStack gap={3}>
         <Heading level={1}>{t('Organizer permissions')}</Heading>
         <Text color="secondary">
@@ -37,7 +37,7 @@ export function OrganizersPage() {
         onChange={setSearch}
         type="search"
         hasClear
-        width="28rem"
+        width="100%"
       />
       <DataBoundary
         empty={accounts.length === 0}
