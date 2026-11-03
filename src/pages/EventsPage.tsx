@@ -27,8 +27,15 @@ export function EventsPage() {
   const events = (query.data ?? [])
     .filter((event) => event.status === 'published' && instant(event.end) > now)
     .sort((a, b) => instant(a.start) - instant(b.start));
+  // Wide screens show the side panel, and the blob sits on its top corner.
+  const cornerBlob = !narrow && user?.profileComplete;
   const guidance = (
     <Section variant="muted" padding={6}>
+      {cornerBlob && (
+        <VStack className="corner-blob">
+          <UserBlobatar name={user.name} />
+        </VStack>
+      )}
       <VStack gap={4}>
         <Heading level={2}>{t('Before you join')}</Heading>
         <Text as="p">{t('Everyone is welcome. A university email address is not required.')}</Text>
@@ -48,12 +55,9 @@ export function EventsPage() {
       header={
         <LayoutHeader hasDivider>
           <VStack gap={3} paddingBlockStart={compact ? 4 : 0} paddingBlockEnd={4}>
-            <HStack gap={4} vAlign="center" hAlign="between">
-              <Heading level={1} type={compact ? 'display-3' : 'display-2'}>
-                {t('University events')}
-              </Heading>
-              {user?.profileComplete && <UserBlobatar name={user.name} />}
-            </HStack>
+            <Heading level={1} type={compact ? 'display-3' : 'display-2'}>
+              {t('University events')}
+            </Heading>
             <Text as="p" type="large" color="secondary" weight="normal">
               {t('Lectures, workshops and conversations across the university.')}
             </Text>

@@ -13,6 +13,15 @@ html {
   margin-inline: auto;
 }
 
+/* Centres the home page blobatar on the corner where the header divider meets
+   the side panel's divider. With no offsets it starts inside the guidance
+   Section's padding (6), so it moves back by that much plus half its size. Its
+   containing block is outside the panel, so the panel's clip doesn't cut it. */
+.corner-blob {
+  position: absolute;
+  translate: calc(-50% - var(--spacing-6)) calc(-50% - var(--spacing-6));
+}
+
 .live-now {
   color: var(--color-text-success);
 }
