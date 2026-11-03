@@ -22,6 +22,67 @@ html {
   translate: calc(-50% - var(--spacing-6)) calc(-50% - var(--spacing-6));
 }
 
+/* A faint dot grid behind the event list. The dot size is a percentage of each
+   tile, and the colour is a theme border token, so it follows dark mode. The
+   dots sit on their own layer so the mask fades them, not the list, towards
+   every edge. */
+.dotted-field {
+  position: relative;
+  isolation: isolate;
+}
+
+.dotted-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--color-border-emphasized) 10%, transparent 11%);
+  background-size: var(--spacing-4) var(--spacing-4);
+  /* Fits a whole number of dots each way, so the grid is even at both edges and
+     the mask's tile seams always fall between dots. */
+  background-repeat: round;
+  /* A rounded-rectangle fade, tiled: a solid centre, a straight fade along each
+     edge, and a circular fade in each corner. */
+  --fade: var(--spacing-12);
+  --inner: calc(100% - 2 * var(--fade));
+  mask-image:
+    linear-gradient(black, black), linear-gradient(to bottom, transparent, black),
+    linear-gradient(to top, transparent, black), linear-gradient(to right, transparent, black),
+    linear-gradient(to left, transparent, black),
+    radial-gradient(circle var(--fade) at 100% 100%, black, transparent),
+    radial-gradient(circle var(--fade) at 0 100%, black, transparent),
+    radial-gradient(circle var(--fade) at 100% 0, black, transparent),
+    radial-gradient(circle var(--fade) at 0 0, black, transparent);
+  mask-size:
+    var(--inner) var(--inner),
+    var(--inner) var(--fade),
+    var(--inner) var(--fade),
+    var(--fade) var(--inner),
+    var(--fade) var(--inner),
+    var(--fade) var(--fade),
+    var(--fade) var(--fade),
+    var(--fade) var(--fade),
+    var(--fade) var(--fade);
+  mask-position:
+    var(--fade) var(--fade),
+    var(--fade) 0,
+    var(--fade) 100%,
+    0 var(--fade),
+    100% var(--fade),
+    0 0,
+    100% 0,
+    0 100%,
+    100% 100%;
+  mask-repeat: no-repeat;
+}
+
+/* Mutes the dots behind the event list so its text keeps full contrast. It is
+   the page surface colour, partly see-through, so it suits both themes. */
+.dot-scrim {
+  background-color: color-mix(in srgb, var(--color-background-surface) 70%, transparent);
+}
+
 .live-now {
   color: var(--color-text-success);
 }

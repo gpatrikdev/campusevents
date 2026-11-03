@@ -65,32 +65,39 @@ export function EventsPage() {
         </LayoutHeader>
       }
       content={
-        <LayoutContent isScrollable={false}>
+        <LayoutContent isScrollable={false} className="dotted-field">
           <VStack gap={8}>
             <Section variant="transparent" padding={compact ? 4 : 6}>
-              <DataBoundary
-                pending={query.isPending}
-                empty={events.length === 0}
-                emptyContent={
-                  <EmptyNotice
-                    headingLevel={2}
-                    fallbackIcon={<Icon icon="calendar" size="lg" />}
-                    title={t('No upcoming events')}
-                    description={t('Published events will appear here.')}
-                  />
-                }
-              >
-                <List
-                  header={<Heading level={2}>{t('Upcoming and ongoing')}</Heading>}
-                  density="spacious"
-                  edge="outset"
-                  hasDividers
+              <VStack className="dot-scrim">
+                <DataBoundary
+                  pending={query.isPending}
+                  empty={events.length === 0}
+                  emptyContent={
+                    <EmptyNotice
+                      headingLevel={2}
+                      fallbackIcon={<Icon icon="calendar" size="lg" />}
+                      title={t('No upcoming events')}
+                      description={t('Published events will appear here.')}
+                    />
+                  }
                 >
-                  {events.map((event) => (
-                    <PublicEventListItem key={event.id} event={event} now={now} compact={compact} />
-                  ))}
-                </List>
-              </DataBoundary>
+                  <List
+                    header={<Heading level={2}>{t('Upcoming and ongoing')}</Heading>}
+                    density="spacious"
+                    edge="outset"
+                    hasDividers
+                  >
+                    {events.map((event) => (
+                      <PublicEventListItem
+                        key={event.id}
+                        event={event}
+                        now={now}
+                        compact={compact}
+                      />
+                    ))}
+                  </List>
+                </DataBoundary>
+              </VStack>
             </Section>
             {narrow && guidance}
           </VStack>
