@@ -26,7 +26,7 @@ export function OrganizersPage() {
   return (
     <VStack gap={6}>
       <VStack gap={3}>
-        <Heading level={1}>{t('Organizer permissions')}</Heading>
+        <Heading level={1}>{t('Permissions')}</Heading>
         <Text color="secondary">
           {t('Organizers manage all events. Existing attendee registrations are kept.')}
         </Text>

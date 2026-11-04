@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RegistrationsRouteImport } from './routes/registrations'
@@ -19,6 +18,7 @@ import { Route as StaffRouteImport } from './routes/staff'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as ReviewEventIdRouteImport } from './routes/review.$eventId'
 import { Route as StaffIndexRouteImport } from './routes/staff.index'
+import { Route as StaffPermissionsRouteImport } from './routes/staff.permissions'
 import { Route as StaffEventsEventIdRouteImport } from './routes/staff.events.$eventId'
 import { Route as StaffEventsNewRouteImport } from './routes/staff.events.new'
 import { Route as StaffEventsEventIdIndexRouteImport } from './routes/staff.events.$eventId.index'
@@ -31,11 +31,6 @@ import { Route as StaffEventsEventIdScanRouteImport } from './routes/staff.event
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompleteProfileRoute = CompleteProfileRouteImport.update({
@@ -76,6 +71,11 @@ const ReviewEventIdRoute = ReviewEventIdRouteImport.update({
 const StaffIndexRoute = StaffIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffPermissionsRoute = StaffPermissionsRouteImport.update({
+  id: '/permissions',
+  path: '/permissions',
   getParentRoute: () => StaffRoute,
 } as any)
 const StaffEventsEventIdRoute = StaffEventsEventIdRouteImport.update({
@@ -124,7 +124,6 @@ const StaffEventsEventIdScanRoute = StaffEventsEventIdScanRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/profile': typeof ProfileRoute
   '/registrations': typeof RegistrationsRoute
@@ -132,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/staff': typeof StaffRouteWithChildren
   '/events/$eventId': typeof EventsEventIdRoute
   '/review/$eventId': typeof ReviewEventIdRoute
+  '/staff/permissions': typeof StaffPermissionsRoute
   '/staff/': typeof StaffIndexRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdRouteWithChildren
   '/staff/events/new': typeof StaffEventsNewRoute
@@ -144,13 +144,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/profile': typeof ProfileRoute
   '/registrations': typeof RegistrationsRoute
   '/sign-in': typeof SignInRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/review/$eventId': typeof ReviewEventIdRoute
+  '/staff/permissions': typeof StaffPermissionsRoute
   '/staff': typeof StaffIndexRoute
   '/staff/events/new': typeof StaffEventsNewRoute
   '/staff/events/$eventId/attendees': typeof StaffEventsEventIdAttendeesRoute
@@ -163,7 +163,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/complete-profile': typeof CompleteProfileRoute
   '/profile': typeof ProfileRoute
   '/registrations': typeof RegistrationsRoute
@@ -171,6 +170,7 @@ export interface FileRoutesById {
   '/staff': typeof StaffRouteWithChildren
   '/events/$eventId': typeof EventsEventIdRoute
   '/review/$eventId': typeof ReviewEventIdRoute
+  '/staff/permissions': typeof StaffPermissionsRoute
   '/staff/': typeof StaffIndexRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdRouteWithChildren
   '/staff/events/new': typeof StaffEventsNewRoute
@@ -185,7 +185,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/complete-profile'
     | '/profile'
     | '/registrations'
@@ -193,6 +192,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/events/$eventId'
     | '/review/$eventId'
+    | '/staff/permissions'
     | '/staff/'
     | '/staff/events/$eventId'
     | '/staff/events/new'
@@ -205,13 +205,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/complete-profile'
     | '/profile'
     | '/registrations'
     | '/sign-in'
     | '/events/$eventId'
     | '/review/$eventId'
+    | '/staff/permissions'
     | '/staff'
     | '/staff/events/new'
     | '/staff/events/$eventId/attendees'
@@ -223,7 +223,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/complete-profile'
     | '/profile'
     | '/registrations'
@@ -231,6 +230,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/events/$eventId'
     | '/review/$eventId'
+    | '/staff/permissions'
     | '/staff/'
     | '/staff/events/$eventId'
     | '/staff/events/new'
@@ -244,7 +244,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
   CompleteProfileRoute: typeof CompleteProfileRoute
   ProfileRoute: typeof ProfileRoute
   RegistrationsRoute: typeof RegistrationsRoute
@@ -261,13 +260,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/complete-profile': {
@@ -324,6 +316,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/staff/'
       preLoaderRoute: typeof StaffIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/permissions': {
+      id: '/staff/permissions'
+      path: '/permissions'
+      fullPath: '/staff/permissions'
+      preLoaderRoute: typeof StaffPermissionsRouteImport
       parentRoute: typeof StaffRoute
     }
     '/staff/events/$eventId': {
@@ -407,12 +406,14 @@ const StaffEventsEventIdRouteWithChildren =
   StaffEventsEventIdRoute._addFileChildren(StaffEventsEventIdRouteChildren)
 
 interface StaffRouteChildren {
+  StaffPermissionsRoute: typeof StaffPermissionsRoute
   StaffIndexRoute: typeof StaffIndexRoute
   StaffEventsEventIdRoute: typeof StaffEventsEventIdRouteWithChildren
   StaffEventsNewRoute: typeof StaffEventsNewRoute
 }
 
 const StaffRouteChildren: StaffRouteChildren = {
+  StaffPermissionsRoute: StaffPermissionsRoute,
   StaffIndexRoute: StaffIndexRoute,
   StaffEventsEventIdRoute: StaffEventsEventIdRouteWithChildren,
   StaffEventsNewRoute: StaffEventsNewRoute,
@@ -422,7 +423,6 @@ const StaffRouteWithChildren = StaffRoute._addFileChildren(StaffRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
   CompleteProfileRoute: CompleteProfileRoute,
   ProfileRoute: ProfileRoute,
   RegistrationsRoute: RegistrationsRoute,

@@ -2,7 +2,6 @@ export const hu: Record<string, string> = {
   Events: 'Események',
   Profile: 'Profil',
   Dashboard: 'Kezelőfelület',
-  Organizers: 'Szervezők',
   'Sign in': 'Bejelentkezés',
   'Sign out': 'Kijelentkezés',
   Language: 'Nyelv',
@@ -224,7 +223,7 @@ export const hu: Record<string, string> = {
   'No written comments': 'Nincs szöveges megjegyzés',
   'Ratings are included in the average even without a comment.':
     'A szöveges megjegyzés nélküli értékelések is beleszámítanak az átlagba.',
-  'Organizer permissions': 'Szervezői jogosultságok',
+  Permissions: 'Jogosultságok',
   'Organizers manage all events. Existing attendee registrations are kept.':
     'A szervezők minden eseményt kezelhetnek. A meglévő résztvevői jelentkezéseik megmaradnak.',
   'Search accounts': 'Fiókok keresése',

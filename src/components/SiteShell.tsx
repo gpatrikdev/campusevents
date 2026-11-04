@@ -3,7 +3,7 @@ import { Button } from '@astryxdesign/core/Button';
 import { LinkProvider } from '@astryxdesign/core/Link';
 import { MobileNav } from '@astryxdesign/core/MobileNav';
 import { Selector } from '@astryxdesign/core/Selector';
-import { SideNavItem } from '@astryxdesign/core/SideNav';
+import { SideNav, SideNavItem, SideNavSection } from '@astryxdesign/core/SideNav';
 import { TopNav, TopNavItem } from '@astryxdesign/core/TopNav';
 import { VStack } from '@astryxdesign/core/VStack';
 import {
@@ -21,9 +21,13 @@ import { isStaff } from '../domain/rules';
 import { returnSearch } from '../pages/AuthPages';
 import { belowNavHeight, DataBoundary, OutcomeNotice } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
+import { PeopleIcon } from './NavIcons';
 
+// The router marks a link as the current page whenever the URL starts with its
+// path, so /staff would also count on /staff/permissions. Matching only the exact
+// path leaves that to each Astryx nav item's isSelected.
 const ClientLink = forwardRef<HTMLAnchorElement, ComponentProps<'a'>>(({ href, ...props }, ref) => (
-  <RouterLink to={href ?? '/'} {...props} ref={ref} />
+  <RouterLink to={href ?? '/'} activeOptions={{ exact: true }} {...props} ref={ref} />
 ));
 
 const isPublicEventPage = (pathname: string) => pathname === '/' || pathname.startsWith('/events/');
@@ -117,10 +121,10 @@ function Shell() {
   useEffect(() => {
     const title = notFound
       ? t('Page not found')
-      : pathname.startsWith('/staff')
-        ? t('Staff dashboard')
-        : pathname.startsWith('/admin')
-          ? t('Organizers')
+      : pathname.startsWith('/staff/permissions')
+        ? t('Permissions')
+        : pathname.startsWith('/staff')
+          ? t('Staff dashboard')
           : pathname.startsWith('/registrations')
             ? t('Registrations')
             : pathname.startsWith('/profile')
@@ -166,11 +170,26 @@ function Shell() {
       href: '/staff',
       isSelected: pathname.startsWith('/staff'),
     });
-  if (user?.role === 'admin')
-    navItems.push({
-      label: t('Organizers'),
-      href: '/admin',
-      isSelected: pathname.startsWith('/admin'),
+  // Dashboard pages get their own side nav. Only staff see it, since anyone
+  // else gets an access notice there.
+  const permissionsPage = pathname.startsWith('/staff/permissions');
+  const dashboardItems: ComponentProps<typeof SideNavItem>[] =
+    !bare && isStaff(user) && pathname.startsWith('/staff')
+      ? [
+          {
+            label: t('Events'),
+            href: '/staff',
+            icon: 'calendar',
+            isSelected: !permissionsPage,
+          },
+        ]
+      : [];
+  if (dashboardItems.length > 0 && user?.role === 'admin')
+    dashboardItems.push({
+      label: t('Permissions'),
+      href: '/staff/permissions',
+      icon: PeopleIcon,
+      isSelected: permissionsPage,
     });
 
   if (!preview && user && !user.profileComplete && !authPage) {
@@ -193,6 +212,13 @@ function Shell() {
                     {navItems.map((item) => (
                       <DrawerItem key={item.href} {...item} />
                     ))}
+                    {dashboardItems.length > 0 && (
+                      <SideNavSection title={t('Dashboard')}>
+                        {dashboardItems.map((item) => (
+                          <DrawerItem key={item.href} {...item} />
+                        ))}
+                      </SideNavSection>
+                    )}
                     {user ? (
                       <>
                         <DrawerItem
@@ -208,6 +234,15 @@ function Shell() {
                   </MobileNav>
                 ),
               }
+        }
+        sideNav={
+          dashboardItems.length > 0 && (
+            <SideNav aria-label={t('Dashboard')}>
+              {dashboardItems.map((item) => (
+                <SideNavItem key={item.href} {...item} />
+              ))}
+            </SideNav>
+          )
         }
         topNav={
           !bare && (
