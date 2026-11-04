@@ -9,6 +9,6 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api", "/api/*"]
   },
-  "hyperdrive": [{ "binding": "HYPERDRIVE", "id": "00000000000000000000000000000000" }],
+  "hyperdrive": [{ "binding": "HYPERDRIVE", "id": "3bb44f760067484fa841a5a0f7d3e35e" }],
   "triggers": { "crons": ["*/5 * * * *"] }
 }
