@@ -3,11 +3,10 @@
 import { Button } from '@astryxdesign/core/Button';
 import { Heading } from '@astryxdesign/core/Heading';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
-import { Icon } from '@astryxdesign/core/Icon';
 import { Layout, LayoutContent, LayoutHeader, LayoutPanel } from '@astryxdesign/core/Layout';
-import { List, ListItem } from '@astryxdesign/core/List';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
 import { Selector } from '@astryxdesign/core/Selector';
+import { SideNav, SideNavItem } from '@astryxdesign/core/SideNav';
 import { Tab, TabList } from '@astryxdesign/core/TabList';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -55,25 +54,21 @@ export default function ProfilePage() {
       }
       start={
         !narrow && (
-          <LayoutPanel
-            width="15rem"
-            padding={4}
-            hasDivider
-            isScrollable={false}
-            role="complementary"
-            label={t('Profile')}
-          >
-            <List density="spacious" edge="outset">
+          <LayoutPanel padding={2} hasDivider isScrollable={false}>
+            {/* A selected List item has the surface's own fill in dark mode, so
+                it vanishes. SideNav items, as on the dashboard, use a stronger
+                fill and a medium-weight label. */}
+            <SideNav aria-label={t('Profile')}>
               {sections.map(({ value, label, icon }) => (
-                <ListItem
+                <SideNavItem
                   key={value}
                   label={label}
-                  startContent={<Icon icon={icon} />}
+                  icon={icon}
                   isSelected={section === value}
                   onClick={() => setSection(value)}
                 />
               ))}
-            </List>
+            </SideNav>
           </LayoutPanel>
         )
       }
