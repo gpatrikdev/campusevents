@@ -220,14 +220,15 @@ function Shell() {
                       </SideNavSection>
                     )}
                     {user ? (
-                      <>
+                      // Its own section, so it doesn't read as part of Dashboard.
+                      <SideNavSection title={t('Account')} isHeaderHidden>
                         <DrawerItem
                           label={t('Profile')}
                           href="/profile"
                           isSelected={pathname.startsWith('/profile')}
                         />
                         <DrawerItem label={t('Sign out')} onClick={signOut} />
-                      </>
+                      </SideNavSection>
                     ) : (
                       <DrawerItem label={t('Sign in')} href="/sign-in" />
                     )}
