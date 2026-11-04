@@ -9,7 +9,7 @@ import { Section } from '@astryxdesign/core/Section';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { RichTextView } from '@astryxdesign/richtext';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -36,25 +36,11 @@ export function EventDetailPage({
 }) {
   const { t, i18n } = useTranslation();
   const { data, user, now, run, setOutcome, preview: demo } = useApp();
-  const [confirm, setConfirm] = useState(false);
-  const [joinError, setJoinError] = useState<string | null>(null);
+  const [joinError, setJoinError] = useState<{ eventId: string; message: string } | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [certificateEventId, setCertificateEventId] = useState<string | null>(null);
   const registrationHeading = useRef<HTMLHeadingElement>(null);
-  const focusRegistrationAfterJoin = useRef(false);
-  useEffect(() => {
-    if (confirm || !focusRegistrationAfterJoin.current) return;
-    const frame = requestAnimationFrame(() => {
-      const heading = registrationHeading.current;
-      if (heading) {
-        heading.tabIndex = -1;
-        heading.focus();
-      }
-      focusRegistrationAfterJoin.current = false;
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [confirm]);
   const narrow = useMediaQuery('(max-width: 56rem)');
   const compact = useMediaQuery('(max-width: 42rem)');
   const event = data.events.find((item) => item.id === eventId);
@@ -176,13 +162,34 @@ export function EventDetailPage({
         ) : issue ? (
           <Text color="secondary">{t(issue)}</Text>
         ) : (
-          <Button
-            label={t('Join event')}
-            variant="primary"
-            size="lg"
-            width="100%"
-            onClick={() => setConfirm(true)}
-          />
+          <>
+            <Button
+              label={t('Join event')}
+              variant="primary"
+              size="lg"
+              width="100%"
+              clickAction={async () => {
+                setJoinError(null);
+                const heading = registrationHeading.current;
+                const outcome = await run({ type: 'join', eventId: event.id });
+                if (!outcome.ok) {
+                  setOutcome(null);
+                  setJoinError({ eventId: event.id, message: outcome.message });
+                  return;
+                }
+                requestAnimationFrame(() => {
+                  if (!heading?.isConnected) return;
+                  heading.tabIndex = -1;
+                  heading.focus();
+                });
+              }}
+            />
+            {joinError?.eventId === event.id && (
+              <VStack role="alert">
+                <Banner status="error" title={t(joinError.message)} />
+              </VStack>
+            )}
+          </>
         )}
         {!ended && !checkedIn && (
           <>
@@ -270,32 +277,6 @@ export function EventDetailPage({
             </LayoutPanel>
           )
         }
-      />
-      <ConfirmDialog
-        isOpen={confirm}
-        onOpenChange={(open) => {
-          setConfirm(open);
-          if (!open) setJoinError(null);
-        }}
-        title="Confirm registration"
-        description="{{event}} starts on {{start}} ({{timezone}})."
-        descriptionValues={{
-          event: event.title,
-          start: formatDate(event.start, event.timezone, i18n.language),
-          timezone: event.timezone,
-        }}
-        label="Confirm registration"
-        errorMessage={joinError}
-        onConfirm={async () => {
-          const outcome = await run({ type: 'join', eventId: event.id });
-          if (!outcome.ok) {
-            setOutcome(null);
-            setJoinError(outcome.message);
-            return false;
-          }
-          focusRegistrationAfterJoin.current = true;
-          return true;
-        }}
       />
       <ConfirmDialog
         isOpen={!checkedIn && now < cutoff && cancelId !== null && cancelId === registration?.id}

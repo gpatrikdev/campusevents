@@ -136,7 +136,7 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 
 - Open event → select Join event.
 - If needed, authenticate and complete the profile name.
-- Return to the original event and confirm registration; do not register silently as a side effect of login.
+- After signing in, return to the original event. Selecting Join event registers the attendee directly.
 - Successful registration sends the email containing the QR ticket.
 
 ### Registrations and profile

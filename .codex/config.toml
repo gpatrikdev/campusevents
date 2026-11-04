@@ -7,3 +7,7 @@ startup_timeout_sec = 60
 [mcp_servers.context7]
 url = "https://mcp.context7.com/mcp"
 startup_timeout_sec = 40
+
+[mcp_servers.Neon]
+type = "http"
+url = "https://mcp.neon.tech/mcp"

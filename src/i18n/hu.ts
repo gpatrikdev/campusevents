@@ -49,9 +49,6 @@ export const hu: Record<string, string> = {
   'Registration actions are unavailable in staff preview.':
     'A szervezői előnézetben nem lehet jelentkezni.',
   'Join event': 'Jelentkezés',
-  'Confirm registration': 'Jelentkezés megerősítése',
-  '{{event}} starts on {{start}} ({{timezone}}).':
-    'A(z) „{{event}}” kezdési időpontja {{start}} ({{timezone}}).',
   'Your name on the ticket': 'A jegyen szereplő neve',
   'You are registered in this preview.': 'Az előnézetben jelentkezett erre az eseményre.',
   'Show QR ticket': 'QR-jegy megjelenítése',
@@ -96,8 +93,8 @@ export const hu: Record<string, string> = {
   'Past registrations': 'Korábbi jelentkezések',
   'Cancelled registrations': 'Lemondott jelentkezések',
   'No registrations yet': 'Még nincs jelentkezése',
-  'Find an event and confirm your registration to get a QR ticket.':
-    'Válasszon eseményt, majd erősítse meg jelentkezését a QR-jegyhez.',
+  'Find an event and join to get a QR ticket.':
+    'A QR-jegyhez válasszon eseményt, majd jelentkezzen.',
   'Browse events': 'Események böngészése',
   'Cancel registration': 'Jelentkezés lemondása',
   'Cancel this registration?': 'Lemondja ezt a jelentkezést?',

@@ -93,7 +93,7 @@ export function RegistrationsPage() {
                 <EmptyNotice
                   headingLevel={2}
                   title={t('No registrations yet')}
-                  description={t('Find an event and confirm your registration to get a QR ticket.')}
+                  description={t('Find an event and join to get a QR ticket.')}
                   actions={<Button href="/" label={t('Browse events')} />}
                 />
               }
