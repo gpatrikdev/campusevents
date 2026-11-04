@@ -2,9 +2,7 @@ import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Divider } from '@astryxdesign/core/Divider';
 import { Heading } from '@astryxdesign/core/Heading';
-import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
-import { Icon } from '@astryxdesign/core/Icon';
 import { Layout, LayoutContent, LayoutHeader, LayoutPanel } from '@astryxdesign/core/Layout';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
 import { Section } from '@astryxdesign/core/Section';
@@ -18,7 +16,16 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
-import { HOUR, hasEnded, instant, isStaff, joinIssue, registrationCutoff } from '../domain/rules';
+import {
+  certificateIssue,
+  HOUR,
+  hasEnded,
+  instant,
+  isStaff,
+  joinIssue,
+  registrationCutoff,
+  reviewIssue,
+} from '../domain/rules';
 
 export function EventDetailPage({
   eventId,
@@ -28,17 +35,23 @@ export function EventDetailPage({
   preview?: boolean;
 }) {
   const { t, i18n } = useTranslation();
-  const { data, user, now, run, setOutcome } = useApp();
+  const { data, user, now, run, setOutcome, preview: demo } = useApp();
   const [confirm, setConfirm] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null);
-  const ticketButton = useRef<HTMLButtonElement>(null);
-  const focusTicketAfterJoin = useRef(false);
+  const [cancelId, setCancelId] = useState<string | null>(null);
+  const [certificateEventId, setCertificateEventId] = useState<string | null>(null);
+  const registrationHeading = useRef<HTMLHeadingElement>(null);
+  const focusRegistrationAfterJoin = useRef(false);
   useEffect(() => {
-    if (confirm || !focusTicketAfterJoin.current) return;
+    if (confirm || !focusRegistrationAfterJoin.current) return;
     const frame = requestAnimationFrame(() => {
-      ticketButton.current?.focus();
-      focusTicketAfterJoin.current = false;
+      const heading = registrationHeading.current;
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus();
+      }
+      focusRegistrationAfterJoin.current = false;
     });
     return () => cancelAnimationFrame(frame);
   }, [confirm]);
@@ -48,52 +61,97 @@ export function EventDetailPage({
   if (preview && !isStaff(user)) return <AccessNotice />;
   if (!event || (event.status === 'draft' && !preview)) return <UnavailableEvent />;
 
-  const registration = data.registrations.find(
-    (item) => item.eventId === event.id && item.userId === user?.id && item.active,
+  const eventRegistrations = data.registrations.filter(
+    (item) => !preview && item.eventId === event.id && item.userId === user?.id,
   );
-  const issue = joinIssue(event, user, now);
+  const registration = eventRegistrations.find((item) => item.active);
+  const checkedIn = registration?.checkedIn;
   const ended = hasEnded(event, now);
+  const registrationTitle = checkedIn
+    ? "You're checked in"
+    : registration
+      ? "You're registered"
+      : eventRegistrations.length > 0
+        ? 'Registration cancelled'
+        : 'Take part';
+  const issue = joinIssue(event, user, now);
   const cutoff = registrationCutoff(event);
+  const review = reviewIssue(event, registration, now);
+  const certificate =
+    import.meta.env.DEV && demo && registration?.certificate === 'sent'
+      ? 'Certificate request simulated. No PDF was issued or emailed.'
+      : certificateIssue(event, registration, now);
   const returnTo = encodeURIComponent(`/events/${event.id}`);
   const takePart = (
     <Section variant="muted" padding={6}>
       <VStack gap={4}>
-        <Heading level={2}>{t('Take part')}</Heading>
+        <Heading
+          ref={registrationHeading}
+          level={2}
+          style={!ended && checkedIn ? { color: 'var(--color-text-success)' } : undefined}
+        >
+          {t(ended ? 'This event has ended.' : registrationTitle)}
+        </Heading>
         {preview ? (
           <Text color="secondary">
             {t('Registration actions are unavailable in staff preview.')}
           </Text>
         ) : ended ? (
-          <>
-            <Text>{t('This event has ended.')}</Text>
-            {registration && (
-              <>
-                <Text color="secondary">
-                  {t(
-                    registration.checkedIn
-                      ? 'Find your review and certificate actions under Registrations.'
-                      : 'Only checked-in attendees are eligible.',
-                  )}
-                </Text>
-                <Button href="/registrations" label={t('Registrations')} size="lg" />
-              </>
-            )}
-          </>
-        ) : registration ? (
-          <>
-            <HStack gap={2} vAlign="center">
-              <Icon icon="check" color="success" />
-              <Text weight="semibold">{t('You are registered.')}</Text>
-            </HStack>
+          checkedIn ? (
+            <>
+              {review ? (
+                <Text color="secondary">{t(review)}</Text>
+              ) : (
+                <Button
+                  href={`/review/${event.id}`}
+                  label={t('Write a review')}
+                  variant="primary"
+                  size="lg"
+                  width="100%"
+                />
+              )}
+              {certificate ? (
+                <Text color="secondary">{t(certificate)}</Text>
+              ) : (
+                <Button
+                  label={t('Request certificate')}
+                  variant={review ? 'primary' : 'secondary'}
+                  size="lg"
+                  width="100%"
+                  onClick={() => setCertificateEventId(event.id)}
+                />
+              )}
+            </>
+          ) : registration ? (
+            <Text color="secondary">
+              {t(
+                "You weren't checked in, so you can't review this event or request a certificate.",
+              )}
+            </Text>
+          ) : null
+        ) : checkedIn ? null : registration ? (
+          now < cutoff ? (
+            <>
+              <Button
+                label={t('Cancel registration')}
+                variant="destructive"
+                size="lg"
+                width="100%"
+                onClick={() => setCancelId(registration.id)}
+              />
+              <Text type="supporting">
+                {t('Your QR ticket will appear here when cancellation closes.')}
+              </Text>
+            </>
+          ) : (
             <Button
-              ref={ticketButton}
-              label={t('View ticket')}
+              label={t('Show QR ticket')}
               variant="primary"
               size="lg"
               width="100%"
               onClick={() => setTicketId(registration.id)}
             />
-          </>
+          )
         ) : now >= cutoff ? (
           <Text weight="semibold">{t('Registration closed')}</Text>
         ) : !user ? (
@@ -126,13 +184,15 @@ export function EventDetailPage({
             onClick={() => setConfirm(true)}
           />
         )}
-        {!ended && (
+        {!ended && !checkedIn && (
           <>
             <Divider />
             <MetadataList label={{ position: 'top' }}>
-              <MetadataListItem label={t('Registration deadline')}>
-                {formatDate(cutoff, event.timezone, i18n.language)}
-              </MetadataListItem>
+              {!registration && (
+                <MetadataListItem label={t('Registration deadline')}>
+                  {formatDate(cutoff, event.timezone, i18n.language)}
+                </MetadataListItem>
+              )}
               <MetadataListItem label={t('Check-in window')}>
                 {formatDateRange(
                   instant(event.start) - HOUR,
@@ -142,9 +202,11 @@ export function EventDetailPage({
                 )}
               </MetadataListItem>
             </MetadataList>
-            <Text type="supporting">
-              {t('Registration and cancellation close 24 hours before an event starts.')}
-            </Text>
+            {!registration && (
+              <Text type="supporting">
+                {t('Registration and cancellation close 24 hours before an event starts.')}
+              </Text>
+            )}
           </>
         )}
       </VStack>
@@ -216,7 +278,7 @@ export function EventDetailPage({
           if (!open) setJoinError(null);
         }}
         title="Confirm registration"
-        description="{{event}} starts on {{start}} ({{timezone}}). Your QR ticket will be available after you register."
+        description="{{event}} starts on {{start}} ({{timezone}})."
         descriptionValues={{
           event: event.title,
           start: formatDate(event.start, event.timezone, i18n.language),
@@ -231,11 +293,41 @@ export function EventDetailPage({
             setJoinError(outcome.message);
             return false;
           }
-          focusTicketAfterJoin.current = true;
+          focusRegistrationAfterJoin.current = true;
           return true;
         }}
       />
-      <TicketDialog registrationId={ticketId} onClose={() => setTicketId(null)} />
+      <ConfirmDialog
+        isOpen={!checkedIn && now < cutoff && cancelId !== null && cancelId === registration?.id}
+        onOpenChange={(open) => {
+          if (!open) setCancelId(null);
+        }}
+        title="Cancel this registration?"
+        description="Your QR ticket will become invalid. You can register again before the deadline."
+        label="Cancel registration"
+        destructive
+        onConfirm={async () => {
+          if (cancelId) await run({ type: 'cancel', registrationId: cancelId });
+        }}
+      />
+      <ConfirmDialog
+        isOpen={certificateEventId === event.id}
+        onOpenChange={(open) => {
+          if (!open) setCertificateEventId(null);
+        }}
+        title="Request a certificate?"
+        description="We will email the PDF using your confirmed name and selected language. You can request it once."
+        label="Request certificate"
+        onConfirm={async () => {
+          if (certificateEventId) await run({ type: 'certificate', eventId: certificateEventId });
+        }}
+      />
+      <TicketDialog
+        registrationId={
+          !checkedIn && !ended && now >= cutoff && ticketId === registration?.id ? ticketId : null
+        }
+        onClose={() => setTicketId(null)}
+      />
     </DataBoundary>
   );
 }

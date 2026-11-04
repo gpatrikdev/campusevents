@@ -22,7 +22,8 @@ export const hu: Record<string, string> = {
     'Bárki csatlakozhat. Nem szükséges egyetemi e-mail-cím.',
   'Registration and cancellation close 24 hours before an event starts.':
     'A jelentkezés és a lemondás az esemény kezdete előtt 24 órával zárul.',
-  'Your QR ticket is available under Registrations.': 'QR-jegye a Jelentkezések oldalon található.',
+  'Open an event from Registrations to view your QR ticket.':
+    'A QR-jegy megtekintéséhez nyissa meg az eseményt a Jelentkezések oldalról.',
   'No upcoming events': 'Nincs közelgő esemény',
   'Published events will appear here.': 'A közzétett események itt jelennek meg.',
   'Try again': 'Újrapróbálás',
@@ -42,22 +43,24 @@ export const hu: Record<string, string> = {
   'Registration deadline': 'Jelentkezési határidő',
   'Check-in window': 'Beléptetési időszak',
   'Take part': 'Részvétel',
+  "You're registered": 'Jelentkezett az eseményre',
+  "You're checked in": 'Sikeres beléptetés',
+  'Registration cancelled': 'Jelentkezés lemondva',
   'Registration actions are unavailable in staff preview.':
     'A szervezői előnézetben nem lehet jelentkezni.',
   'Join event': 'Jelentkezés',
   'Confirm registration': 'Jelentkezés megerősítése',
-  '{{event}} starts on {{start}} ({{timezone}}). Your QR ticket will be available after you register.':
-    'A(z) „{{event}}” kezdési időpontja {{start}} ({{timezone}}). A QR-jegy a jelentkezés után lesz elérhető.',
+  '{{event}} starts on {{start}} ({{timezone}}).':
+    'A(z) „{{event}}” kezdési időpontja {{start}} ({{timezone}}).',
   'Your name on the ticket': 'A jegyen szereplő neve',
   'You are registered in this preview.': 'Az előnézetben jelentkezett erre az eseményre.',
-  'View ticket': 'Jegy megtekintése',
   'Show QR ticket': 'QR-jegy megjelenítése',
+  'Your QR ticket will appear here when cancellation closes.':
+    'A QR-jegy a lemondási határidő után jelenik meg itt.',
   'You already have an active registration.': 'Már rendelkezik aktív jelentkezéssel.',
   'Registration and cancellation are closed.': 'A jelentkezés és a lemondás lezárult.',
   'Staff cannot join new events.': 'Munkatársként nem jelentkezhet új eseményre.',
   'This event has ended.': 'Az esemény véget ért.',
-  'Find your review and certificate actions under Registrations.':
-    'Az értékelés és az igazolás kérése a Jelentkezések oldalon érhető el.',
   'This event is unavailable.': 'Az esemény nem érhető el.',
   'It may be a staff-only draft or have been deleted.':
     'Lehet, hogy munkatársaknak elérhető piszkozat, vagy már törölték.',
@@ -87,8 +90,8 @@ export const hu: Record<string, string> = {
   Registrations: 'Jelentkezések',
   Account: 'Fiók',
   'Your registrations': 'Jelentkezései',
-  'Tickets, attendance and follow-up actions in one place.':
-    'Jegyek, részvétel és az esemény utáni teendők egy helyen.',
+  'Open an event to manage your registration and follow-up actions.':
+    'A jelentkezés kezeléséhez és az esemény utáni teendőkhöz nyissa meg az eseményt.',
   'Upcoming registrations': 'Közelgő jelentkezések',
   'Past registrations': 'Korábbi jelentkezések',
   'Cancelled registrations': 'Lemondott jelentkezések',
@@ -127,6 +130,8 @@ export const hu: Record<string, string> = {
     'A valódi igazoláson a megerősített neve és az esemény adatai szerepelnének a választott nyelven. Az előnézet nem hoz létre PDF-et és nem küld e-mailt.',
   'Available after the event ends.': 'Az esemény befejezése után érhető el.',
   'Only checked-in attendees are eligible.': 'Csak a beléptetett résztvevők jogosultak.',
+  "You weren't checked in, so you can't review this event or request a certificate.":
+    'Nem történt beléptetés, ezért nem írhat értékelést és nem kérhet igazolást.',
   'The 72-hour review window has closed.': 'A 72 órás értékelési időszak lezárult.',
   'Review this event': 'Esemény értékelése',
   'Your feedback is anonymous to organizers and admins. This preview stores it only in memory.':
@@ -247,11 +252,10 @@ export const hu: Record<string, string> = {
   'Data could not be loaded': 'Az adatok betöltése sikertelen',
   'Reload the page to try again.': 'Töltse újra az oldalt az újrapróbálkozáshoz.',
   'Reload page': 'Oldal újratöltése',
-  'You are registered.': 'Sikeresen jelentkezett az eseményre.',
   'Registration confirmed. Your QR ticket was emailed.':
     'A jelentkezés sikeres. E-mailben elküldtük a QR-jegyet.',
-  'You are registered. The email could not be sent, but your QR ticket is available here.':
-    'A jelentkezés sikeres. Az e-mail küldése sikertelen, de a QR-jegy itt elérhető.',
+  'Registration confirmed. The email could not be sent. Your QR ticket will appear on the event page when cancellation closes.':
+    'A jelentkezés sikeres. Az e-mail küldése sikertelen. A QR-jegy a lemondási határidő után jelenik meg az esemény oldalán.',
   'Registration cancelled. Your QR ticket is now invalid.':
     'A jelentkezést lemondta. A QR-jegy már érvénytelen.',
   'Your QR ticket will become invalid. You can register again before the deadline.':

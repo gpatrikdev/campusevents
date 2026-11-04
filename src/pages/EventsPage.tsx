@@ -3,18 +3,16 @@ import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Layout, LayoutContent, LayoutHeader, LayoutPanel } from '@astryxdesign/core/Layout';
-import { Link } from '@astryxdesign/core/Link';
-import { List, ListItem } from '@astryxdesign/core/List';
+import { List } from '@astryxdesign/core/List';
 import { Section } from '@astryxdesign/core/Section';
 import { StatusDot } from '@astryxdesign/core/StatusDot';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
+import { EventListItem } from '../components/EventListItem';
 import { DataBoundary, EmptyNotice } from '../components/Feedback';
 import { UserBlobatar } from '../components/UserBlobatar';
-import { formatDate, formatDateRange } from '../domain/format';
 import { instant, registrationCutoff } from '../domain/rules';
 import type { CampusEvent } from '../domain/types';
 
@@ -42,7 +40,7 @@ export function EventsPage() {
           {t('Registration and cancellation close 24 hours before an event starts.')}
         </Text>
         <Text as="p" color="secondary">
-          {t('Your QR ticket is available under Registrations.')}
+          {t('Open an event from Registrations to view your QR ticket.')}
         </Text>
       </VStack>
     </Section>
@@ -122,8 +120,7 @@ function PublicEventListItem({
   now: number;
   compact: boolean;
 }) {
-  const { t, i18n } = useTranslation();
-  const link = useRef<HTMLAnchorElement>(null);
+  const { t } = useTranslation();
   const ongoing = now >= instant(event.start);
   const closed = now >= registrationCutoff(event);
   const status = t(closed ? 'Registration closed' : 'Registration open');
@@ -145,46 +142,20 @@ function PublicEventListItem({
     </HStack>
   );
   return (
-    <ListItem
-      interactiveRef={link}
+    <EventListItem
+      event={event}
+      compact={compact}
       className={ongoing ? 'live-row' : undefined}
-      align="start"
-      startContent={
-        !compact && (
-          <VStack gap={1} width="7.5rem">
-            <Text weight="semibold">
-              {formatDate(event.start, event.timezone, i18n.language, false)}
-            </Text>
+      dateDetail={live}
+      details={
+        compact && (
+          <HStack gap={3} wrap="wrap" vAlign="center" paddingBlockStart={1}>
             {live}
-          </VStack>
+            {registration}
+          </HStack>
         )
       }
-      label={
-        <Link ref={link} href={`/events/${event.id}`} size="lg" color="primary" weight="semibold">
-          {event.title}
-        </Link>
-      }
-      description={
-        <VStack gap={1} paddingBlockStart={1}>
-          <Text color="secondary">
-            {formatDateRange(event.start, event.end, event.timezone, i18n.language, compact)}
-          </Text>
-          <Text color="secondary">{event.location}</Text>
-          <Text type="supporting">{event.timezone}</Text>
-          {compact && (
-            <HStack gap={3} wrap="wrap" vAlign="center" paddingBlockStart={1}>
-              {live}
-              {registration}
-            </HStack>
-          )}
-        </VStack>
-      }
-      endContent={
-        <HStack gap={3} vAlign="center">
-          {!compact && registration}
-          <Icon icon="chevronRight" color="secondary" size="sm" />
-        </HStack>
-      }
+      endContent={!compact && registration}
     />
   );
 }

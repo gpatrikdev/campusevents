@@ -307,7 +307,7 @@ export const eventRoutes = new Hono<ApiEnv>()
           warning: true,
           id: registration.id,
           message:
-            'You are registered. The email could not be sent, but your QR ticket is available here.',
+            'Registration confirmed. The email could not be sent. Your QR ticket will appear on the event page when cancellation closes.',
         });
       }
       return c.json({

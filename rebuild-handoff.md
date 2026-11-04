@@ -85,7 +85,7 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 - Unlimited registrations; no capacity or remaining-spots behavior.
 - One active registration per user per event.
 - Joining sends a confirmation email containing the QR ticket.
-- The app also displays the QR ticket under Registrations.
+- The event page displays the QR ticket from the cancellation cutoff until the event ends.
 - Each active registration has its own ticket. Cancelled registrations and registrations cleared by unpublishing have invalid tickets.
 - Check-in opens **one hour before the start** and closes **at the event end**.
 - QR scanning only. No manual check-in and no undo check-in.
@@ -137,16 +137,15 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 - Open event → select Join event.
 - If needed, authenticate and complete the profile name.
 - Return to the original event and confirm registration; do not register silently as a side effect of login.
-- Successful registration offers View ticket and sends the email containing the QR.
+- Successful registration sends the email containing the QR ticket.
 
 ### Registrations and profile
 
 - **Registrations** is a standalone destination in signed-in navigation. Its list follows the public events layout.
-- Upcoming registrations first, showing title, date, location, and a prominent Show QR ticket action.
-- QR opens in a desktop dialog or full-screen ticket on mobile. Show QR, event title, attendee name, and time. Closing returns to the registrations list without losing the user's place.
-- Cancellation is secondary and disappears at the 24-hour cutoff.
-- Past registrations appear below upcoming ones, with eligible review and certificate actions.
-- Submitted/requested actions become status information, such as Review submitted or Certificate emailed after successful sending.
+- Upcoming registrations appear first, showing title, date, and location. Past registrations appear below them.
+- Show QR ticket on the event page opens a desktop dialog or full-screen ticket on mobile. Show QR, event title, attendee name, and time. Closing returns to the event page.
+- On the event page, Cancel registration uses destructive styling and gives way to Show QR ticket at the 24-hour cutoff. Eligible review and certificate actions appear after the event ends.
+- Attendance, review, and certificate statuses appear on the event page. The registration deadline is shown only to visitors without an active registration. After check-in, the attendee sees their checked-in status in place of the QR action and check-in window.
 - Clicking an event title opens its public event page.
 - **Profile** contains account information and language preference. No name-editing control.
 - Promoted staff retain access to their existing registrations and post-event actions.
