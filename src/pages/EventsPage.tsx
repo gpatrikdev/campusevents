@@ -11,20 +11,19 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { DataBoundary, EmptyNotice } from '../components/Feedback';
 import { UserBlobatar } from '../components/UserBlobatar';
 import { formatDate, formatDateRange } from '../domain/format';
 import { instant, registrationCutoff } from '../domain/rules';
 import type { CampusEvent } from '../domain/types';
-import { useEvents, useMock } from '../mocks/hooks';
 
 export function EventsPage() {
   const { t } = useTranslation();
-  const { now, user } = useMock();
-  const query = useEvents();
+  const { now, user, data, dataState } = useApp();
   const narrow = useMediaQuery('(max-width: 56rem)');
   const compact = useMediaQuery('(max-width: 42rem)');
-  const events = (query.data ?? [])
+  const events = data.events
     .filter((event) => event.status === 'published' && instant(event.end) > now)
     .sort((a, b) => instant(a.start) - instant(b.start));
   // Wide screens show the side panel, and the blob sits on its top corner.
@@ -70,7 +69,7 @@ export function EventsPage() {
             <Section variant="transparent" padding={compact ? 4 : 6}>
               <VStack className="dot-scrim">
                 <DataBoundary
-                  pending={query.isPending}
+                  pending={dataState === 'loading'}
                   empty={events.length === 0}
                   emptyContent={
                     <EmptyNotice

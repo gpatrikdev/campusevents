@@ -5,28 +5,22 @@ import { TextInput } from '@astryxdesign/core/TextInput';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { isStaff } from '../domain/rules';
-import { useMock } from '../mocks/hooks';
 
 export function AttendeesPage({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
-  const { data, user } = useMock();
+  const { data, user } = useApp();
   const [search, setSearch] = useState('');
   if (!isStaff(user)) return <AccessNotice />;
   const event = data.events.find((item) => item.id === eventId);
   if (!event) return <UnavailableEvent />;
-  const attendees = data.registrations
-    .filter((item) => item.eventId === eventId && item.active)
-    .flatMap((registration) => {
-      const attendee = data.users.find((item) => item.id === registration.userId);
-      return attendee &&
-        `${attendee.name} ${attendee.email}`
-          .toLocaleLowerCase(i18n.language)
-          .includes(search.toLocaleLowerCase(i18n.language).trim())
-        ? [{ registration, attendee }]
-        : [];
-    });
+  const attendees = (data.attendees?.[eventId] ?? []).filter((attendee) =>
+    `${attendee.name} ${attendee.email}`
+      .toLocaleLowerCase(i18n.language)
+      .includes(search.toLocaleLowerCase(i18n.language).trim()),
+  );
   return (
     <VStack gap={6}>
       <VStack gap={3}>
@@ -51,15 +45,15 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
         description="Try another name or email, or check back after registrations."
       >
         <List edge="flush" hasDividers density="spacious">
-          {attendees.map(({ registration, attendee }) => (
+          {attendees.map((attendee) => (
             <ListItem
-              key={registration.id}
+              key={attendee.id}
               label={
                 <VStack gap={2}>
                   <Text weight="semibold">{attendee.name}</Text>
                   <Text color="secondary">{attendee.email}</Text>
                   <Text type="supporting">
-                    {t(registration.checkedIn ? 'Checked in' : 'Not checked in')}
+                    {t(attendee.checkedIn ? 'Checked in' : 'Not checked in')}
                   </Text>
                 </VStack>
               }

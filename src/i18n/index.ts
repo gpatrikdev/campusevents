@@ -7,7 +7,8 @@ void i18n.use(initReactI18next).init({
     en: { translation: Object.fromEntries(Object.keys(hu).map((key) => [key, key])) },
     hu: { translation: hu },
   },
-  lng: 'en',
+  lng:
+    typeof window !== 'undefined' && localStorage.getItem('campus-language') === 'hu' ? 'hu' : 'en',
   fallbackLng: 'en',
   supportedLngs: ['en', 'hu'],
   keySeparator: false,

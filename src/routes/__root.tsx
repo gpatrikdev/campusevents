@@ -22,8 +22,8 @@ function ErrorPage() {
       minHeight="100dvh"
       headingLevel={1}
       title={t('Something went wrong')}
-      description={t('Reload this local preview to start again.')}
-      actions={<Button label={t('Reload preview')} onClick={() => window.location.reload()} />}
+      description={t('Reload the page to try again.')}
+      actions={<Button label={t('Reload page')} onClick={() => window.location.reload()} />}
     />
   );
 }

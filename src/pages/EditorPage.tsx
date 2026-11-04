@@ -17,11 +17,11 @@ import { markdownToEditorStateJSON } from '@astryxdesign/richtext/markdown';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { eventInputIssue, HOUR, instantToLocal, isStaff, localToInstant } from '../domain/rules';
 import type { CampusEvent } from '../domain/types';
-import { useMock } from '../mocks/hooks';
 
 const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const timezones = [
@@ -37,7 +37,7 @@ const timezoneSource: SearchSource = {
 };
 
 export function EditorPage({ eventId }: { eventId?: string }) {
-  const { user, data } = useMock();
+  const { user, data } = useApp();
   if (!isStaff(user)) return <AccessNotice />;
   const event = data.events.find((item) => item.id === eventId);
   if (eventId && !event) return <UnavailableEvent />;
@@ -50,7 +50,7 @@ export function EditorPage({ eventId }: { eventId?: string }) {
 
 function DraftEditor({ initial }: { initial?: CampusEvent }) {
   const { t } = useTranslation();
-  const { now, run } = useMock();
+  const { now, run } = useApp();
   const navigate = useNavigate();
   const initialZone = initial?.timezone ?? browserTimezone;
   const [title, setTitle] = useState(initial?.title ?? '');
@@ -68,6 +68,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
   const [content, setContent] = useState(initial?.content ?? markdownToEditorStateJSON(''));
   const [error, setError] = useState('');
   const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
   const saved = useRef(false);
   const editor = useRef<RichTextEditorRef>(null);
   const blocker = useBlocker({
@@ -81,8 +82,8 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
     setError('');
   }
 
-  function save() {
-    if (locked) return;
+  async function save() {
+    if (locked || saving) return;
     const text = editor.current?.getMarkdown() ?? '';
     if (!text.trim()) {
       setError('Add an event description.');
@@ -111,7 +112,9 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
       setError(issue);
       return;
     }
-    const result = run({ type: 'save', event });
+    setSaving(true);
+    const result = await run({ type: 'save', event });
+    setSaving(false);
     if (result.ok && result.id) {
       saved.current = true;
       setDirty(false);
@@ -137,9 +140,9 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
           <form
             id="event-draft-form"
             noValidate
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              save();
+              await save();
             }}
           >
             <VStack gap={6}>
@@ -227,6 +230,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
               label={t('Save draft')}
               type="submit"
               form="event-draft-form"
+              isLoading={saving}
               variant="primary"
             />
             <Button label={t('Cancel')} href={initial ? `/staff/events/${initial.id}` : '/staff'} />
@@ -242,7 +246,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
         description="Your unsaved draft changes will be lost."
         label="Discard changes"
         destructive
-        onConfirm={() => {
+        onConfirm={async () => {
           if (blocker.status === 'blocked') blocker.proceed();
         }}
       />

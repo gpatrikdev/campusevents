@@ -10,28 +10,66 @@ import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { VStack } from '@astryxdesign/core/VStack';
-import { useNavigate } from '@tanstack/react-router';
+import { Navigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { auth } from '../../api/client';
+import { useApp } from '../../api/context';
 import { emailSchema } from '../../domain/rules';
-import { useMock } from '../../mocks/hooks';
 
 export default function SignInPage({ returnTo }: { returnTo: string }) {
-  const { t } = useTranslation();
-  const { setIdentity, failActions, setOutcome } = useMock();
-  const navigate = useNavigate();
+  const { preview } = useApp();
+  return preview ? <preview.SignIn returnTo={returnTo} /> : <SignIn returnTo={returnTo} />;
+}
+
+function SignIn({ returnTo }: { returnTo: string }) {
+  const { t, i18n } = useTranslation();
+  const { user, googleEnabled } = useApp();
   const compact = useMediaQuery('(max-width: 42rem)');
   const [email, setEmail] = useState('');
   const [invalid, setInvalid] = useState(false);
-  const [step, setStep] = useState<'email' | 'preview'>('email');
-  function continueDemo() {
-    if (failActions) {
-      setOutcome({ ok: false, message: 'Simulated action failed. No change was saved.' });
-      return;
-    }
-    setIdentity('new');
-    void navigate({ to: '/complete-profile', search: { returnTo } });
+  const [sent, setSent] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState(
+    new URLSearchParams(window.location.search).has('error')
+      ? 'Sign-in could not be completed. Please try again.'
+      : '',
+  );
+  if (user) {
+    return user.profileComplete ? (
+      <Navigate to={returnTo} />
+    ) : (
+      <Navigate to="/complete-profile" search={{ returnTo }} />
+    );
   }
+  const callbacks = {
+    callbackURL: returnTo,
+    newUserCallbackURL: `/complete-profile?returnTo=${encodeURIComponent(returnTo)}`,
+    errorCallbackURL: `/sign-in?returnTo=${encodeURIComponent(returnTo)}`,
+  };
+
+  async function sendLink() {
+    if (pending) return;
+    const parsed = emailSchema.safeParse(email.trim());
+    setInvalid(!parsed.success);
+    if (!parsed.success) return;
+    setPending(true);
+    setError('');
+    try {
+      const { error } = await auth.signIn.magicLink({
+        email: parsed.data,
+        metadata: { language: i18n.language },
+        ...callbacks,
+      });
+      if (error) throw error;
+      setSent(true);
+    } catch {
+      setError('The sign-in email could not be sent. Try again shortly.');
+    } finally {
+      setPending(false);
+    }
+  }
+
   return (
     <Center axis="both" padding={6} paddingInline={compact ? 0 : 6}>
       <VStack gap={4} hAlign="center" width="100%" maxWidth="25rem">
@@ -42,27 +80,40 @@ export default function SignInPage({ returnTo }: { returnTo: string }) {
                 {t('Sign in to take part')}
               </Heading>
               <Text as="p" color="secondary" justify="center">
-                {t('Use Google or an email magic link. Anyone can create an account.')}
+                {t(
+                  googleEnabled
+                    ? 'Use Google or an email magic link. Anyone can create an account.'
+                    : 'Sign in with an email magic link. Anyone can create an account.',
+                )}
               </Text>
             </VStack>
-            {step === 'email' ? (
+            {error && (
+              <VStack role="alert">
+                <Banner title={t(error)} status="error" />
+              </VStack>
+            )}
+            {sent ? (
+              <>
+                <VStack role="status">
+                  <Banner title={t('Check your email')} status="info" collapsible={false}>
+                    <Text>
+                      {t('Open the sign-in link sent to {{email}}.', { email: email.trim() })}
+                    </Text>
+                  </Banner>
+                </VStack>
+                <Button
+                  label={t('Use another email')}
+                  variant="ghost"
+                  onClick={() => setSent(false)}
+                />
+              </>
+            ) : (
               <>
                 <form
                   noValidate
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!emailSchema.safeParse(email.trim()).success) {
-                      setInvalid(true);
-                      return;
-                    }
-                    if (failActions) {
-                      setOutcome({
-                        ok: false,
-                        message: 'Simulated action failed. No change was saved.',
-                      });
-                      return;
-                    }
-                    setStep('preview');
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void sendLink();
                   }}
                 >
                   <VStack gap={4} hAlign="stretch">
@@ -84,50 +135,41 @@ export default function SignInPage({ returnTo }: { returnTo: string }) {
                       }
                     />
                     <Button
-                      label={t('Preview magic-link email')}
+                      label={t('Send sign-in link')}
                       type="submit"
                       variant="primary"
                       size="lg"
                       width="100%"
+                      isLoading={pending}
                     />
                   </VStack>
                 </form>
-                <Divider label={t('or continue with')} />
-                <Button
-                  label={t('Simulate Google sign-in')}
-                  onClick={continueDemo}
-                  size="lg"
-                  width="100%"
-                />
-              </>
-            ) : (
-              <>
-                <Banner title={t('Email preview only')} status="info" collapsible={false}>
-                  <Text>
-                    {t(
-                      'No email was sent to {{email}}. Continue below to explore the first-login flow.',
-                      { email: email.trim() },
-                    )}
-                  </Text>
-                </Banner>
-                <Button
-                  label={t('Continue as demo user')}
-                  onClick={continueDemo}
-                  variant="primary"
-                  size="lg"
-                />
-                <Button
-                  label={t('Use another email')}
-                  variant="ghost"
-                  onClick={() => setStep('email')}
-                />
+                {googleEnabled && (
+                  <>
+                    <Divider label={t('or continue with')} />
+                    <Button
+                      label={t('Continue with Google')}
+                      size="lg"
+                      width="100%"
+                      clickAction={async () => {
+                        setError('');
+                        try {
+                          const { error } = await auth.signIn.social({
+                            provider: 'google',
+                            ...callbacks,
+                          });
+                          if (error) throw error;
+                        } catch {
+                          setError('Google sign-in could not be started. Try again.');
+                        }
+                      }}
+                    />
+                  </>
+                )}
               </>
             )}
           </VStack>
         </Card>
-        <Text as="p" type="supporting" justify="center">
-          {t('Authentication is simulated. No external account is connected.')}
-        </Text>
       </VStack>
     </Center>
   );

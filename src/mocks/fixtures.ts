@@ -197,7 +197,7 @@ function buildFixtures(): MockData {
         active: true,
         checkedIn: true,
         reviewed: true,
-        certificate: 'requested',
+        certificate: 'sent',
       },
       {
         id: 'r5',

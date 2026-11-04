@@ -25,7 +25,10 @@ export function ConfirmDialog({
   label: string;
   errorMessage?: string | null;
   destructive?: boolean;
-  onConfirm: () => false | undefined;
+  onConfirm:
+    | (() => void)
+    | (() => false | undefined | Promise<false | undefined>)
+    | (() => Promise<void>);
 }) {
   const { t } = useTranslation();
   return (
@@ -43,8 +46,8 @@ export function ConfirmDialog({
           <Button
             label={t(label)}
             variant={destructive ? 'destructive' : 'primary'}
-            onClick={() => {
-              if (onConfirm() !== false) onOpenChange(false);
+            clickAction={async () => {
+              if ((await onConfirm()) !== false) onOpenChange(false);
             }}
           />
         </HStack>

@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { previewHu } from '../mocks/translations';
 import { hu } from './hu';
 
 describe('interface translations', () => {
@@ -13,7 +14,8 @@ describe('interface translations', () => {
     for (const name of files) {
       const source = readFileSync(`${root}/${name}`, 'utf8');
       for (const match of source.matchAll(/\bt\('([^']+)'/g))
-        if (!hu[match[1]]) missing.add(match[1]);
+        if (!hu[match[1]] && !(String(name).startsWith('mocks/') && previewHu[match[1]]))
+          missing.add(match[1]);
     }
     expect([...missing]).toEqual([]);
   });

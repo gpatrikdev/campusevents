@@ -6,13 +6,13 @@ import { TextInput } from '@astryxdesign/core/TextInput';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { AccessNotice, DataBoundary } from '../components/Feedback';
-import { useMock } from '../mocks/hooks';
 
 export function OrganizersPage() {
   const { t, i18n } = useTranslation();
-  const { user, data, run } = useMock();
+  const { user, data, run } = useApp();
   const [search, setSearch] = useState('');
   const [target, setTarget] = useState<string | null>(null);
   if (user?.role !== 'admin') return <AccessNotice admin />;
@@ -113,10 +113,14 @@ export function OrganizersPage() {
         title="Change organizer permission?"
         description="Organizer access applies to every event. Removing it does not remove attendee registrations."
         label="Confirm permission change"
-        onConfirm={() => {
+        onConfirm={async () => {
           const account = data.users.find((item) => item.id === target);
           if (account)
-            run({ type: 'role', userId: account.id, organizer: account.role !== 'organizer' });
+            await run({
+              type: 'role',
+              userId: account.id,
+              organizer: account.role !== 'organizer',
+            });
         }}
       />
     </VStack>

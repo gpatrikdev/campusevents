@@ -8,15 +8,15 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { profileSchema } from '../domain/rules';
-import { useMock } from '../mocks/hooks';
 
 export function returnSearch(search: Record<string, unknown>) {
   const value = search.returnTo;
   return {
     returnTo:
       typeof value === 'string' &&
-      (value === '/registrations' || /^\/events\/[a-z0-9-]+$/.test(value))
+      (value === '/registrations' || /^\/(events|review)\/[a-z0-9-]+$/.test(value))
         ? value
         : '/',
   };
@@ -24,10 +24,11 @@ export function returnSearch(search: Record<string, unknown>) {
 
 export function CompleteProfilePage({ returnTo }: { returnTo: string }) {
   const { t } = useTranslation();
-  const { user, run } = useMock();
+  const { user, run } = useApp();
   const navigate = useNavigate();
   const [name, setName] = useState(user?.name ?? '');
   const [invalid, setInvalid] = useState(false);
+  const [saving, setSaving] = useState(false);
   return (
     <VStack gap={6} className="form-page" maxWidth={480} width="100%">
       <Card padding={8}>
@@ -54,14 +55,17 @@ export function CompleteProfilePage({ returnTo }: { returnTo: string }) {
           ) : (
             <form
               noValidate
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
+                if (saving) return;
                 const result = profileSchema.safeParse(name);
                 if (!result.success) {
                   setInvalid(true);
                   return;
                 }
-                const outcome = run({ type: 'profile', name: result.data });
+                setSaving(true);
+                const outcome = await run({ type: 'profile', name: result.data });
+                setSaving(false);
                 if (outcome.ok) void navigate({ to: returnTo });
               }}
             >
@@ -85,7 +89,12 @@ export function CompleteProfilePage({ returnTo }: { returnTo: string }) {
                   title={t('Your name cannot be changed after confirmation, including by staff.')}
                   status="info"
                 />
-                <Button label={t('Confirm name and continue')} type="submit" variant="primary" />
+                <Button
+                  label={t('Confirm name and continue')}
+                  type="submit"
+                  variant="primary"
+                  isLoading={saving}
+                />
               </VStack>
             </form>
           )}

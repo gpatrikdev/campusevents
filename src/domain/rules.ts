@@ -4,7 +4,8 @@ import type { CampusEvent, Registration, User } from './types';
 
 export const HOUR = 3_600_000;
 export const instant = (iso: string) => Temporal.Instant.from(iso).epochMilliseconds;
-export const isStaff = (user: User | undefined) => !!user?.role && user.profileComplete;
+export const isStaff = (user: User | undefined) =>
+  !!user?.profileComplete && (user.role === 'organizer' || user.role === 'admin');
 export const registrationCutoff = (event: CampusEvent) => instant(event.start) - 24 * HOUR;
 export const reviewCutoff = (event: CampusEvent) => instant(event.end) + 72 * HOUR;
 export const hasEnded = (event: CampusEvent, now: number) => now >= instant(event.end);
@@ -40,7 +41,7 @@ export function reviewIssue(
 ) {
   if (!isPublic(event) || !registration?.active || !registration.checkedIn)
     return 'Only checked-in attendees are eligible.';
-  if (registration.reviewed) return 'Review saved in this preview.';
+  if (registration.reviewed) return 'Review submitted';
   if (!hasEnded(event, now)) return 'Available after the event ends.';
   if (now >= reviewCutoff(event)) return 'The 72-hour review window has closed.';
   return null;
@@ -54,10 +55,11 @@ export function certificateIssue(
   if (!isPublic(event) || !registration?.active || !registration.checkedIn)
     return 'Only checked-in attendees are eligible.';
   if (!hasEnded(event, now)) return 'Available after the event ends.';
-  if (registration.certificate === 'requested')
-    return 'Certificate request simulated. No PDF was issued or emailed.';
+  if (registration.certificate === 'pending')
+    return 'Certificate requested. Email delivery is unconfirmed.';
+  if (registration.certificate === 'sent') return 'Certificate emailed';
   if (registration.certificate === 'failed')
-    return 'The simulated delivery failed. Another request is unavailable.';
+    return 'Certificate email failed. Another request is unavailable.';
   return null;
 }
 
@@ -80,15 +82,15 @@ export const profileSchema = z.string().trim().min(2).max(120);
 export const emailSchema = z.email().max(254);
 export const reviewSchema = z.object({
   rating: z.number().int().min(1).max(5),
-  comment: z.string().trim().max(2000),
+  comment: z.string().trim().max(2000).default(''),
 });
 export const eventSchema = z.object({
   title: z.string().trim().min(1).max(200),
   location: z.string().trim().min(1).max(300),
-  timezone: z.string().min(1),
-  start: z.string().min(1),
-  end: z.string().min(1),
-  content: z.string().min(1),
+  timezone: z.string().min(1).max(100),
+  start: z.iso.datetime({ offset: true }),
+  end: z.iso.datetime({ offset: true }),
+  content: z.string().min(1).max(100_000),
 });
 
 export function localToInstant(value: string, timezone: string) {
@@ -105,10 +107,14 @@ export function instantToLocal(value: string, timezone: string) {
     .toString({ smallestUnit: 'minute' });
 }
 
-function hasText(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false;
+function hasText(node: unknown, depth = 0): boolean {
+  if (depth > 64 || !node || typeof node !== 'object') return false;
   if ('text' in node && typeof node.text === 'string' && node.text.trim()) return true;
-  return 'children' in node && Array.isArray(node.children) && node.children.some(hasText);
+  return (
+    'children' in node &&
+    Array.isArray(node.children) &&
+    node.children.some((child) => hasText(child, depth + 1))
+  );
 }
 
 export function eventInputIssue(event: CampusEvent) {
@@ -117,7 +123,8 @@ export function eventInputIssue(event: CampusEvent) {
     Temporal.Instant.from(event.start).toZonedDateTimeISO(event.timezone);
     if (instant(event.end) <= instant(event.start)) return 'The end must be after the start.';
     const content = JSON.parse(event.content) as { root?: { children?: unknown[] } };
-    if (!hasText(content.root)) return 'Add an event description.';
+    if (!Array.isArray(content?.root?.children) || !hasText(content.root))
+      return 'Add an event description.';
   } catch {
     return 'Enter valid dates, timezone, and event content.';
   }

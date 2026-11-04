@@ -7,6 +7,7 @@ export interface User {
   email: string;
   role: Role;
   profileComplete: boolean;
+  language?: Language;
 }
 
 export interface CampusEvent {
@@ -24,11 +25,11 @@ export interface Registration {
   id: string;
   eventId: string;
   userId: string;
-  ticket: string;
+  ticket?: string;
   active: boolean;
   checkedIn: boolean;
   reviewed: boolean;
-  certificate: 'none' | 'requested' | 'failed';
+  certificate: 'none' | 'pending' | 'sent' | 'failed';
 }
 
 export interface Review {
@@ -50,4 +51,28 @@ export interface Outcome {
   ok: boolean;
   message: string;
   id?: string;
+  warning?: boolean;
+  checkedInAt?: string;
 }
+
+export interface Attendee {
+  id: string;
+  name: string;
+  email: string;
+  checkedIn: boolean;
+}
+
+export interface ReviewResults {
+  count: number;
+  average: number;
+  comments: string[];
+}
+
+export type Action =
+  | { type: 'join' | 'publish' | 'unpublish' | 'delete' | 'certificate'; eventId: string }
+  | { type: 'cancel'; registrationId: string }
+  | { type: 'scan'; eventId: string; ticket: string }
+  | { type: 'review'; eventId: string; rating: number; comment: string }
+  | { type: 'save'; event: CampusEvent }
+  | { type: 'profile'; name: string }
+  | { type: 'role'; userId: string; organizer: boolean };

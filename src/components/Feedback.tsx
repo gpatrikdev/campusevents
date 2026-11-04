@@ -5,9 +5,9 @@ import { Icon } from '@astryxdesign/core/Icon';
 import { Skeleton } from '@astryxdesign/core/Skeleton';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
-import type { ComponentProps, ReactNode } from 'react';
+import { type ComponentProps, type ReactNode, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMock } from '../mocks/hooks';
+import { AppContext, useApp } from '../api/context';
 import { UserBlobatar } from './UserBlobatar';
 
 /** The window height left under SiteShell's top nav (3rem) and content padding (6). */
@@ -22,7 +22,7 @@ export function EmptyNotice({
   fallbackIcon?: ReactNode;
   minHeight?: string;
 }) {
-  const { user } = useMock();
+  const user = useContext(AppContext)?.user;
   return (
     <VStack minHeight={minHeight} vAlign="center" hAlign="center" paddingBlock={10}>
       <EmptyState
@@ -49,11 +49,11 @@ export function DataBoundary({
   description?: string;
 }) {
   const { t } = useTranslation();
-  const { dataState, setDataState } = useMock();
+  const { dataState, reload } = useApp();
   if (dataState === 'loading' || (dataState === 'ready' && pending))
     return (
       <VStack gap={4} role="status" aria-busy="true">
-        <Text>{t('Loading sample data…')}</Text>
+        <Text>{t('Loading…')}</Text>
         <Skeleton height="5rem" />
         <Skeleton height="5rem" />
         <Skeleton height="5rem" />
@@ -63,9 +63,8 @@ export function DataBoundary({
     return (
       <EmptyNotice
         fallbackIcon={<Icon icon="error" />}
-        title={t('Sample data could not be loaded')}
-        description={t('This is a simulated error. Try again to restore the ready state.')}
-        actions={<Button label={t('Try again')} onClick={() => setDataState('ready')} />}
+        title={t('Data could not be loaded')}
+        actions={<Button label={t('Try again')} onClick={reload} />}
       />
     );
   if (dataState === 'empty' || empty)
@@ -81,11 +80,6 @@ export function AccessNotice({ admin = false }: { admin?: boolean }) {
       headingLevel={1}
       title={t('Access unavailable')}
       description={t(admin ? 'Admin access is required.' : 'Staff access is required.')}
-      actions={
-        <Text color="secondary">
-          {t('Switch the demo identity in Preview controls to explore this screen.')}
-        </Text>
-      }
     />
   );
 }
@@ -104,13 +98,13 @@ export function UnavailableEvent() {
 
 export function OutcomeNotice() {
   const { t } = useTranslation();
-  const { outcome, setOutcome } = useMock();
+  const { outcome, setOutcome } = useApp();
   if (!outcome) return null;
   return (
     <VStack role={outcome.ok ? 'status' : 'alert'} aria-live="polite">
       <Banner
         key={`${outcome.message}-${outcome.ok}`}
-        status={outcome.ok ? 'success' : 'error'}
+        status={outcome.warning ? 'warning' : outcome.ok ? 'success' : 'error'}
         title={t(outcome.message)}
         isDismissable
         onDismiss={() => setOutcome(null)}

@@ -13,12 +13,12 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { RichTextView } from '@astryxdesign/richtext';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
 import { HOUR, hasEnded, instant, isStaff, joinIssue, registrationCutoff } from '../domain/rules';
-import { useMock } from '../mocks/hooks';
 
 export function EventDetailPage({
   eventId,
@@ -28,7 +28,7 @@ export function EventDetailPage({
   preview?: boolean;
 }) {
   const { t, i18n } = useTranslation();
-  const { data, user, now, run, setOutcome } = useMock();
+  const { data, user, now, run, setOutcome } = useApp();
   const [confirm, setConfirm] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null);
@@ -83,7 +83,7 @@ export function EventDetailPage({
           <>
             <HStack gap={2} vAlign="center">
               <Icon icon="check" color="success" />
-              <Text weight="semibold">{t('You are registered in this preview.')}</Text>
+              <Text weight="semibold">{t('You are registered.')}</Text>
             </HStack>
             <Button
               ref={ticketButton}
@@ -224,14 +224,15 @@ export function EventDetailPage({
         }}
         label="Confirm registration"
         errorMessage={joinError}
-        onConfirm={() => {
-          const outcome = run({ type: 'join', eventId: event.id });
+        onConfirm={async () => {
+          const outcome = await run({ type: 'join', eventId: event.id });
           if (!outcome.ok) {
             setOutcome(null);
             setJoinError(outcome.message);
             return false;
           }
           focusTicketAfterJoin.current = true;
+          return true;
         }}
       />
       <TicketDialog registrationId={ticketId} onClose={() => setTicketId(null)} />

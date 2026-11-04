@@ -9,6 +9,7 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { belowNavHeight, DataBoundary, EmptyNotice } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
@@ -21,7 +22,6 @@ import {
   reviewIssue,
 } from '../domain/rules';
 import type { CampusEvent, Registration } from '../domain/types';
-import { useMock } from '../mocks/hooks';
 
 function RegistrationRow({
   registration,
@@ -39,10 +39,13 @@ function RegistrationRow({
   onCertificate: (id: string) => void;
 }) {
   const { t, i18n } = useTranslation();
-  const { now } = useMock();
+  const { now, preview } = useApp();
   const ended = hasEnded(event, now);
   const review = reviewIssue(event, registration, now);
-  const certificate = certificateIssue(event, registration, now);
+  const certificate =
+    import.meta.env.DEV && preview && registration.certificate === 'sent'
+      ? 'Certificate request simulated. No PDF was issued or emailed.'
+      : certificateIssue(event, registration, now);
   const actions = !registration.active ? null : !ended ? (
     <HStack gap={3} hAlign="end" wrap="wrap">
       <Button
@@ -97,7 +100,7 @@ function RegistrationRow({
             <VStack gap={1}>
               <Text type="label">{t('Cancelled')}</Text>
               <Text type="supporting">
-                {t('Registration cancelled locally. This demo ticket is now invalid.')}
+                {t('Registration cancelled. Your QR ticket is now invalid.')}
               </Text>
             </VStack>
           ) : ended ? (
@@ -124,7 +127,7 @@ function RegistrationRow({
 
 export function RegistrationsPage() {
   const { t } = useTranslation();
-  const { data, user, now, run } = useMock();
+  const { data, user, now, run } = useApp();
   const compact = useMediaQuery('(max-width: 42rem)');
   const [ticket, setTicket] = useState<string | null>(null);
   const [cancel, setCancel] = useState<string | null>(null);
@@ -248,11 +251,11 @@ export function RegistrationsPage() {
           if (!open) setCancel(null);
         }}
         title="Cancel this registration?"
-        description="Your demo QR ticket will become invalid. You can register again before the deadline."
+        description="Your QR ticket will become invalid. You can register again before the deadline."
         label="Cancel registration"
         destructive
-        onConfirm={() => {
-          if (cancel) run({ type: 'cancel', registrationId: cancel });
+        onConfirm={async () => {
+          if (cancel) await run({ type: 'cancel', registrationId: cancel });
         }}
       />
       <ConfirmDialog
@@ -261,10 +264,10 @@ export function RegistrationsPage() {
           if (!open) setCertificate(null);
         }}
         title="Request a certificate?"
-        description="A real certificate would use your confirmed name, event details, and selected language. This preview creates no PDF and sends no email."
-        label="Simulate certificate request"
-        onConfirm={() => {
-          if (certificate) run({ type: 'certificate', eventId: certificate });
+        description="We will email the PDF using your confirmed name and selected language. You can request it once."
+        label="Request certificate"
+        onConfirm={async () => {
+          if (certificate) await run({ type: 'certificate', eventId: certificate });
         }}
       />
     </>

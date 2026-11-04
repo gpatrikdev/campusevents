@@ -6,21 +6,21 @@ import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList'
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { isStaff } from '../domain/rules';
-import { useMock } from '../mocks/hooks';
 
 export function ReviewResultsPage({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
-  const { data, user } = useMock();
+  const { data, user } = useApp();
   if (!isStaff(user)) return <AccessNotice />;
   const event = data.events.find((item) => item.id === eventId);
   if (!event) return <UnavailableEvent />;
-  const reviews = data.reviews.filter((item) => item.eventId === eventId);
-  const comments = reviews.filter((item) => item.comment.trim());
-  const average = reviews.length
-    ? reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length
-    : 0;
+  const { count, average, comments } = data.results?.[eventId] ?? {
+    count: 0,
+    average: 0,
+    comments: [],
+  };
   return (
     <VStack gap={6} maxWidth={800} width="100%">
       <VStack gap={3}>
@@ -31,7 +31,7 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
         </Text>
       </VStack>
       <DataBoundary
-        empty={reviews.length === 0}
+        empty={count === 0}
         title="No reviews yet"
         description="Checked-in attendees can review after the event ends."
       >
@@ -49,7 +49,7 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
           </MetadataListItem>
           <MetadataListItem label={t('Responses')}>
             <Text size="2xl" weight="semibold">
-              {reviews.length}
+              {count}
             </Text>
           </MetadataListItem>
         </MetadataList>
@@ -57,8 +57,9 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
         <Heading level={2}>{t('Anonymous feedback')}</Heading>
         {comments.length ? (
           <List edge="flush" hasDividers density="spacious">
-            {comments.map((review) => (
-              <ListItem key={review.id} label={<Text>{review.comment}</Text>} />
+            {comments.map((comment, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: Anonymous comments can have identical text.
+              <ListItem key={`${index}-${comment}`} label={<Text>{comment}</Text>} />
             ))}
           </List>
         ) : (

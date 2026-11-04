@@ -11,16 +11,9 @@ import {
   reviewSchema,
   unpublishIssue,
 } from '../domain/rules';
-import type { CampusEvent, MockData, Outcome } from '../domain/types';
+import type { Action, MockData, Outcome } from '../domain/types';
 
-export type MockAction =
-  | { type: 'join' | 'publish' | 'unpublish' | 'delete' | 'certificate'; eventId: string }
-  | { type: 'cancel'; registrationId: string }
-  | { type: 'scan'; eventId: string; ticket: string }
-  | { type: 'review'; eventId: string; rating: number; comment: string }
-  | { type: 'save'; event: CampusEvent }
-  | { type: 'profile'; name: string }
-  | { type: 'role'; userId: string; organizer: boolean };
+export type MockAction = Action;
 
 export interface ActionContext {
   userId: string | null;
@@ -170,7 +163,7 @@ export function applyAction(
     case 'certificate': {
       const issue = certificateIssue(event, mine, context.now);
       if (issue) return finish(false, issue);
-      if (mine) mine.certificate = context.fail ? 'failed' : 'requested';
+      if (mine) mine.certificate = context.fail ? 'failed' : 'sent';
       return {
         data: next,
         outcome: {

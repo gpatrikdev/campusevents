@@ -4,4 +4,9 @@ dist/
 .DS_Store
 *.local
 .env*
+.dev.vars*
+!.dev.vars.example
+.wrangler/
 !.env.example
+
+.playwright-mcp/

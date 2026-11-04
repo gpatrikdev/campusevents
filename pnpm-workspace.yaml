@@ -2,6 +2,8 @@ allowBuilds:
   "@astryxdesign/cli": false
   "@astryxdesign/core": false
   lefthook: false
+  esbuild: true
+  workerd: true
 minimumReleaseAgeExclude:
   - "@astryxdesign/core@0.7.6"
   - "@astryxdesign/richtext@0.7.6"
@@ -10,3 +12,17 @@ minimumReleaseAgeExclude:
   - "@vitest/mocker@5.1.0"
   - "@vitest/spy@5.1.0"
   - vitest@5.1.0
+  - "@better-auth/core@1.7.16"
+  - "@better-auth/drizzle-adapter@1.7.16"
+  - "@better-auth/kysely-adapter@1.7.16"
+  - "@better-auth/memory-adapter@1.7.16"
+  - "@better-auth/mongo-adapter@1.7.16"
+  - "@better-auth/prisma-adapter@1.7.16"
+  - "@better-auth/telemetry@1.7.16"
+  - better-auth@1.7.16
+  - better-call@1.4.5
+  - "@cloudflare/vitest-plugin@1.5.1"
+  - "@cloudflare/workers-types@5.20261104.1"
+  - auth@1.7.16
+  - miniflare@5.20261103.0-beta
+  - wrangler@4.157.0

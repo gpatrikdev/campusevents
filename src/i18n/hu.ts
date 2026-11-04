@@ -7,34 +7,13 @@ export const hu: Record<string, string> = {
   'Sign out': 'Kijelentkezés',
   Language: 'Nyelv',
   'Main navigation': 'Fő navigáció',
-  'UI preview · Sample data only': 'Felületi előnézet · Csak mintaadatok',
-  'No real sign-in, email, attendance, or certificate issuance.':
-    'Nincs valódi bejelentkezés, e-mail-küldés, jelenlétrögzítés vagy igazoláskiállítás.',
-  'Preview controls': 'Előnézeti beállítások',
-  'Close controls': 'Beállítások bezárása',
-  'Demo identity': 'Demóprofil',
-  Visitor: 'Látogató',
-  'First login': 'Első bejelentkezés',
   Attendee: 'Résztvevő',
   Organizer: 'Szervező',
   Admin: 'Adminisztrátor',
-  'Demo clock': 'Demóóra',
-  'Reference time · 3 Nov': 'Alapidő · nov. 3.',
-  'At registration cutoff': 'A jelentkezési határidőnél',
-  'At check-in opening': 'A beléptetés kezdetén',
-  'At event start': 'Az esemény kezdetén',
-  'At event end': 'Az esemény végén',
-  'At review cutoff': 'Az értékelési határidőnél',
-  'Time scenarios refer to The future of responsible AI.':
-    'Az időpontok a The future of responsible AI eseményhez tartoznak.',
-  'Data state': 'Adatállapot',
   Ready: 'Betöltve',
   Loading: 'Betöltés',
   Empty: 'Üres',
   Error: 'Hiba',
-  'Simulate action failures': 'Műveleti hibák szimulálása',
-  'Reset sample data': 'Mintaadatok visszaállítása',
-  'Changes last until the page is reloaded.': 'A módosítások az oldal újratöltéséig maradnak meg.',
   'University events': 'Egyetemi események',
   'Lectures, workshops and conversations across the university.':
     'Előadások, műhelyek és beszélgetések az egyetem közösségének.',
@@ -47,10 +26,6 @@ export const hu: Record<string, string> = {
   'Your QR ticket is available under Registrations.': 'QR-jegye a Jelentkezések oldalon található.',
   'No upcoming events': 'Nincs közelgő esemény',
   'Published events will appear here.': 'A közzétett események itt jelennek meg.',
-  'Loading sample data…': 'Mintaadatok betöltése…',
-  'Sample data could not be loaded': 'A mintaadatok nem tölthetők be',
-  'This is a simulated error. Try again to restore the ready state.':
-    'Ez szimulált hiba. Az újrapróbálással visszaáll a betöltött állapot.',
   'Try again': 'Újrapróbálás',
   'Registration open': 'Lehet jelentkezni',
   'Registration closed': 'A jelentkezés lezárult',
@@ -78,10 +53,6 @@ export const hu: Record<string, string> = {
   'You are registered in this preview.': 'Az előnézetben jelentkezett erre az eseményre.',
   'View ticket': 'Jegy megtekintése',
   'Show QR ticket': 'QR-jegy megjelenítése',
-  'Registration saved locally. No confirmation email was sent.':
-    'A jelentkezést helyben mentettük. Nem küldtünk visszaigazoló e-mailt.',
-  'Registration cancelled locally. This demo ticket is now invalid.':
-    'A jelentkezést helyben lemondtuk. A demójegy érvénytelen.',
   'You already have an active registration.': 'Már rendelkezik aktív jelentkezéssel.',
   'Registration and cancellation are closed.': 'A jelentkezés és a lemondás lezárult.',
   'Staff cannot join new events.': 'Munkatársként nem jelentkezhet új eseményre.',
@@ -98,18 +69,10 @@ export const hu: Record<string, string> = {
   'Sign in to take part': 'Jelentkezzen be a részvételhez',
   'Use Google or an email magic link. Anyone can create an account.':
     'Használja Google-fiókját vagy az e-mailes belépési hivatkozást. Bárki létrehozhat fiókot.',
-  'Simulate Google sign-in': 'Google-bejelentkezés szimulálása',
   'or continue with': 'vagy folytassa ezzel',
   'Email address': 'E-mail-cím',
-  'Preview magic-link email': 'Belépési e-mail előnézete',
-  'Email preview only': 'Csak e-mail-előnézet',
-  'No email was sent to {{email}}. Continue below to explore the first-login flow.':
-    'Nem küldtünk e-mailt a(z) {{email}} címre. Lent kipróbálhatja az első bejelentkezés lépéseit.',
-  'Continue as demo user': 'Folytatás demófelhasználóként',
   'Use another email': 'Másik e-mail-cím',
   'Enter a valid email address.': 'Adjon meg érvényes e-mail-címet.',
-  'Authentication is simulated. No external account is connected.':
-    'A bejelentkezés szimulált. Külső fiókot nem kapcsolunk össze.',
   'Complete your profile': 'Profil kiegészítése',
   'Confirm the name that will appear on your tickets and certificates.':
     'Erősítse meg a jegyeken és igazolásokon szereplő nevét.',
@@ -117,7 +80,6 @@ export const hu: Record<string, string> = {
   'Your name cannot be changed after confirmation, including by staff.':
     'Megerősítés után a nevet a munkatársak sem módosíthatják.',
   'Confirm name and continue': 'Név megerősítése és folytatás',
-  'Profile name confirmed in this preview.': 'A profil nevét megerősítette az előnézetben.',
   'Enter a name between 2 and 120 characters.': 'Adjon meg 2 és 120 karakter közötti nevet.',
   'Profile names cannot be changed after confirmation.':
     'A profil neve megerősítés után nem módosítható.',
@@ -137,8 +99,6 @@ export const hu: Record<string, string> = {
   'Browse events': 'Események böngészése',
   'Cancel registration': 'Jelentkezés lemondása',
   'Cancel this registration?': 'Lemondja ezt a jelentkezést?',
-  'Your demo QR ticket will become invalid. You can register again before the deadline.':
-    'A demó QR-jegy érvénytelenné válik. A határidő előtt újra jelentkezhet.',
   'Keep registration': 'Jelentkezés megtartása',
   Cancelled: 'Lemondva',
   Registered: 'Jelentkezett',
@@ -154,10 +114,6 @@ export const hu: Record<string, string> = {
   'Your name is permanent.': 'A neve végleges.',
   'Existing registrations remain available after an organizer promotion.':
     'A meglévő jelentkezések a szervezői kinevezés után is elérhetők.',
-  'Demo QR ticket': 'Demó QR-jegy',
-  'Demo QR ticket for {{name}}': '{{name}} demó QR-jegye',
-  'This sample QR code is valid only inside this local preview.':
-    'Ez a minta QR-kód csak ebben a helyi előnézetben érvényes.',
   'Present this ticket at the event entrance.': 'Ezt a jegyet mutassa fel a bejáratnál.',
   'Close ticket': 'Jegy bezárása',
   'Ticket unavailable': 'A jegy nem érhető el',
@@ -170,12 +126,6 @@ export const hu: Record<string, string> = {
   'Request a certificate?': 'Igazolást kér?',
   'A real certificate would use your confirmed name, event details, and selected language. This preview creates no PDF and sends no email.':
     'A valódi igazoláson a megerősített neve és az esemény adatai szerepelnének a választott nyelven. Az előnézet nem hoz létre PDF-et és nem küld e-mailt.',
-  'Simulate certificate request': 'Igazoláskérés szimulálása',
-  'Certificate request simulated. No PDF was issued or emailed.':
-    'Igazoláskérés szimulálva. Nem állítottunk ki és nem küldtünk PDF-et.',
-  'The simulated delivery failed. Another request is unavailable.':
-    'A szimulált küldés sikertelen. Újabb kérés nem adható le.',
-  'Review saved in this preview.': 'Az értékelést mentettük az előnézetben.',
   'Available after the event ends.': 'Az esemény befejezése után érhető el.',
   'Only checked-in attendees are eligible.': 'Csak a beléptetett résztvevők jogosultak.',
   'The 72-hour review window has closed.': 'A 72 órás értékelési időszak lezárult.',
@@ -185,9 +135,6 @@ export const hu: Record<string, string> = {
   'Review deadline': 'Értékelési határidő',
   'Overall rating': 'Összesített értékelés',
   'Comment (optional)': 'Megjegyzés (nem kötelező)',
-  'Save demo review': 'Demóértékelés mentése',
-  'Choose a rating from 1 to 5. Comments can contain up to 2,000 characters.':
-    'Válasszon 1 és 5 közötti értékelést. A megjegyzés legfeljebb 2000 karakter lehet.',
   'Staff dashboard': 'Munkatársi kezelőfelület',
   'Manage university events': 'Egyetemi események kezelése',
   'All organizers and admins can manage every event.':
@@ -200,8 +147,6 @@ export const hu: Record<string, string> = {
   Manage: 'Kezelés',
   'Staff access is required.': 'Munkatársi jogosultság szükséges.',
   'Admin access is required.': 'Adminisztrátori jogosultság szükséges.',
-  'Switch the demo identity in Preview controls to explore this screen.':
-    'A képernyő kipróbálásához váltson demóprofilt az előnézeti beállításoknál.',
   'Access unavailable': 'Nincs hozzáférés',
   'Manage event': 'Esemény kezelése',
   'Edit draft': 'Piszkozat szerkesztése',
@@ -212,20 +157,12 @@ export const hu: Record<string, string> = {
   'Review results': 'Értékelések eredménye',
   'Publish event': 'Esemény közzététele',
   'Publish this event?': 'Közzéteszi ezt az eseményt?',
-  'Publication locks event editing. This change affects only the local preview.':
-    'Közzététel után az esemény nem szerkeszthető. A módosítás csak a helyi előnézetet érinti.',
   'Unpublish event': 'Közzététel visszavonása',
   'Return this event to draft?': 'Visszaállítja piszkozatra?',
-  'This clears all registrations and invalidates every demo ticket. Event content is kept.':
-    'Minden jelentkezés törlődik és minden demójegy érvénytelen lesz. Az esemény tartalma megmarad.',
   'Delete event': 'Esemény törlése',
   'Delete this event?': 'Törli ezt az eseményt?',
   'This removes the event, tickets, reviews and certificate requests from this preview. No notification will be sent.':
     'Az esemény, a jegyek, az értékelések és az igazoláskérések törlődnek az előnézetből. Nem küldünk értesítést.',
-  'Event published in this preview.': 'Az eseményt közzétettük az előnézetben.',
-  'Event returned to draft. Registrations cleared and demo tickets invalidated.':
-    'Az esemény újra piszkozat. A jelentkezéseket töröltük és a demójegyeket érvénytelenítettük.',
-  'Event deleted in this preview.': 'Az eseményt töröltük az előnézetben.',
   'Only drafts can be edited or published.': 'Csak piszkozat szerkeszthető vagy tehető közzé.',
   'The start must be more than 24 hours away.':
     'A kezdésnek több mint 24 órával későbbre kell esnie.',
@@ -247,7 +184,6 @@ export const hu: Record<string, string> = {
   'Use the formatting toolbar or Markdown shortcuts. Content stays in the language you write.':
     'Használja a formázási eszköztárat vagy a Markdown-billentyűparancsokat. A tartalom az Ön által írt nyelven marad.',
   'Save draft': 'Piszkozat mentése',
-  'Draft saved in this preview.': 'A piszkozatot mentettük az előnézetben.',
   'Complete all required event fields.': 'Töltse ki az esemény minden kötelező mezőjét.',
   'The end must be after the start.': 'A befejezésnek a kezdés utánra kell esnie.',
   'Add an event description.': 'Adja meg az esemény leírását.',
@@ -270,31 +206,18 @@ export const hu: Record<string, string> = {
   'Try another name or email, or check back after registrations.':
     'Keressen más névre vagy e-mail-címre, vagy térjen vissza a jelentkezések után.',
   'QR scanner': 'QR-beolvasó',
-  'Camera scanning is simulated in this phase. Use a sample scan to exercise ticket validation.':
-    'Ebben a szakaszban a kamerás beolvasás szimulált. Mintabeolvasással próbálhatja ki a jegyellenőrzést.',
-  'Scanner preview': 'Beolvasó előnézete',
   'No camera is active': 'Nincs aktív kamera',
-  'Sample QR scan': 'Minta QR-beolvasás',
-  'Valid ticket': 'Érvényes jegy',
-  'Already checked in': 'Már beléptetve',
-  'Cancelled ticket': 'Lemondott jegy',
-  'Wrong event': 'Másik esemény',
-  'Unknown ticket': 'Ismeretlen jegy',
-  'Simulate QR scan': 'QR-beolvasás szimulálása',
   'Scan result': 'Beolvasási eredmény',
   'This QR ticket is invalid for this event.': 'Ez a QR-jegy érvénytelen ehhez az eseményhez.',
   'Check-in opens one hour before the start.': 'A beléptetés a kezdés előtt egy órával nyílik meg.',
   'Check-in has closed.': 'A beléptetés lezárult.',
   'This attendee is already checked in.': 'Ez a résztvevő már belépett.',
-  'Check-in recorded locally. No real attendance was recorded.':
-    'A belépést helyben mentettük. Valódi jelenlétet nem rögzítettünk.',
   'Anonymous feedback': 'Névtelen visszajelzések',
   'Only staff can see these results. Names and email addresses are not shown.':
     'Az eredményeket csak munkatársak láthatják. Nevek és e-mail-címek nem jelennek meg.',
   'Average rating': 'Átlagos értékelés',
   Responses: 'Válaszok',
   'out of 5': 'az 5-ből',
-  Comments: 'Megjegyzések',
   'No reviews yet': 'Még nincs értékelés',
   'Checked-in attendees can review after the event ends.':
     'A beléptetett résztvevők az esemény után értékelhetnek.',
@@ -311,19 +234,86 @@ export const hu: Record<string, string> = {
   'Organizer access applies to every event. Removing it does not remove attendee registrations.':
     'A szervezői jogosultság minden eseményre vonatkozik. Visszavonása nem törli a résztvevői jelentkezéseket.',
   'Confirm permission change': 'Jogosultságmódosítás megerősítése',
-  'Organizer permission updated in this preview.':
-    'A szervezői jogosultságot módosítottuk az előnézetben.',
   'Admin roles are managed manually and cannot be changed here.':
     'Az adminisztrátori szerepkör kézzel kezelhető, itt nem módosítható.',
   'Admin roles cannot be changed here.': 'Az adminisztrátori szerepkör itt nem módosítható.',
   'No accounts found': 'Nem található fiók',
-  'Simulated action failed. No change was saved.':
-    'A szimulált művelet sikertelen. Nem mentettünk módosítást.',
   'Page not found': 'Az oldal nem található',
   'Check the address, or go back to the events list.':
     'Ellenőrizze a címet, vagy térjen vissza az eseménylistához.',
   'Something went wrong': 'Hiba történt',
-  'Reload this local preview to start again.': 'Az újrakezdéshez töltse újra a helyi előnézetet.',
   'Reload preview': 'Előnézet újratöltése',
   'Dismiss message': 'Üzenet bezárása',
+  'Loading…': 'Betöltés…',
+  'Data could not be loaded': 'Az adatok betöltése sikertelen',
+  'Reload the page to try again.': 'Töltse újra az oldalt az újrapróbálkozáshoz.',
+  'Reload page': 'Oldal újratöltése',
+  'You are registered.': 'Sikeresen jelentkezett az eseményre.',
+  'Registration confirmed. Your QR ticket was emailed.':
+    'A jelentkezés sikeres. E-mailben elküldtük a QR-jegyet.',
+  'You are registered. The email could not be sent, but your QR ticket is available here.':
+    'A jelentkezés sikeres. Az e-mail küldése sikertelen, de a QR-jegy itt elérhető.',
+  'Registration cancelled. Your QR ticket is now invalid.':
+    'A jelentkezést lemondta. A QR-jegy már érvénytelen.',
+  'Your QR ticket will become invalid. You can register again before the deadline.':
+    'A QR-jegy érvénytelenné válik. A határidő előtt újra jelentkezhet.',
+  'QR ticket': 'QR-jegy',
+  'QR ticket for {{name}}': '{{name}} QR-jegye',
+  'Profile name confirmed.': 'A profilnév megerősítve.',
+  'Language preference saved.': 'A nyelvi beállítást mentettük.',
+  'This preference also applies to emails and certificates.':
+    'Ez a beállítás az e-mailekre és az igazolásokra is érvényes.',
+  'The account is unavailable or its role is managed manually.':
+    'A fiók nem érhető el, vagy a jogosultságát kézzel kezelik.',
+  'Organizer permission updated.': 'A szervezői jogosultságot módosítottuk.',
+  'Draft saved.': 'A piszkozatot mentettük.',
+  'Event published.': 'Az eseményt közzétettük.',
+  'Event returned to draft. Registrations and tickets were cleared.':
+    'Az esemény újra piszkozat. A jelentkezéseket és a jegyeket töröltük.',
+  'Event deleted.': 'Az eseményt töröltük.',
+  'Publication makes the event public and locks editing.':
+    'A közzététellel az esemény nyilvánossá válik, a szerkesztése lezárul.',
+  'This clears all registrations and invalidates every ticket. Event content is kept.':
+    'Minden jelentkezést törlünk, és minden jegy érvénytelenné válik. Az esemény tartalma megmarad.',
+  'This permanently removes the event, its registrations, reviews and certificate requests.':
+    'Az eseményt, a jelentkezéseket, az értékeléseket és az igazolási kérelmeket végleg töröljük.',
+  'Point the camera at the QR code on the attendee’s ticket.':
+    'Irányítsa a kamerát a résztvevő jegyén lévő QR-kódra.',
+  'Ticket camera': 'Jegybeolvasó kamera',
+  'Starting camera…': 'Kamera indítása…',
+  'Start camera': 'Kamera indítása',
+  'Stop camera': 'Kamera leállítása',
+  'Scan another ticket': 'Következő jegy beolvasása',
+  'Publish the event before scanning tickets.':
+    'A jegyek beolvasása előtt tegye közzé az eseményt.',
+  'The camera or QR scanner could not start. Check camera access and try again.':
+    'A kamera vagy a QR-beolvasó nem indult el. Ellenőrizze a kameraengedélyt, majd próbálkozzon újra.',
+  'Check-in recorded.': 'A jelenlétet rögzítettük.',
+  'Your feedback is anonymous to organizers and admins.':
+    'A szervezők és az adminisztrátorok név nélkül látják a visszajelzéseket.',
+  'Submit review': 'Értékelés elküldése',
+  'Review submitted': 'Értékelés elküldve',
+  'We will email the PDF using your confirmed name and selected language. You can request it once.':
+    'Az igazolást a megerősített névvel és a választott nyelven küldjük el e-mailben. Egy alkalommal kérhető.',
+  'Certificate requested. Email delivery is unconfirmed.':
+    'Az igazolási kérelmet rögzítettük. Az e-mail küldését még nem erősítettük meg.',
+  'Certificate emailed': 'Igazolás elküldve e-mailben',
+  'Certificate email failed. Another request is unavailable.':
+    'Az igazolás e-mailes küldése sikertelen. Új kérelem nem indítható.',
+  'Sign-in could not be completed. Please try again.':
+    'A bejelentkezés sikertelen. Próbálkozzon újra.',
+  'The sign-in email could not be sent. Try again shortly.':
+    'A bejelentkezési e-mail küldése sikertelen. Próbálkozzon újra kis idő múlva.',
+  'Sign in with an email magic link. Anyone can create an account.':
+    'Jelentkezzen be e-mailben kapott hivatkozással. Bárki létrehozhat fiókot.',
+  'Check your email': 'Nézze meg a postaládáját',
+  'Open the sign-in link sent to {{email}}.':
+    'Nyissa meg a(z) {{email}} címre küldött bejelentkezési hivatkozást.',
+  'Send sign-in link': 'Bejelentkezési hivatkozás küldése',
+  'Continue with Google': 'Folytatás Google-fiókkal',
+  'Google sign-in could not be started. Try again.':
+    'A Google-bejelentkezés nem indult el. Próbálkozzon újra.',
+  'Something went wrong. Try again.': 'Hiba történt. Próbálkozzon újra.',
+  'Check the submitted information.': 'Ellenőrizze a megadott adatokat.',
+  'The submitted information is too large.': 'A megadott adatok mérete túl nagy.',
 };

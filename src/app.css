@@ -98,13 +98,6 @@ html {
   margin-inline: auto;
 }
 
-.preview-controls-launcher {
-  position: fixed;
-  inset-inline-end: var(--spacing-4);
-  inset-block-end: max(var(--spacing-4), env(safe-area-inset-bottom));
-  z-index: 1;
-}
-
 .ticket-qr {
   max-inline-size: min(100%, 44dvh);
   block-size: auto;
@@ -128,4 +121,11 @@ html {
   .page-frame {
     gap: var(--spacing-6);
   }
+}
+
+.ticket-camera {
+  display: block;
+  width: 100%;
+  max-height: 55dvh;
+  object-fit: contain;
 }

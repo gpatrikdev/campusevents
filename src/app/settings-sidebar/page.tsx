@@ -13,12 +13,12 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../../api/context';
 import { belowNavHeight, EmptyNotice } from '../../components/Feedback';
-import { useMock } from '../../mocks/hooks';
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
-  const { user } = useMock();
+  const { user, setLanguage } = useApp();
   const narrow = useMediaQuery('(max-width: 48rem)');
   const [section, setSection] = useState('account');
   if (!user)
@@ -141,11 +141,9 @@ export default function ProfilePage() {
                     { value: 'hu', label: 'Magyar' },
                   ]}
                   onChange={(value) => {
-                    void i18n.changeLanguage(value);
+                    if (value === 'en' || value === 'hu') void setLanguage(value);
                   }}
-                  description={t(
-                    'This preference will also apply to emails and certificates once delivery is implemented.',
-                  )}
+                  description={t('This preference also applies to emails and certificates.')}
                 />
               </VStack>
             )}

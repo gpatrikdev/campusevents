@@ -1,3 +1,4 @@
+import { Button } from '@astryxdesign/core/Button';
 import { Heading } from '@astryxdesign/core/Heading';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -6,15 +7,15 @@ import { useTranslation } from 'react-i18next';
 import { Model } from 'survey-core';
 import 'survey-core/i18n/hungarian';
 import { Survey } from 'survey-react-ui';
+import { useApp } from '../api/context';
 import { DataBoundary, EmptyNotice, UnavailableEvent } from '../components/Feedback';
 import { formatDate } from '../domain/format';
 import { reviewCutoff, reviewIssue } from '../domain/rules';
-import { useMock } from '../mocks/hooks';
 import { reviewForm, reviewTheme } from '../reviews/form';
 
 export function ReviewPage({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
-  const { data, user, now, run } = useMock();
+  const { data, user, now, run } = useApp();
   const event = data.events.find((item) => item.id === eventId);
   const registration = data.registrations.find(
     (item) => item.eventId === eventId && item.userId === user?.id && item.active,
@@ -26,11 +27,11 @@ export function ReviewPage({ eventId }: { eventId: string }) {
   }, []);
   useEffect(() => {
     model.locale = i18n.language;
-    model.completeText = t('Save demo review');
+    model.completeText = t('Submit review');
   }, [model, i18n.language, t]);
   useEffect(() => {
-    const submit = (sender: Model, options: { allow: boolean }) => {
-      const result = run({
+    const submit = async (sender: Model, options: { allow: boolean }) => {
+      const result = await run({
         type: 'review',
         eventId,
         rating: Number(sender.data.rating),
@@ -43,17 +44,25 @@ export function ReviewPage({ eventId }: { eventId: string }) {
   }, [model, run, eventId]);
   useEffect(() => () => model.dispose(), [model]);
   if (event?.status !== 'published') return <UnavailableEvent />;
+  if (!user)
+    return (
+      <EmptyNotice
+        title={t('Sign in to continue.')}
+        actions={
+          <Button
+            label={t('Sign in')}
+            href={`/sign-in?returnTo=${encodeURIComponent(`/review/${eventId}`)}`}
+          />
+        }
+      />
+    );
   const issue = reviewIssue(event, registration, now);
   return (
     <VStack gap={6} maxWidth={720} width="100%">
       <VStack gap={3}>
         <Heading level={1}>{t('Review this event')}</Heading>
         <Text weight="semibold">{event.title}</Text>
-        <Text color="secondary">
-          {t(
-            'Your feedback is anonymous to organizers and admins. This preview stores it only in memory.',
-          )}
-        </Text>
+        <Text color="secondary">{t('Your feedback is anonymous to organizers and admins.')}</Text>
       </VStack>
       <DataBoundary>
         {issue ? (

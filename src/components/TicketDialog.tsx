@@ -5,11 +5,13 @@ import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
+import { useQuery } from '@tanstack/react-query';
 import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { api, read } from '../api/client';
+import { useApp } from '../api/context';
 import { formatDate } from '../domain/format';
-import { useMock } from '../mocks/hooks';
 import { EmptyNotice } from './Feedback';
 
 export function TicketDialog({
@@ -20,28 +22,45 @@ export function TicketDialog({
   onClose: () => void;
 }) {
   const { t, i18n } = useTranslation();
-  const { data, user } = useMock();
+  const { data, user, preview } = useApp();
   const registration = data.registrations.find(
     (item) => item.id === registrationId && item.userId === user?.id && item.active,
   );
-  const event = data.events.find(
-    (item) => item.id === registration?.eventId && item.status === 'published',
-  );
-  const [qr, setQr] = useState('');
+  const ticketQuery = useQuery({
+    queryKey: ['campus', 'ticket', user?.id, registrationId],
+    queryFn: () =>
+      read(
+        api.registrations[':registrationId'].ticket.$get({
+          param: { registrationId: registrationId ?? '' },
+        }),
+      ),
+    enabled: !preview && !!registrationId && !!user,
+    gcTime: 0,
+    retry: false,
+  });
+  const ticket = preview
+    ? registration?.ticket
+    : ticketQuery.isSuccess
+      ? ticketQuery.data.ticket
+      : undefined;
+  const event = preview
+    ? data.events.find((item) => item.id === registration?.eventId && item.status === 'published')
+    : ticketQuery.data?.event;
+  const [qr, setQr] = useState<{ ticket: string; image: string }>();
   const [failed, setFailed] = useState(false);
   const mobile = useMediaQuery('(max-width: 48rem)');
   useEffect(() => {
     let active = true;
-    setQr('');
+    setQr(undefined);
     setFailed(false);
-    if (registration?.ticket)
-      void QRCode.toDataURL(registration.ticket, {
+    if (ticket)
+      void QRCode.toDataURL(ticket, {
         width: 320,
         margin: 4,
         errorCorrectionLevel: 'M',
       })
         .then((value) => {
-          if (active) setQr(value);
+          if (active) setQr({ ticket, image: value });
         })
         .catch(() => {
           if (active) setFailed(true);
@@ -49,7 +68,7 @@ export function TicketDialog({
     return () => {
       active = false;
     };
-  }, [registration?.ticket]);
+  }, [ticket]);
   const handleOpenChange = (open: boolean) => {
     if (!open) onClose();
   };
@@ -63,11 +82,13 @@ export function TicketDialog({
     >
       <Layout
         padding={4}
-        header={<DialogHeader title={t('Demo QR ticket')} onOpenChange={handleOpenChange} />}
+        header={<DialogHeader title={t('QR ticket')} onOpenChange={handleOpenChange} />}
         content={
           <LayoutContent>
             <VStack gap={3} hAlign="center">
-              {event && registration && user ? (
+              {!preview && ticketQuery.isPending ? (
+                <Text role="status">{t('Loading…')}</Text>
+              ) : event && ticket && user ? (
                 <>
                   <Heading level={3} justify="center" textWrap="balance">
                     {event.title}
@@ -76,23 +97,20 @@ export function TicketDialog({
                   <Text justify="center">
                     {formatDate(event.start, event.timezone, i18n.language)} · {event.timezone}
                   </Text>
-                  {qr ? (
+                  {qr?.ticket === ticket && qr ? (
                     <img
-                      src={qr}
-                      alt={t('Demo QR ticket for {{name}}', { name: user.name })}
+                      src={qr.image}
+                      alt={t('QR ticket for {{name}}', { name: user.name })}
                       className="ticket-qr"
                       width={320}
                       height={320}
                     />
                   ) : (
                     <Text role="status">
-                      {t(failed ? 'QR code could not be generated.' : 'Loading sample data…')}
+                      {t(failed ? 'QR code could not be generated.' : 'Loading…')}
                     </Text>
                   )}
                   <Text justify="center">{t('Present this ticket at the event entrance.')}</Text>
-                  <Text type="supporting" justify="center">
-                    {t('This sample QR code is valid only inside this local preview.')}
-                  </Text>
                 </>
               ) : (
                 <EmptyNotice

@@ -1,0 +1,6 @@
+.preview-controls-launcher {
+  position: fixed;
+  inset-inline-end: var(--spacing-4);
+  inset-block-end: max(var(--spacing-4), env(safe-area-inset-bottom));
+  z-index: 1;
+}

@@ -10,20 +10,19 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { EventRow } from '../components/EventRow';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { formatDate } from '../domain/format';
 import { hasEnded, instant, isStaff, publishIssue, unpublishIssue } from '../domain/rules';
-import { useEvents, useMock } from '../mocks/hooks';
 
 export function StaffPage() {
   const { t } = useTranslation();
-  const { user, now } = useMock();
-  const query = useEvents();
+  const { user, now, data } = useApp();
   const [filter, setFilter] = useState('upcoming');
   if (!isStaff(user)) return <AccessNotice />;
-  const events = (query.data ?? [])
+  const events = data.events
     .filter((event) =>
       filter === 'draft'
         ? event.status === 'draft'
@@ -59,7 +58,7 @@ export function StaffPage() {
         id="staff-events"
         aria-label={t(filter === 'draft' ? 'Draft' : filter === 'past' ? 'Past' : 'Upcoming')}
       >
-        <DataBoundary empty={!query.isPending && events.length === 0}>
+        <DataBoundary empty={events.length === 0}>
           {events.map((event) => (
             <VStack key={event.id} gap={0}>
               <EventRow event={event} staff />
@@ -75,26 +74,26 @@ export function StaffPage() {
 const confirmations = {
   publish: {
     title: 'Publish this event?',
-    description: 'Publication locks event editing. This change affects only the local preview.',
+    description: 'Publication makes the event public and locks editing.',
     label: 'Publish event',
   },
   unpublish: {
     title: 'Return this event to draft?',
     description:
-      'This clears all registrations and invalidates every demo ticket. Event content is kept.',
+      'This clears all registrations and invalidates every ticket. Event content is kept.',
     label: 'Unpublish event',
   },
   delete: {
     title: 'Delete this event?',
     description:
-      'This removes the event, tickets, reviews and certificate requests from this preview. No notification will be sent.',
+      'This permanently removes the event, its registrations, reviews and certificate requests.',
     label: 'Delete event',
   },
 };
 
 export function StaffEventPage({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
-  const { data, user, now, run } = useMock();
+  const { data, user, now, run } = useApp();
   const [action, setAction] = useState<keyof typeof confirmations | null>(null);
   const navigate = useNavigate();
   if (!isStaff(user)) return <AccessNotice />;
@@ -170,9 +169,9 @@ export function StaffEventPage({ eventId }: { eventId: string }) {
           }}
           {...confirmation}
           destructive={action === 'delete' || action === 'unpublish'}
-          onConfirm={() => {
+          onConfirm={async () => {
             if (!action) return;
-            const result = run({ type: action, eventId: event.id });
+            const result = await run({ type: action, eventId: event.id });
             if (result.ok && action === 'delete') void navigate({ to: '/staff' });
           }}
         />
