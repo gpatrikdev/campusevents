@@ -37,7 +37,7 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
         value={search}
         onChange={setSearch}
         hasClear
-        width="28rem"
+        width="100%"
       />
       <DataBoundary
         empty={attendees.length === 0}
