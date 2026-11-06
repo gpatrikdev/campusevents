@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../../api/context';
 import { belowNavHeight, EmptyNotice } from '../../components/Feedback';
+import { GlobeIcon } from '../../components/NavIcons';
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -41,7 +42,7 @@ export default function ProfilePage() {
     );
   const sections = [
     { value: 'account', label: t('Account information'), icon: 'info' },
-    { value: 'language', label: t('Language'), icon: 'wrench' },
+    { value: 'language', label: t('Language'), icon: GlobeIcon },
   ] as const;
   return (
     <Layout

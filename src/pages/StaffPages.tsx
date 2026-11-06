@@ -20,7 +20,7 @@ import { RichTextView } from '@astryxdesign/richtext';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
-import { LocationIcon } from '../components/EventIcons';
+import { LocationIcon, PlusIcon } from '../components/EventIcons';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { formatDate, formatDateRange } from '../domain/format';
 import { hasEnded, instant, isStaff, registrationCutoff } from '../domain/rules';
@@ -71,7 +71,12 @@ export function StaffPage() {
           <VStack gap={3}>
             <HStack hAlign="between" gap={4} wrap="wrap" vAlign="center">
               <Heading level={1}>{t('Events')}</Heading>
-              <Button label={t('Create draft')} href="/staff/events/new" variant="primary" />
+              <Button
+                label={t('Create draft')}
+                href="/staff/events/new"
+                variant="primary"
+                icon={<Icon icon={PlusIcon} />}
+              />
             </HStack>
             <Text color="secondary">
               {t('Create and publish events, then manage their attendees and check-in.')}
@@ -93,6 +98,7 @@ export function StaffPage() {
             <HStack gap={4} wrap="wrap" vAlign="end" role="group" aria-label={t('Event filters')}>
               <Selector
                 label={t('Status')}
+                startIcon="funnel"
                 width="12rem"
                 value={filter}
                 options={[

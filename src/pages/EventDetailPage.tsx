@@ -3,6 +3,7 @@ import { Button } from '@astryxdesign/core/Button';
 import { Divider } from '@astryxdesign/core/Divider';
 import { Heading } from '@astryxdesign/core/Heading';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
+import { Icon } from '@astryxdesign/core/Icon';
 import { Layout, LayoutContent, LayoutHeader, LayoutPanel } from '@astryxdesign/core/Layout';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
 import { Section } from '@astryxdesign/core/Section';
@@ -13,6 +14,13 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import {
+  CertificateIcon,
+  LocationIcon,
+  QrCodeIcon,
+  ReviewIcon,
+  TicketIcon,
+} from '../components/EventIcons';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
@@ -91,6 +99,7 @@ export function EventDetailPage({
                   href={`/review/${event.id}`}
                   label={t('Write a review')}
                   variant="primary"
+                  icon={<Icon icon={ReviewIcon} />}
                   size="lg"
                   width="100%"
                 />
@@ -101,6 +110,7 @@ export function EventDetailPage({
                 <Button
                   label={t('Request certificate')}
                   variant={review ? 'primary' : 'secondary'}
+                  icon={<Icon icon={CertificateIcon} />}
                   size="lg"
                   width="100%"
                   onClick={() => setCertificateEventId(event.id)}
@@ -120,6 +130,7 @@ export function EventDetailPage({
               <Button
                 label={t('Cancel registration')}
                 variant="destructive"
+                icon={<Icon icon="close" />}
                 size="lg"
                 width="100%"
                 onClick={() => setCancelId(registration.id)}
@@ -132,6 +143,7 @@ export function EventDetailPage({
             <Button
               label={t('Show QR ticket')}
               variant="primary"
+              icon={<Icon icon={QrCodeIcon} />}
               size="lg"
               width="100%"
               onClick={() => setTicketId(registration.id)}
@@ -146,6 +158,7 @@ export function EventDetailPage({
               href={`/sign-in?returnTo=${returnTo}`}
               label={t('Join event')}
               variant="primary"
+              icon={<Icon icon={TicketIcon} />}
               size="lg"
               width="100%"
             />
@@ -164,6 +177,7 @@ export function EventDetailPage({
           <Button
             label={t('Join event')}
             variant="primary"
+            icon={<Icon icon={TicketIcon} />}
             size="lg"
             width="100%"
             clickAction={async () => {
@@ -235,7 +249,7 @@ export function EventDetailPage({
                 )}
               </VStack>
               <MetadataList orientation="horizontal">
-                <MetadataListItem label={t('Date and time')}>
+                <MetadataListItem label={t('Date and time')} icon={<Icon icon="calendar" />}>
                   <VStack gap={1}>
                     <Text>
                       {formatDateRange(event.start, event.end, event.timezone, i18n.language)}
@@ -243,7 +257,9 @@ export function EventDetailPage({
                     <Text type="supporting">{event.timezone}</Text>
                   </VStack>
                 </MetadataListItem>
-                <MetadataListItem label={t('Location')}>{event.location}</MetadataListItem>
+                <MetadataListItem label={t('Location')} icon={<Icon icon={LocationIcon} />}>
+                  {event.location}
+                </MetadataListItem>
               </MetadataList>
             </VStack>
           </LayoutHeader>

@@ -3,6 +3,7 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Divider } from '@astryxdesign/core/Divider';
+import { Icon } from '@astryxdesign/core/Icon';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -11,6 +12,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../../api/client';
 import { useApp } from '../../api/context';
+import { MailIcon } from '../../components/EventIcons';
 import { emailSchema } from '../../domain/rules';
 import { GoogleSignInButton, LoginCard } from './LoginCard';
 
@@ -119,6 +121,7 @@ function SignIn({ returnTo }: { returnTo: string }) {
                 label={t('Send sign-in link')}
                 type="submit"
                 variant="primary"
+                icon={<Icon icon={MailIcon} size="sm" />}
                 size="lg"
                 width="100%"
                 isLoading={pending}

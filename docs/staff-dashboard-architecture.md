@@ -38,10 +38,10 @@ Use `Section` for page regions and `Table` or `List` for collections. Following 
 
 ## Staff event collection
 
-Shorten the heading to "Events" within the dashboard context. Keep "Create draft" as the primary action. Below the heading, a one-line description says what staff do here, matching the description under the Permissions heading. The drafts rule is easy to miss in that line, so it sits in a dismissable info `Banner` at the top of the content, as the admin note does on Permissions: "Drafts are visible to staff only." as the title and "Publish a draft more than 24 hours before it starts." as the description.
+Shorten the heading to "Events" within the dashboard context. Keep "Create draft" as the primary action, with a plus icon. Below the heading, a one-line description says what staff do here, matching the description under the Permissions heading. The drafts rule is easy to miss in that line, so it sits in a dismissable info `Banner` at the top of the content, as the admin note does on Permissions: "Drafts are visible to staff only." as the title and "Publish a draft more than 24 hours before it starts." as the description.
 
 ```text
-Events                                                    [Create draft]
+Events                                                  [+ Create draft]
 Create and publish events, then manage their attendees and check-in.
 ----------------------------------------------------------------------------------------
 (i) Drafts are visible to staff only.                                                [x]
@@ -57,7 +57,7 @@ Responsible AI           6 Nov, 10:00-16:00      Europe/Budapest  Science     Op
 
 The wireframe shows information placement, not final spacing or translated labels.
 
-- Use `Layout`, `LayoutHeader`, and `LayoutContent` for the page regions. Put the Draft, Upcoming, Ongoing, and Past options in a "Status" `Selector` inside a filter bar above the table. The bar is a wrapping `HStack` named "Event filters", as the Selector docs recommend, so later filters sit beside Status and move to a second line on phones. Upcoming contains published events that have not started; Ongoing contains published events from their start until their end.
+- Use `Layout`, `LayoutHeader`, and `LayoutContent` for the page regions. Put the Draft, Upcoming, Ongoing, and Past options in a "Status" `Selector`, with the Astryx `funnel` start icon, inside a filter bar above the table. The bar is a wrapping `HStack` named "Event filters", as the Selector docs recommend, so later filters sit beside Status and move to a second line on phones. Upcoming contains published events that have not started; Ongoing contains published events from their start until their end.
 - Use an Astryx `Table` at every width, built with the data-driven API and `proportional()` column widths. Its `Card` wrapper supplies the rounded outer border, matching the official Table showcase. When the columns don't fit, the table scrolls sideways inside its card. Keep the existing event ordering. Add no selection, bulk actions, sorting, saved views, or pagination controls.
 - Use Event, Date and time, Timezone, and Location columns. Upcoming and Ongoing also show a "Registration status" column with "Open" or "Closed" values. Draft and Past omit that redundant column. Ongoing status belongs to its filter, rather than a label beside the title.
 - Leave a spacing-6 gap between the filter bar and the table. Keep every table value on one line, truncating long values with Astryx text controls.
@@ -144,7 +144,7 @@ Reuse the current business-rule helpers. Publication still requires more than 24
 | `src/pages/StaffPages.tsx`                                                | Collection composition and management overview. Keep collection rendering local to this feature.                                       |
 | `src/components/StaffEventLayout.tsx`, new                                | Shared event heading, breadcrumb, task navigation, and contextual event actions.                                                       |
 | `src/components/ScannerLayout.tsx`, new                                   | Shared responsive scanner viewport, check-in window, controls, and result placement.                                                   |
-| `src/components/EventIcons.tsx`, new                                      | Small outline SVGs rendered through Astryx `Icon` where no semantic registry name exists.                                              |
+| `src/components/EventIcons.tsx`, `NavIcons.tsx`                           | Small outline SVGs rendered through Astryx `Icon` where no semantic registry name exists.                                              |
 | `src/routes/staff.events.$eventId.tsx`                                    | Mount the shared management frame for its applicable child routes. Preserve the editor and public preview layouts.                     |
 | `src/routes/staff.tsx`                                                    | Validate and retain the collection filter across the staff routes, including event navigation and browser Back.                        |
 | `src/pages/AttendeesPage.tsx`, `ScannerPage.tsx`, `ReviewResultsPage.tsx` | Keep task behavior; remove duplicate event headings when placed in the shared frame.                                                   |
@@ -222,6 +222,14 @@ A later change replaced the collection's filter tabs with the "Status" selector 
 - A dismissed banner returns on the next visit.
 - English, Hungarian, and dark mode show no page overflow at 390, 900, or 1280 pixels.
 
-A later change moved the drafts rule from the Events description into an info `Banner` and gave the heading a new description. The banner's dismiss button works from the keyboard and has a translated label.
+A later change moved the drafts rule from the Events description into an info `Banner` and gave the heading a new description. It also added icons where Astryx's own set has none, drawn to match it on a 24-pixel grid with 2-pixel round strokes:
+
+- Staff pages: a plus on "Create draft", `funnel` on the Status selector, and `search` on the Permissions and attendee search fields.
+- The public event page: a ticket on "Join event", the QR icon on "Show QR ticket", `close` on "Cancel registration", the star on "Write a review", and a rosette on "Request certificate". The "Date and time" and "Location" labels get the same calendar and location icons as the staff overview.
+- The phone menu: every item has an icon, so the main items match the Dashboard section. The desktop top bar stays text only.
+- Profile: a globe replaces the wrench on the Language section.
+- Sign-in: an envelope on the email button, beside the Google button's mark.
+
+Table rows, dialog buttons, and Cancel or Close buttons have no icons. Checked in English, Hungarian, and dark mode at 390 and 1280 pixels, with no page overflow and no console errors. The banner's dismiss button works from the keyboard and has a translated label.
 
 The scanner follow-up verified controls above the camera at 1440, 1024, 900, and 375 pixels, with check-in information separate from controls and feedback. English and Hungarian layouts, keyboard selection and activation, touch scanning, and an 844-by-390 landscape view passed without document overflow. Valid, duplicate, and invalid sample scans retained their outcomes. The camera capture and cleanup code was unchanged; physical camera scanning remains unverified.

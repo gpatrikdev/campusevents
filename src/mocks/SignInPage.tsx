@@ -3,6 +3,7 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Divider } from '@astryxdesign/core/Divider';
+import { Icon } from '@astryxdesign/core/Icon';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -10,6 +11,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GoogleSignInButton, LoginCard } from '../app/login-card/LoginCard';
+import { MailIcon } from '../components/EventIcons';
 import { emailSchema } from '../domain/rules';
 import { useMock } from './hooks';
 
@@ -79,6 +81,7 @@ export default function SignInPage({ returnTo }: { returnTo: string }) {
                 label={t('Preview magic-link email')}
                 type="submit"
                 variant="primary"
+                icon={<Icon icon={MailIcon} size="sm" />}
                 size="lg"
                 width="100%"
               />

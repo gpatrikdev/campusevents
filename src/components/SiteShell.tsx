@@ -19,9 +19,10 @@ import { AppContext, useApp } from '../api/context';
 import { LiveProvider } from '../api/LiveProvider';
 import { isStaff } from '../domain/rules';
 import { returnSearch } from '../pages/AuthPages';
+import { TicketIcon } from './EventIcons';
 import { belowNavHeight, DataBoundary, OutcomeNotice } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
-import { PeopleIcon } from './NavIcons';
+import { DashboardIcon, HomeIcon, PeopleIcon, SignInIcon, SignOutIcon, UserIcon } from './NavIcons';
 
 // The router marks a link as the current page whenever the URL starts with its
 // path, so /staff would also count on /staff/permissions. Matching only the exact
@@ -187,17 +188,21 @@ function Shell() {
     if (staffWorkspace && dataState === 'ready') focusPageHeading(pageFrame.current);
   }, [staffWorkspace, dataState]);
 
-  const navItems = [{ label: t('Events'), href: '/', isSelected: publicPage }];
+  // The icons show only in the phone menu, beside the Dashboard section's
+  // icons. The desktop top bar stays text only.
+  const navItems = [{ label: t('Events'), href: '/', icon: HomeIcon, isSelected: publicPage }];
   if (user)
     navItems.push({
       label: t('Registrations'),
       href: '/registrations',
+      icon: TicketIcon,
       isSelected: pathname.startsWith('/registrations'),
     });
   if (isStaff(user))
     navItems.push({
       label: t('Dashboard'),
       href: '/staff',
+      icon: DashboardIcon,
       isSelected: pathname.startsWith('/staff'),
     });
   // Dashboard pages get their own side nav. Only staff see it, since anyone
@@ -255,12 +260,13 @@ function Shell() {
                         <DrawerItem
                           label={t('Profile')}
                           href="/profile"
+                          icon={UserIcon}
                           isSelected={pathname.startsWith('/profile')}
                         />
-                        <DrawerItem label={t('Sign out')} onClick={signOut} />
+                        <DrawerItem label={t('Sign out')} icon={SignOutIcon} onClick={signOut} />
                       </SideNavSection>
                     ) : (
-                      <DrawerItem label={t('Sign in')} href="/sign-in" />
+                      <DrawerItem label={t('Sign in')} icon={SignInIcon} href="/sign-in" />
                     )}
                   </MobileNav>
                 ),
@@ -279,7 +285,9 @@ function Shell() {
           !bare && (
             <TopNav
               label={t('Main navigation')}
-              startContent={navItems.map((item) => <TopNavItem key={item.href} {...item} />)}
+              startContent={navItems.map(({ label, href, isSelected }) => (
+                <TopNavItem key={href} label={label} href={href} isSelected={isSelected} />
+              ))}
               endContent={
                 <>
                   <LanguagePicker />

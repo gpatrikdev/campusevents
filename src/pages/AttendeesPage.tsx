@@ -38,6 +38,7 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
       <TextInput
         label={t('Search attendees')}
         type="search"
+        startIcon="search"
         placeholder={t('Search by name or email')}
         value={search}
         onChange={setSearch}

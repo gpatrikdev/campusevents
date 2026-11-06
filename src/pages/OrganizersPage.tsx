@@ -56,6 +56,7 @@ export function OrganizersPage() {
               value={search}
               onChange={setSearch}
               type="search"
+              startIcon="search"
               hasClear
               width="100%"
             />
