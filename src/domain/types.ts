@@ -29,15 +29,19 @@ export interface Registration {
   ticket?: string;
   active: boolean;
   checkedIn: boolean;
-  reviewed: boolean;
+  /** The owner's own answers. Only that attendee's API responses include them. */
+  review: ReviewAnswers | null;
   certificate: 'none' | 'pending' | 'sent' | 'failed';
 }
 
-export interface Review {
-  id: string;
-  eventId: string;
+export interface ReviewAnswers {
   rating: number;
   comment: string;
+}
+
+export interface Review extends ReviewAnswers {
+  id: string;
+  eventId: string;
 }
 
 export interface MockData {

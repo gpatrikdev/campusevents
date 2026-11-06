@@ -100,7 +100,7 @@ export function applyAction(
         ticket: `DEMO-${event.id}-${id}`,
         active: true,
         checkedIn: false,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       });
       return finish(true, 'Registration saved locally. No confirmation email was sent.');
@@ -156,7 +156,7 @@ export function applyAction(
           'Choose a rating from 1 to 5. Comments can contain up to 2,000 characters.',
         );
       if (context.fail) return fail();
-      if (mine) mine.reviewed = true;
+      if (mine) mine.review = value.data;
       next.reviews.push({ id: `review-${++next.sequence}`, eventId: event.id, ...value.data });
       return finish(true, 'Review saved in this preview.');
     }

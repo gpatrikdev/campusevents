@@ -167,7 +167,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-symposium-r1',
         active: true,
         checkedIn: false,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       },
       {
@@ -177,7 +177,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-open-science-r2',
         active: true,
         checkedIn: false,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       },
       {
@@ -187,7 +187,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-ethics-r3',
         active: true,
         checkedIn: true,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       },
       {
@@ -197,7 +197,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-sustainability-r4',
         active: true,
         checkedIn: true,
-        reviewed: true,
+        review: { rating: 4, comment: 'Clear and practical. Thank you.' },
         certificate: 'sent',
       },
       {
@@ -207,7 +207,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-archives-r5',
         active: true,
         checkedIn: false,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       },
       {
@@ -217,7 +217,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-open-science-r6',
         active: true,
         checkedIn: true,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       },
       {
@@ -227,7 +227,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-open-science-r7',
         active: false,
         checkedIn: false,
-        reviewed: false,
+        review: null,
         certificate: 'none',
       },
     ],

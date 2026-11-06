@@ -412,6 +412,18 @@ describe('reviews and certificates', () => {
     expect((await review(id, attendee, 6)).status).toBe(400);
     expect((await review()).status).toBe(200);
     expect((await review()).status).toBe(409);
+    // Only the reviewer's own responses carry their answers.
+    const own = { rating: 5, comment: 'Useful discussion.' };
+    const detail = async (account: { cookie: string }) =>
+      (await request(`/events/${id}`, account.cookie)).json<{
+        registrations: { review: unknown }[];
+      }>();
+    expect((await detail(attendee)).registrations.map((item) => item.review)).toEqual([own]);
+    expect((await detail(other)).registrations.map((item) => item.review)).toEqual([null]);
+    const listed = await (await request('/registrations', attendee.cookie)).json<
+      { event: { id: string }; registration: { review: unknown } }[]
+    >();
+    expect(listed.find((item) => item.event.id === id)?.registration.review).toEqual(own);
     const path = `/staff/events/${id}/reviews`;
     expect((await request(path, attendee.cookie)).status).toBe(403);
     const results = await (await request(path, staff.cookie)).json<{ results: unknown }>();

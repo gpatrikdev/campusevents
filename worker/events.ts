@@ -41,7 +41,7 @@ const registrationDto = z.object({
   userId: z.string(),
   active: z.boolean(),
   checkedIn: z.boolean(),
-  reviewed: z.boolean(),
+  review: z.object({ rating: z.number(), comment: z.string() }).nullable(),
   certificate: z.enum(['none', 'pending', 'sent', 'failed']),
 });
 const eventDetailDto = z.object({ event: eventDto, registrations: z.array(registrationDto) });
@@ -69,14 +69,14 @@ export function toEvent(row: typeof events.$inferSelect): CampusEvent {
 }
 
 function toRegistration(row: typeof registrations.$inferSelect): Registration {
-  const { id, eventId, userId, active, checkedInAt, rating, certificate } = row;
+  const { id, eventId, userId, active, checkedInAt, rating, comment, certificate } = row;
   return {
     id,
     eventId,
     userId,
     active,
     checkedIn: !!checkedInAt,
-    reviewed: rating !== null,
+    review: rating === null ? null : { rating, comment: comment ?? '' },
     certificate,
   };
 }

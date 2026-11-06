@@ -41,7 +41,7 @@ export function reviewIssue(
 ) {
   if (!isPublic(event) || !registration?.active || !registration.checkedIn)
     return 'Only checked-in attendees are eligible.';
-  if (registration.reviewed) return 'Review submitted';
+  if (registration.review) return 'Review submitted';
   if (!hasEnded(event, now)) return 'Available after the event ends.';
   if (now >= reviewCutoff(event)) return 'The 72-hour review window has closed.';
   return null;

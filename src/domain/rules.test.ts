@@ -227,6 +227,10 @@ describe('post-event actions', () => {
       rating: 4,
       comment: 'Useful.',
     });
+    expect(result.data.registrations.find((item) => item.id === 'r3')?.review).toEqual({
+      rating: 4,
+      comment: 'Useful.',
+    });
   });
   it('allows one certificate request without a later deadline and never retries a failed request', () => {
     const data = createFixtures();
