@@ -253,3 +253,5 @@ A later change gave the public event page the staff overview's date, time, and l
 - The public page's headings read as h1, then h2 for Date and time and Location.
 
 A later change made the editor's date fields match the app's other dates. Astryx formats them from the `InternationalizationProvider` locale, which was the bare `en` or `hu`, so English fell back to the US style ("November 20, 2026", "10:00 AM"). The provider now gets `en-GB` or `hu-HU` from the same `intlLocale` helper that `formatDate` uses. The fields read "20 November 2026" and "10:00", or "2026. november 20." in Hungarian, and a typed "3/12/2026" means 3 December. Astryx starts the calendar week on Sunday whatever the locale, so both fields set `weekStartsOn="mon"`. Phones use the native picker, which follows the device settings. The rich-text toolbar was already untranslated in Hungarian before this change and still is.
+
+The public event page now shows the event list's green "Happening now" label under the title instead of "Ongoing". Both use the shared `HappeningNow` component. The staff Status filter keeps its "Ongoing" option.

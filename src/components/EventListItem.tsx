@@ -9,6 +9,18 @@ import { useTranslation } from 'react-i18next';
 import { formatDate, formatDateRange } from '../domain/format';
 import type { CampusEvent } from '../domain/types';
 
+// Marks an event that has started and not yet ended, in the success green.
+export function HappeningNow() {
+  const { t } = useTranslation();
+  return (
+    <HStack className="live-now">
+      <Text type="supporting" weight="semibold" color="inherit">
+        {t('Happening now')}
+      </Text>
+    </HStack>
+  );
+}
+
 export function EventListItem({
   event,
   compact,

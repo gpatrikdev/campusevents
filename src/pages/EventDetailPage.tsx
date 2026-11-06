@@ -16,6 +16,7 @@ import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { EventDetails } from '../components/EventDetails';
 import { CertificateIcon, QrCodeIcon, ReviewIcon, TicketIcon } from '../components/EventIcons';
+import { HappeningNow } from '../components/EventListItem';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
@@ -240,7 +241,7 @@ export function EventDetailPage({
                   {event.title}
                 </Heading>
                 {!ended && now >= instant(event.start) && event.status === 'published' && (
-                  <Text type="label">{t('Ongoing')}</Text>
+                  <HappeningNow />
                 )}
               </VStack>
               <EventDetails event={event} headingLevel={2} />

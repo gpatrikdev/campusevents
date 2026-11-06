@@ -10,7 +10,7 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
-import { EventListItem } from '../components/EventListItem';
+import { EventListItem, HappeningNow } from '../components/EventListItem';
 import { DataBoundary, EmptyNotice } from '../components/Feedback';
 import { UserBlobatar } from '../components/UserBlobatar';
 import { instant, registrationCutoff } from '../domain/rules';
@@ -134,13 +134,7 @@ function PublicEventListItem({
       </Text>
     </HStack>
   );
-  const live = ongoing && (
-    <HStack className="live-now">
-      <Text type="supporting" weight="semibold" color="inherit">
-        {t('Happening now')}
-      </Text>
-    </HStack>
-  );
+  const live = ongoing && <HappeningNow />;
   return (
     <EventListItem
       event={event}
