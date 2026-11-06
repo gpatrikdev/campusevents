@@ -7,7 +7,6 @@ import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery, useOverflow } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
-import { IconButton } from '@astryxdesign/core/IconButton';
 import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
 import { StackItem } from '@astryxdesign/core/Stack';
 import { Tab, TabList } from '@astryxdesign/core/TabList';
@@ -17,7 +16,7 @@ import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
-import { HOUR, hasEnded, instant, isStaff, publishIssue, unpublishIssue } from '../domain/rules';
+import { isStaff, publishIssue, unpublishIssue } from '../domain/rules';
 import { ConfirmDialog } from './ConfirmDialog';
 import { DeleteIcon, EditIcon, QrCodeIcon, ReviewIcon } from './EventIcons';
 import { AccessNotice, DataBoundary, EmptyNotice, UnavailableEvent } from './Feedback';
@@ -77,7 +76,6 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
   const draft = event.status === 'draft';
   const publishBlocked = publishIssue(event, user, now);
   const unpublishBlocked = unpublishIssue(event, user, now);
-  const scanning = !draft && now >= instant(event.start) - HOUR && !hasEnded(event, now);
   const ready = dataState === 'ready';
   const confirmation = confirmations[action ?? 'publish'];
   const publicationIssue = draft ? publishBlocked : unpublishBlocked;
@@ -108,19 +106,7 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
         isDisabled={!ready}
         onClick={() => setAction('delete')}
       />
-      {/* A stacked group shows the label, since a row holding only an icon
-          reads as a stray button there. */}
-      {isStacked ? (
-        <Button label={pageLabel} href={pageHref} icon={pageIcon} variant="secondary" />
-      ) : (
-        <IconButton
-          label={pageLabel}
-          tooltip={pageLabel}
-          href={pageHref}
-          icon={pageIcon}
-          variant="secondary"
-        />
-      )}
+      <Button label={pageLabel} href={pageHref} icon={pageIcon} variant="secondary" />
     </ButtonGroup>
   );
   return (
@@ -158,14 +144,6 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
                 </VStack>
               </StackItem>
               <HStack ref={actionsRef} gap={4} wrap="wrap" vAlign="start">
-                {scanning && tab !== 'scan' && (
-                  <Button
-                    label={t('Scan QR tickets')}
-                    href={`${base}/scan`}
-                    variant="primary"
-                    icon={<Icon icon={QrCodeIcon} />}
-                  />
-                )}
                 {actionGroup(stacked)}
                 <HStack ref={actionsMeasureRef} className="actions-measure" aria-hidden inert>
                   {actionGroup(false)}

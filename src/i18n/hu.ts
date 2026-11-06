@@ -187,7 +187,6 @@ export const hu: Record<string, string> = {
   'Preview event': 'Esemény előnézete',
   'Open public page': 'Nyilvános oldal megnyitása',
   Attendees: 'Résztvevők',
-  'Scan QR tickets': 'QR-jegyek beolvasása',
   'Review results': 'Értékelések eredménye',
   'Publish event': 'Esemény közzététele',
   'Publish this event?': 'Közzéteszi ezt az eseményt?',
