@@ -4,6 +4,7 @@ import 'survey-core/survey-core.css';
 import './app.css';
 import './i18n';
 import { InternationalizationProvider } from '@astryxdesign/core/i18n';
+import { LayerProvider } from '@astryxdesign/core/Layer';
 import huCatalog from '@astryxdesign/core/locales/hu-HU.generated.js';
 import { Theme } from '@astryxdesign/core/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -49,7 +50,11 @@ function App({ children }: { children: React.ReactNode }) {
         locale={i18n.language}
         messages={{ 'hu-HU': huCatalog, hu: huCatalog }}
       >
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        {/* Hosts the toast viewport inside the theme and translations, so toasts
+            match the page and their close button is translated. */}
+        <LayerProvider>
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        </LayerProvider>
       </InternationalizationProvider>
     </Theme>
   );
