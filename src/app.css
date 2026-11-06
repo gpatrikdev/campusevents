@@ -183,6 +183,25 @@ html {
   }
 }
 
+/* The hidden one-row copy of the staff event actions that useOverflow
+   measures. Its box follows the row's width, which is how the hook notices a
+   change, but starts at its containing block's edge and clips what overflows,
+   so it never widens the page. The row keeps its full width so the measurement
+   is right. Astryx's OverflowList hides its own copy the same way. */
+.actions-measure {
+  position: absolute;
+  inset-inline-start: 0;
+  max-inline-size: 100%;
+  block-size: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.actions-measure > * {
+  flex-shrink: 0;
+}
+
 @media (max-width: 48rem) {
   .page-frame {
     gap: var(--spacing-6);
