@@ -34,7 +34,7 @@ export function StaffPage() {
   const { t, i18n } = useTranslation();
   const { user, now, data } = useApp();
   const search = useSearch({ from: '/staff' });
-  const { filter = 'upcoming', q, location, from, to } = search;
+  const { filter = 'all', q, location, from, to } = search;
   const navigate = useNavigate({ from: '/staff/' });
   const compact = useMediaQuery('(max-width: 42rem)');
   // The search field keeps its own text. The URL updates a moment after each key, and
