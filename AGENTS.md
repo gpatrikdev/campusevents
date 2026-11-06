@@ -35,7 +35,7 @@ Use `code-structure`, if available, only when actual shared mechanics justify ex
 
 - Astryx Neutral supplies components, layout conventions, icons, and interface fonts. Use plain CSS for app-specific styling.
 - Do not introduce Tailwind, shadcn, direct Radix usage, Lucide, extra interface fonts, or another design system.
-- Use Astryx RichText rather than building another editor. Image-upload extensions are outside the MVP.
+- Use Astryx RichText rather than building another editor. Description images use the project's own image node (`src/components/EventImage.tsx`), not a second editor.
 - Use the approved fixed SurveyJS form for reviews. Its styles should fit the app, but do not replace it with a custom form builder.
 - Frontend Design helps compose a page; UI/UX Pro Max checks how it works; Impeccable refines the result. Do not let each skill redesign the previous skill's work.
 - Ponytail reduces unnecessary code, not approved requirements. Do not reopen settled packages solely to reduce the dependency count.

@@ -59,9 +59,9 @@ Required fields:
 - Event timezone.
 - Formatted description using Astryx RichText.
 
-No separate banner or attendee capacity.
+Events can also have a banner image, shown across the top of the event page. There is no attendee capacity.
 
-Use Astryx RichText and its Markdown capabilities. Image uploads and R2 are deferred unless later approved. Do not build a custom image-upload extension for the MVP. If image support is added, unpublishing must retain event images.
+Use Astryx RichText and its Markdown capabilities. Staff can upload images into the description through an image node added to RichText, approved on 6 November 2026 together with the banner. Uploads are JPEG, PNG, WebP or GIF up to 5 MB. The server checks the file's bytes and refuses SVG. Events store image ids, not addresses. Unpublishing keeps the banner and description images. Deleting an event leaves its images in R2 for now.
 
 | Action/state | Approved behavior |
 | --- | --- |
@@ -186,6 +186,7 @@ Choose the **latest stable, mutually compatible versions when building**. Do not
 | Timezones | Temporal with `@js-temporal/polyfill` where native support is insufficient |
 | Email | Resend API through built-in `fetch`; simple HTML and plain-text templates, with inline QR images and PDF attachments |
 | Hosting | Cloudflare Workers serving API and frontend assets together |
+| Image storage | Cloudflare R2. Production serves images from the bucket's public `r2.dev` URL until the app moves to its own domain. The app and the images then move to that domain together. |
 | Scheduling | Cloudflare cron for review invitations; no separate scheduler package |
 | Tests | `vitest`, `@cloudflare/vitest-plugin` |
 | Formatting/linting | `@biomejs/biome`, `lefthook` as development dependencies; format and lint before commits |
@@ -233,11 +234,10 @@ Use Impeccable for focused review and refinement rather than introducing a secon
 - Query Devtools initially.
 - A project Playwright test suite and `@playwright/test` for now. Playwright MCP is approved for agent browser validation.
 - Cloudflare Queues and automatic scheduled certificate issuance.
-- R2 until an approved file-storage feature needs it.
 - Resend SDK, Nodemailer, and React Email packages; direct API calls and simple templates suffice.
 - Additional form libraries; native React forms with Zod suffice outside SurveyJS reviews.
 - Moment, Luxon, and date-fns alongside Temporal.
-- Calendar export, capacity handling, separate banners, template library, custom question builder, certificate verification pages, and a separate dashboard statistics overview.
+- Calendar export, capacity handling, template library, custom question builder, certificate verification pages, and a separate dashboard statistics overview.
 
 ## Required safeguards
 

@@ -61,4 +61,14 @@ A hosted environment needs a fresh Neon PostgreSQL database, a Cloudflare Hyperd
 
 Set `BETTER_AUTH_URL` to the public HTTPS origin and `BETTER_AUTH_SECRET` to a random value of at least 32 characters. For Google login, set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` and register `<origin>/api/auth/callback/google` as a redirect URI. Set `RESEND_API_KEY` and `EMAIL_FROM` with a verified Resend sender. Keep the local inbox endpoint in local development only. If testing real Google OAuth locally, also register `http://127.0.0.1:5173/api/auth/callback/google`.
 
+Banners and description images live in the R2 bucket `campus-events-images`, bound as `IMAGES`. Local development and the Worker tests use a simulated bucket under `.wrangler/state`, and the Worker serves those images at `/api/images/<id>`. In production the bucket must exist before deploying, and the app reads images from the bucket's public `r2.dev` URL:
+
+```sh
+pnpm exec wrangler r2 bucket create campus-events-images
+pnpm exec wrangler r2 bucket dev-url enable campus-events-images
+pnpm exec wrangler r2 bucket dev-url get campus-events-images
+```
+
+Put the printed URL in `.env.production.local` as `VITE_IMAGES_URL=https://pub-<id>.r2.dev` before `pnpm build`. Without it, the Worker route serves the images instead. Cloudflare rate-limits `r2.dev` and doesn't cache it, so move both the app and the images to a custom domain before heavy use. Events store image ids, so that move only changes `VITE_IMAGES_URL`.
+
 The Worker owns deadlines and permissions. Transactions lock event and account rows before conflicting actions, and PostgreSQL enforces one active registration per account and event. An invitation can be retried by cron after a send error. A certificate request consumes the attendee's single request before generating and sending the PDF. The app shows failure when delivery fails and reports unconfirmed delivery if the request stops before the provider reports an outcome.
