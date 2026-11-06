@@ -28,6 +28,7 @@ export function EventListItem({
   details,
   endContent,
   className,
+  href = `/events/${event.id}`,
 }: {
   event: CampusEvent;
   compact: boolean;
@@ -35,6 +36,8 @@ export function EventListItem({
   details?: ReactNode;
   endContent?: ReactNode;
   className?: string;
+  /** Where the row leads. Defaults to the event page. */
+  href?: string;
 }) {
   const { i18n } = useTranslation();
   const link = useRef<HTMLAnchorElement>(null);
@@ -54,7 +57,7 @@ export function EventListItem({
         )
       }
       label={
-        <Link ref={link} href={`/events/${event.id}`} size="lg" color="primary" weight="semibold">
+        <Link ref={link} href={href} size="lg" color="primary" weight="semibold">
           {event.title}
         </Link>
       }

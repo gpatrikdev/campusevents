@@ -2,16 +2,13 @@ import { Button } from '@astryxdesign/core/Button';
 import { Heading } from '@astryxdesign/core/Heading';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
-import { useEffect, useMemo } from 'react';
+import { Navigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
-import { Model } from 'survey-core';
-import 'survey-core/i18n/hungarian';
-import { Survey } from 'survey-react-ui';
 import { useApp } from '../api/context';
 import { DataBoundary, EmptyNotice, UnavailableEvent } from '../components/Feedback';
 import { formatDate } from '../domain/format';
 import { reviewCutoff, reviewIssue } from '../domain/rules';
-import { reviewForm, reviewTheme } from '../reviews/form';
+import { ReviewSurvey } from '../reviews/ReviewSurvey';
 
 export function ReviewPage({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
@@ -20,32 +17,6 @@ export function ReviewPage({ eventId }: { eventId: string }) {
   const registration = data.registrations.find(
     (item) => item.eventId === eventId && item.userId === user?.id && item.active,
   );
-  const model = useMemo(() => {
-    const survey = new Model(reviewForm);
-    survey.applyTheme(reviewTheme);
-    return survey;
-  }, []);
-  useEffect(() => {
-    model.locale = i18n.language;
-    model.completeText = t('Submit review');
-    // Astryx forms mark required fields "∙ Required" rather than with a red
-    // asterisk. SurveyJS hides the mark from screen readers.
-    model.requiredMark = `∙ ${t('Required')}`;
-  }, [model, i18n.language, t]);
-  useEffect(() => {
-    const submit = async (sender: Model, options: { allow: boolean }) => {
-      const result = await run({
-        type: 'review',
-        eventId,
-        rating: Number(sender.data.rating),
-        comment: String(sender.data.comment ?? ''),
-      });
-      options.allow = result.ok;
-    };
-    model.onCompleting.add(submit);
-    return () => model.onCompleting.remove(submit);
-  }, [model, run, eventId]);
-  useEffect(() => () => model.dispose(), [model]);
   if (event?.status !== 'published') return <UnavailableEvent />;
   if (!user)
     return (
@@ -59,6 +30,8 @@ export function ReviewPage({ eventId }: { eventId: string }) {
         }
       />
     );
+  // A submitted review, including one just sent from this form, opens read-only.
+  if (registration?.review) return <Navigate to="/reviews/$eventId" params={{ eventId }} replace />;
   const issue = reviewIssue(event, registration, now);
   return (
     <VStack gap={6} maxWidth={720} width="100%">
@@ -76,7 +49,9 @@ export function ReviewPage({ eventId }: { eventId: string }) {
               {t('Review deadline')}:{' '}
               {formatDate(reviewCutoff(event), event.timezone, i18n.language)} · {event.timezone}
             </Text>
-            <Survey model={model} />
+            <ReviewSurvey
+              onSubmit={async (answers) => (await run({ type: 'review', eventId, ...answers })).ok}
+            />
           </>
         )}
       </DataBoundary>

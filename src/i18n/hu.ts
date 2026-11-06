@@ -331,6 +331,15 @@ export const hu: Record<string, string> = {
   Required: 'Kötelező',
   'Submit review': 'Értékelés elküldése',
   'Review submitted': 'Értékelés elküldve',
+  Reviews: 'Értékelések',
+  'Your review': 'Az Ön értékelése',
+  'View your review': 'Értékelése megtekintése',
+  'Your submitted reviews. Organizers and admins see them without your name.':
+    'Az Ön által beküldött értékelések. A szervezők és az adminisztrátorok az Ön neve nélkül látják őket.',
+  'Submitted reviews': 'Beküldött értékelések',
+  'View registrations': 'Jelentkezések megtekintése',
+  "You haven't reviewed this event.": 'Ezt az eseményt még nem értékelte.',
+  'No comment': 'Nincs megjegyzés',
   'We will email the PDF using your confirmed name and selected language. You can request it once.':
     'Az igazolást a megerősített névvel és a választott nyelven küldjük el e-mailben. Egy alkalommal kérhető.',
   'Certificate requested. Email delivery is unconfirmed.':

@@ -89,7 +89,16 @@ export function EventDetailPage({
         ) : ended ? (
           checkedIn ? (
             <>
-              {review ? (
+              {registration?.review ? (
+                <Button
+                  href={`/reviews/${event.id}`}
+                  label={t('View your review')}
+                  variant="secondary"
+                  icon={<Icon icon={ReviewIcon} />}
+                  size="lg"
+                  width="100%"
+                />
+              ) : review ? (
                 <Text color="secondary">{t(review)}</Text>
               ) : (
                 <Button

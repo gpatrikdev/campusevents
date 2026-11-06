@@ -17,6 +17,8 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as ReviewEventIdRouteImport } from './routes/review.$eventId'
+import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
+import { Route as ReviewsEventIdRouteImport } from './routes/reviews.$eventId'
 import { Route as StaffIndexRouteImport } from './routes/staff.index'
 import { Route as StaffPermissionsRouteImport } from './routes/staff.permissions'
 import { Route as StaffEventsEventIdRouteImport } from './routes/staff.events.$eventId'
@@ -66,6 +68,16 @@ const EventsEventIdRoute = EventsEventIdRouteImport.update({
 const ReviewEventIdRoute = ReviewEventIdRouteImport.update({
   id: '/review/$eventId',
   path: '/review/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsIndexRoute = ReviewsIndexRouteImport.update({
+  id: '/reviews/',
+  path: '/reviews/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsEventIdRoute = ReviewsEventIdRouteImport.update({
+  id: '/reviews/$eventId',
+  path: '/reviews/$eventId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StaffIndexRoute = StaffIndexRouteImport.update({
@@ -131,7 +143,9 @@ export interface FileRoutesByFullPath {
   '/staff': typeof StaffRouteWithChildren
   '/events/$eventId': typeof EventsEventIdRoute
   '/review/$eventId': typeof ReviewEventIdRoute
+  '/reviews/$eventId': typeof ReviewsEventIdRoute
   '/staff/permissions': typeof StaffPermissionsRoute
+  '/reviews/': typeof ReviewsIndexRoute
   '/staff/': typeof StaffIndexRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdRouteWithChildren
   '/staff/events/new': typeof StaffEventsNewRoute
@@ -150,7 +164,9 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/events/$eventId': typeof EventsEventIdRoute
   '/review/$eventId': typeof ReviewEventIdRoute
+  '/reviews/$eventId': typeof ReviewsEventIdRoute
   '/staff/permissions': typeof StaffPermissionsRoute
+  '/reviews': typeof ReviewsIndexRoute
   '/staff': typeof StaffIndexRoute
   '/staff/events/new': typeof StaffEventsNewRoute
   '/staff/events/$eventId/attendees': typeof StaffEventsEventIdAttendeesRoute
@@ -170,7 +186,9 @@ export interface FileRoutesById {
   '/staff': typeof StaffRouteWithChildren
   '/events/$eventId': typeof EventsEventIdRoute
   '/review/$eventId': typeof ReviewEventIdRoute
+  '/reviews/$eventId': typeof ReviewsEventIdRoute
   '/staff/permissions': typeof StaffPermissionsRoute
+  '/reviews/': typeof ReviewsIndexRoute
   '/staff/': typeof StaffIndexRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdRouteWithChildren
   '/staff/events/new': typeof StaffEventsNewRoute
@@ -192,7 +210,9 @@ export interface FileRouteTypes {
     | '/staff'
     | '/events/$eventId'
     | '/review/$eventId'
+    | '/reviews/$eventId'
     | '/staff/permissions'
+    | '/reviews/'
     | '/staff/'
     | '/staff/events/$eventId'
     | '/staff/events/new'
@@ -211,7 +231,9 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/events/$eventId'
     | '/review/$eventId'
+    | '/reviews/$eventId'
     | '/staff/permissions'
+    | '/reviews'
     | '/staff'
     | '/staff/events/new'
     | '/staff/events/$eventId/attendees'
@@ -230,7 +252,9 @@ export interface FileRouteTypes {
     | '/staff'
     | '/events/$eventId'
     | '/review/$eventId'
+    | '/reviews/$eventId'
     | '/staff/permissions'
+    | '/reviews/'
     | '/staff/'
     | '/staff/events/$eventId'
     | '/staff/events/new'
@@ -251,6 +275,8 @@ export interface RootRouteChildren {
   StaffRoute: typeof StaffRouteWithChildren
   EventsEventIdRoute: typeof EventsEventIdRoute
   ReviewEventIdRoute: typeof ReviewEventIdRoute
+  ReviewsEventIdRoute: typeof ReviewsEventIdRoute
+  ReviewsIndexRoute: typeof ReviewsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -309,6 +335,20 @@ declare module '@tanstack/react-router' {
       path: '/review/$eventId'
       fullPath: '/review/$eventId'
       preLoaderRoute: typeof ReviewEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews/': {
+      id: '/reviews/'
+      path: '/reviews'
+      fullPath: '/reviews/'
+      preLoaderRoute: typeof ReviewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews/$eventId': {
+      id: '/reviews/$eventId'
+      path: '/reviews/$eventId'
+      fullPath: '/reviews/$eventId'
+      preLoaderRoute: typeof ReviewsEventIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/staff/': {
@@ -430,6 +470,8 @@ const rootRouteChildren: RootRouteChildren = {
   StaffRoute: StaffRouteWithChildren,
   EventsEventIdRoute: EventsEventIdRoute,
   ReviewEventIdRoute: ReviewEventIdRoute,
+  ReviewsEventIdRoute: ReviewsEventIdRoute,
+  ReviewsIndexRoute: ReviewsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

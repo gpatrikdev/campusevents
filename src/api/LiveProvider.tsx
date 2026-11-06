@@ -15,7 +15,8 @@ async function loadPage(path: string, user: User | undefined): Promise<AppData> 
   const [, first, second, third, fourth] = path.split('/');
   try {
     if (!first) return { ...emptyData, events: await read(api.events.$get()) };
-    if (first === 'registrations' && user?.profileComplete) {
+    const ownRegistrations = first === 'registrations' || (first === 'reviews' && !second);
+    if (ownRegistrations && user?.profileComplete) {
       const rows = await read(api.registrations.$get());
       return {
         ...emptyData,
@@ -23,7 +24,8 @@ async function loadPage(path: string, user: User | undefined): Promise<AppData> 
         registrations: rows.map(({ registration }) => registration),
       };
     }
-    if ((first === 'events' || first === 'review') && validEventId.test(second ?? '')) {
+    const eventPage = first === 'events' || first === 'review' || first === 'reviews';
+    if (eventPage && validEventId.test(second ?? '')) {
       const { event, registrations } = await read(
         api.events[':eventId'].$get({ param: { eventId: second } }),
       );

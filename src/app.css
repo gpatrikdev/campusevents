@@ -243,6 +243,16 @@ html {
   vertical-align: baseline;
 }
 
+/* A submitted review fills its chosen rating the way the editable form does.
+   SurveyJS only outlines it when read-only, which looks like the focus ring. */
+.sd-rating__item.sd-rating__item--selected.sd-rating__item--readonly {
+  background-color: var(--sjs2-color-bg-brand-primary);
+}
+.sd-rating__item.sd-rating__item--selected.sd-rating__item--readonly
+  .sd-rating__item-text.sd-rating__item-text {
+  color: var(--sjs2-color-fg-brand-on-primary);
+}
+
 /* Larger touch targets on phones. The rich-text toolbar keeps the small controls
    Astryx gives it, since taller ones push more of its buttons off screen. */
 @media (max-width: 42rem) {

@@ -19,7 +19,7 @@ import { AppContext, useApp } from '../api/context';
 import { LiveProvider } from '../api/LiveProvider';
 import { isStaff } from '../domain/rules';
 import { returnSearch } from '../pages/AuthPages';
-import { TicketIcon } from './EventIcons';
+import { ReviewIcon, TicketIcon } from './EventIcons';
 import { belowNavHeight, DataBoundary, OutcomeNotice } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
 import { DashboardIcon, HomeIcon, PeopleIcon, SignInIcon, SignOutIcon, UserIcon } from './NavIcons';
@@ -151,9 +151,13 @@ function Shell() {
                 ? t('Sign in')
                 : pathname.startsWith('/complete-profile')
                   ? t('Complete your profile')
-                  : pathname.startsWith('/review')
-                    ? t('Review this event')
-                    : t('Events');
+                  : /^\/reviews\/?$/.test(pathname)
+                    ? t('Reviews')
+                    : pathname.startsWith('/reviews/')
+                      ? t('Your review')
+                      : pathname.startsWith('/review')
+                        ? t('Review this event')
+                        : t('Events');
     const staffTask = pathname.endsWith('/attendees')
       ? t('Attendees')
       : pathname.endsWith('/scan')
@@ -197,6 +201,14 @@ function Shell() {
       href: '/registrations',
       icon: TicketIcon,
       isSelected: pathname.startsWith('/registrations'),
+    });
+  if (user)
+    navItems.push({
+      label: t('Reviews'),
+      href: '/reviews',
+      icon: ReviewIcon,
+      // Covers the form at /review/<event> as well as /reviews.
+      isSelected: pathname.startsWith('/review'),
     });
   if (isStaff(user))
     navItems.push({
