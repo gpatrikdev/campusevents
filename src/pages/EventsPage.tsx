@@ -75,6 +75,7 @@ export function EventsPage() {
                       fallbackIcon={<Icon icon="calendar" size="lg" />}
                       title={t('No upcoming events')}
                       description={t('Published events will appear here.')}
+                      isBoxed
                     />
                   }
                 >

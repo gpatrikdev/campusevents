@@ -95,6 +95,7 @@ export function RegistrationsPage() {
                   title={t('No registrations yet')}
                   description={t('Find an event and join to get a QR ticket.')}
                   actions={<Button href="/" label={t('Browse events')} />}
+                  isBoxed
                 />
               }
             >

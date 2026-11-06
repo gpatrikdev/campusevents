@@ -1,5 +1,6 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
+import { Card } from '@astryxdesign/core/Card';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Skeleton } from '@astryxdesign/core/Skeleton';
@@ -17,13 +18,16 @@ export const belowNavHeight = 'calc(100dvh - var(--spacing-12) - 2 * var(--spaci
 export function EmptyNotice({
   fallbackIcon,
   minHeight = '24rem',
+  isBoxed = false,
   ...props
 }: Omit<ComponentProps<typeof EmptyState>, 'icon'> & {
   fallbackIcon?: ReactNode;
   minHeight?: string;
+  /** Sets the notice in a muted panel, for an empty list or tab inside a page. */
+  isBoxed?: boolean;
 }) {
   const user = useContext(AppContext)?.user;
-  return (
+  const notice = (
     <VStack minHeight={minHeight} vAlign="center" hAlign="center" paddingBlock={10}>
       <EmptyState
         {...props}
@@ -31,6 +35,7 @@ export function EmptyNotice({
       />
     </VStack>
   );
+  return isBoxed ? <Card variant="muted">{notice}</Card> : notice;
 }
 
 export function DataBoundary({
@@ -41,6 +46,7 @@ export function DataBoundary({
   headingLevel = 3,
   title = 'No events in this view',
   description = 'Choose another filter or create a draft.',
+  isPage = false,
 }: {
   children: ReactNode;
   pending?: boolean;
@@ -49,6 +55,8 @@ export function DataBoundary({
   headingLevel?: 1 | 2 | 3;
   title?: string;
   description?: string;
+  /** The boundary holds a whole page, so its notices stay out of a panel. */
+  isPage?: boolean;
 }) {
   const { t } = useTranslation();
   const { dataState, reload } = useApp();
@@ -68,12 +76,18 @@ export function DataBoundary({
         fallbackIcon={<Icon icon="error" />}
         title={t('Data could not be loaded')}
         actions={<Button label={t('Try again')} onClick={reload} />}
+        isBoxed={!isPage}
       />
     );
   if (dataState === 'empty' || empty)
     return (
       emptyContent ?? (
-        <EmptyNotice headingLevel={headingLevel} title={t(title)} description={t(description)} />
+        <EmptyNotice
+          headingLevel={headingLevel}
+          title={t(title)}
+          description={t(description)}
+          isBoxed={!isPage}
+        />
       )
     );
   return children;

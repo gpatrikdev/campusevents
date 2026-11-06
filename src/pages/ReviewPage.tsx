@@ -67,7 +67,7 @@ export function ReviewPage({ eventId }: { eventId: string }) {
         <Text weight="semibold">{event.title}</Text>
         <Text color="secondary">{t('Your feedback is anonymous to organizers and admins.')}</Text>
       </VStack>
-      <DataBoundary>
+      <DataBoundary isPage>
         {issue ? (
           <EmptyNotice title={t(issue)} />
         ) : (

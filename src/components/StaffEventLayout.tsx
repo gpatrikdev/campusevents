@@ -68,7 +68,7 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
   const event = currentEvent ?? (dataState !== 'ready' ? knownEvent.current : undefined);
   if (!event)
     return (
-      <DataBoundary headingLevel={1}>
+      <DataBoundary headingLevel={1} isPage>
         <UnavailableEvent />
       </DataBoundary>
     );
@@ -230,6 +230,7 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
                   headingLevel={2}
                   title={t('This event is unavailable.')}
                   description={t('It may be a staff-only draft or have been deleted.')}
+                  isBoxed
                 />
               }
             >

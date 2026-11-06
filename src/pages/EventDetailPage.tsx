@@ -221,7 +221,7 @@ export function EventDetailPage({
   );
 
   return (
-    <DataBoundary emptyContent={<UnavailableEvent />}>
+    <DataBoundary emptyContent={<UnavailableEvent />} isPage>
       <Layout
         height="auto"
         padding={compact ? 4 : 6}

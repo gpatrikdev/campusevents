@@ -315,7 +315,7 @@ function Shell() {
         >
           <OutcomeNotice />
           {!preview && dataState !== 'ready' && (!staffWorkspace || !isStaff(user)) ? (
-            <DataBoundary>{null}</DataBoundary>
+            <DataBoundary isPage>{null}</DataBoundary>
           ) : (
             <Outlet />
           )}
