@@ -228,9 +228,12 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
                 )}
                 isRequired
               />
+              {/* British and Hungarian calendars start the week on Monday. Astryx
+                  starts it on Sunday whatever the locale. */}
               <Grid columns={{ minWidth: 280, max: 2 }} gap={6}>
                 <DateTimeInput
                   label={t('Starts at')}
+                  weekStartsOn="mon"
                   value={start ? (start as ISODateTimeString) : undefined}
                   onChange={(value) => {
                     setStart(value ?? '');
@@ -240,6 +243,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
                 />
                 <DateTimeInput
                   label={t('Ends at')}
+                  weekStartsOn="mon"
                   value={end ? (end as ISODateTimeString) : undefined}
                   onChange={(value) => {
                     setEnd(value ?? '');

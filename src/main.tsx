@@ -11,6 +11,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { createRoot } from 'react-dom/client';
 import { useTranslation } from 'react-i18next';
 import { defaultThemeSlug, themes } from './astryx-themes';
+import { intlLocale } from './domain/format';
 import { routeTree } from './routeTree.gen';
 
 const queryClient = new QueryClient({
@@ -45,9 +46,11 @@ function App({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
   return (
     <Theme theme={themes[defaultThemeSlug]}>
+      {/* Astryx date and time fields format from this locale, so it matches the
+          app's own dates. "en-GB" falls back to Astryx's English strings. */}
       <InternationalizationProvider
-        locale={i18n.language}
-        messages={{ 'hu-HU': huCatalog, hu: huCatalog }}
+        locale={intlLocale(i18n.language)}
+        messages={{ 'hu-HU': huCatalog }}
       >
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </InternationalizationProvider>
