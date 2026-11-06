@@ -167,14 +167,14 @@ importers:
   .:
     dependencies:
       '@astryxdesign/core':
-        specifier: 0.7.6
-        version: 0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.7.9
+        version: 0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@astryxdesign/richtext':
-        specifier: 0.7.6
-        version: 0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@lexical/code@0.52.0(typescript@7.0.2))(@lexical/extension@0.52.0(typescript@7.0.2))(@lexical/headless@0.52.0(typescript@7.0.2))(@lexical/html@0.52.0(typescript@7.0.2))(@lexical/link@0.52.0(typescript@7.0.2))(@lexical/list@0.52.0(typescript@7.0.2))(@lexical/markdown@0.52.0(typescript@7.0.2))(@lexical/react@0.52.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(yjs@13.6.33))(@lexical/rich-text@0.52.0(typescript@7.0.2))(@lexical/selection@0.52.0(typescript@7.0.2))(@lexical/table@0.52.0(typescript@7.0.2))(@lexical/utils@0.52.0(typescript@7.0.2))(@stylexjs/stylex@0.19.1)(lexical@0.52.0(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.7.9
+        version: 0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@lexical/code@0.52.0(typescript@7.0.2))(@lexical/extension@0.52.0(typescript@7.0.2))(@lexical/headless@0.52.0(typescript@7.0.2))(@lexical/html@0.52.0(typescript@7.0.2))(@lexical/link@0.52.0(typescript@7.0.2))(@lexical/list@0.52.0(typescript@7.0.2))(@lexical/markdown@0.52.0(typescript@7.0.2))(@lexical/react@0.52.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(yjs@13.6.33))(@lexical/rich-text@0.52.0(typescript@7.0.2))(@lexical/selection@0.52.0(typescript@7.0.2))(@lexical/table@0.52.0(typescript@7.0.2))(@lexical/utils@0.52.0(typescript@7.0.2))(@stylexjs/stylex@0.19.1)(lexical@0.52.0(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@astryxdesign/theme-neutral':
-        specifier: 0.7.6
-        version: 0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
+        specifier: 0.7.9
+        version: 0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
       '@better-auth/drizzle-adapter':
         specifier: 1.7.16
         version: 1.7.16(@better-auth/core@1.7.16(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.5(zod@4.6.7))(jose@6.2.15)(kysely@0.29.8)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261104.1)(@types/pg@8.23.1)(kysely@0.29.8)(pg@8.23.1))
@@ -291,8 +291,8 @@ importers:
         version: 3.1.6(@types/emscripten@1.41.6)
     devDependencies:
       '@astryxdesign/cli':
-        specifier: 0.7.6
-        version: 0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@astryxdesign/theme-neutral@0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(supports-color@10.2.2)
+        specifier: 0.7.9
+        version: 0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@astryxdesign/theme-neutral@0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(supports-color@10.2.2)
       '@biomejs/biome':
         specifier: 2.6.4
         version: 2.6.4
@@ -350,8 +350,8 @@ importers:
 
 packages:
 
-  '@astryxdesign/cli@0.7.6':
-    resolution: {integrity: sha512-WHhz5LzrwRr4pjO//4b4TPo5af0rVH9ZEL8C5NY2G+DL8pzSVn+o1XcIRXc4jJhC4XHEb5jDBopoWYTawDRd9w==}
+  '@astryxdesign/cli@0.7.9':
+    resolution: {integrity: sha512-7P0RaEzO/Nlq2AnQEWzEd7ikdN+c2JNLVDLJdHCGPxjyxMipzGLBBDKVnADc/0BOXjqJnOQYr7KKFkOkdKYs1g==}
     engines: {node: '>=22.13.0'}
     hasBin: true
     peerDependencies:
@@ -369,17 +369,17 @@ packages:
       '@astryxdesign/theme-neutral':
         optional: true
 
-  '@astryxdesign/core@0.7.6':
-    resolution: {integrity: sha512-4ZkmdJQbR9zhgPZEBBJbybOV0nsu5kBYMY51N/IhyFW9mAj/ycshPsKsPipOap3/v99EDHI6NCVcG4B9N10wjQ==}
+  '@astryxdesign/core@0.7.9':
+    resolution: {integrity: sha512-U+O96XMUJZ/agofF6+8UucjV1U9XTb8FfSvuJhOAVZfJSqzMWWmFg8ERUionMTt9ThHHdjeZE8SGDamnO5L/ig==}
     peerDependencies:
       '@stylexjs/stylex': ^0.19.0
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
 
-  '@astryxdesign/richtext@0.7.6':
-    resolution: {integrity: sha512-ay+DDHE3RCHhaZepv3Km7gUUc8WwM8bArkXcApVkxbSAJTL0LWMRXOTLiRDuhS5qoQOXeTjRda1xAPCIbX6LhQ==}
+  '@astryxdesign/richtext@0.7.9':
+    resolution: {integrity: sha512-/NgHc8GTD9+8JGLZkje6/+dlKkKPWU9ZdCyHUaksMqGdhXZu8u0nV7LR8da9fCQ2dZv9+PTVNeinOzrSgBDuHQ==}
     peerDependencies:
-      '@astryxdesign/core': 0.7.6
+      '@astryxdesign/core': 0.7.9
       '@lexical/code': ^0.52.0
       '@lexical/extension': ^0.52.0
       '@lexical/headless': ^0.52.0
@@ -424,10 +424,10 @@ packages:
       lexical:
         optional: true
 
-  '@astryxdesign/theme-neutral@0.7.6':
-    resolution: {integrity: sha512-wobS+92Q0D/E04rPJAiEeglB6g1t5SJZ1W86MUhVlD8+aZQRJP9TM7USSCE89usD/2qsvRlFGrmYgbe3LnGnTA==}
+  '@astryxdesign/theme-neutral@0.7.9':
+    resolution: {integrity: sha512-7Hz276EKw55Ym4AuY8LJxDpgKpkIkZl6VDvk07C4SKHvc3G/hrU/XixnqTXS0AF/ntVpgmmPPvXf1RzmInPd6w==}
     peerDependencies:
-      '@astryxdesign/core': 0.7.6
+      '@astryxdesign/core': 0.7.9
       react: '>=19'
 
   '@babel/code-frame@7.29.7':
@@ -3756,7 +3756,7 @@ packages:
 
 snapshots:
 
-  '@astryxdesign/cli@0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@astryxdesign/theme-neutral@0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(supports-color@10.2.2)':
+  '@astryxdesign/cli@0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@astryxdesign/theme-neutral@0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(supports-color@10.2.2)':
     dependencies:
       '@babel/core': 7.29.7(supports-color@10.2.2)
       '@babel/parser': 7.29.8
@@ -3774,22 +3774,22 @@ snapshots:
       recast: 0.23.21
       zod: 4.6.7
     optionalDependencies:
-      '@astryxdesign/core': 0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@astryxdesign/theme-neutral': 0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
+      '@astryxdesign/core': 0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@astryxdesign/theme-neutral': 0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
 
-  '@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@stylexjs/stylex': 0.19.1
       intl-messageformat: 11.2.15
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
-  '@astryxdesign/richtext@0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@lexical/code@0.52.0(typescript@7.0.2))(@lexical/extension@0.52.0(typescript@7.0.2))(@lexical/headless@0.52.0(typescript@7.0.2))(@lexical/html@0.52.0(typescript@7.0.2))(@lexical/link@0.52.0(typescript@7.0.2))(@lexical/list@0.52.0(typescript@7.0.2))(@lexical/markdown@0.52.0(typescript@7.0.2))(@lexical/react@0.52.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(yjs@13.6.33))(@lexical/rich-text@0.52.0(typescript@7.0.2))(@lexical/selection@0.52.0(typescript@7.0.2))(@lexical/table@0.52.0(typescript@7.0.2))(@lexical/utils@0.52.0(typescript@7.0.2))(@stylexjs/stylex@0.19.1)(lexical@0.52.0(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@astryxdesign/richtext@0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@lexical/code@0.52.0(typescript@7.0.2))(@lexical/extension@0.52.0(typescript@7.0.2))(@lexical/headless@0.52.0(typescript@7.0.2))(@lexical/html@0.52.0(typescript@7.0.2))(@lexical/link@0.52.0(typescript@7.0.2))(@lexical/list@0.52.0(typescript@7.0.2))(@lexical/markdown@0.52.0(typescript@7.0.2))(@lexical/react@0.52.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(yjs@13.6.33))(@lexical/rich-text@0.52.0(typescript@7.0.2))(@lexical/selection@0.52.0(typescript@7.0.2))(@lexical/table@0.52.0(typescript@7.0.2))(@lexical/utils@0.52.0(typescript@7.0.2))(@stylexjs/stylex@0.19.1)(lexical@0.52.0(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@astryxdesign/core': 0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@astryxdesign/core': 0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@stylexjs/stylex': 0.19.1
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
@@ -3808,9 +3808,9 @@ snapshots:
       '@lexical/utils': 0.52.0(typescript@7.0.2)
       lexical: 0.52.0(typescript@7.0.2)
 
-  '@astryxdesign/theme-neutral@0.7.6(@astryxdesign/core@0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)':
+  '@astryxdesign/theme-neutral@0.7.9(@astryxdesign/core@0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)':
     dependencies:
-      '@astryxdesign/core': 0.7.6(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@astryxdesign/core': 0.7.9(@stylexjs/stylex@0.19.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react: 1.66.0(@types/react@19.3.0)(react@19.3.1)
       react: 19.3.1
     transitivePeerDependencies:

@@ -1,4 +1,6 @@
+import { Badge } from '@astryxdesign/core/Badge';
 import { Heading } from '@astryxdesign/core/Heading';
+import { HStack } from '@astryxdesign/core/HStack';
 import { List, ListItem } from '@astryxdesign/core/List';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
@@ -24,8 +26,9 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
   return (
     <VStack gap={6}>
       <VStack gap={3}>
-        <Heading level={1}>{t('Attendee list')}</Heading>
-        <Text weight="semibold">{event.title}</Text>
+        <Heading level={2} id="staff-task-heading">
+          {t('Attendee list')}
+        </Heading>
         <Text color="secondary">
           {t('View only. Check-in is available through QR scanning only.')}
         </Text>
@@ -52,9 +55,12 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
                 <VStack gap={2}>
                   <Text weight="semibold">{attendee.name}</Text>
                   <Text color="secondary">{attendee.email}</Text>
-                  <Text type="supporting">
-                    {t(attendee.checkedIn ? 'Checked in' : 'Not checked in')}
-                  </Text>
+                  <HStack>
+                    <Badge
+                      label={t(attendee.checkedIn ? 'Checked in' : 'Not checked in')}
+                      variant={attendee.checkedIn ? 'green' : 'neutral'}
+                    />
+                  </HStack>
                 </VStack>
               }
             />

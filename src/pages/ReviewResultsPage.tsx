@@ -22,10 +22,11 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
     comments: [],
   };
   return (
-    <VStack gap={6} maxWidth={800} width="100%">
+    <VStack gap={6} width="100%">
       <VStack gap={3}>
-        <Heading level={1}>{t('Review results')}</Heading>
-        <Text weight="semibold">{event.title}</Text>
+        <Heading level={2} id="staff-task-heading">
+          {t('Review results')}
+        </Heading>
         <Text color="secondary">
           {t('Only staff can see these results. Names and email addresses are not shown.')}
         </Text>
@@ -35,39 +36,41 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
         title="No reviews yet"
         description="Checked-in attendees can review after the event ends."
       >
-        <MetadataList orientation="horizontal">
-          <MetadataListItem label={t('Average rating')}>
-            <HStack gap={2} vAlign="center">
+        <VStack gap={6} maxWidth="50rem" width="100%">
+          <MetadataList orientation="horizontal">
+            <MetadataListItem label={t('Average rating')}>
+              <HStack gap={2} vAlign="center">
+                <Text size="2xl" weight="semibold">
+                  {new Intl.NumberFormat(i18n.language, {
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  }).format(average)}
+                </Text>
+                <Text color="secondary">{t('out of 5')}</Text>
+              </HStack>
+            </MetadataListItem>
+            <MetadataListItem label={t('Responses')}>
               <Text size="2xl" weight="semibold">
-                {new Intl.NumberFormat(i18n.language, {
-                  maximumFractionDigits: 1,
-                  minimumFractionDigits: 1,
-                }).format(average)}
+                {count}
               </Text>
-              <Text color="secondary">{t('out of 5')}</Text>
-            </HStack>
-          </MetadataListItem>
-          <MetadataListItem label={t('Responses')}>
-            <Text size="2xl" weight="semibold">
-              {count}
-            </Text>
-          </MetadataListItem>
-        </MetadataList>
-        <Divider />
-        <Heading level={2}>{t('Anonymous feedback')}</Heading>
-        {comments.length ? (
-          <List edge="flush" hasDividers density="spacious">
-            {comments.map((comment, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: Anonymous comments can have identical text.
-              <ListItem key={`${index}-${comment}`} label={<Text>{comment}</Text>} />
-            ))}
-          </List>
-        ) : (
-          <Text>{t('No written comments')}</Text>
-        )}
-        <Text type="supporting">
-          {t('Ratings are included in the average even without a comment.')}
-        </Text>
+            </MetadataListItem>
+          </MetadataList>
+          <Divider />
+          <Heading level={3}>{t('Anonymous feedback')}</Heading>
+          {comments.length ? (
+            <List edge="flush" hasDividers density="spacious">
+              {comments.map((comment, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: Anonymous comments can have identical text.
+                <ListItem key={`${index}-${comment}`} label={<Text>{comment}</Text>} />
+              ))}
+            </List>
+          ) : (
+            <Text>{t('No written comments')}</Text>
+          )}
+          <Text type="supporting">
+            {t('Ratings are included in the average even without a comment.')}
+          </Text>
+        </VStack>
       </DataBoundary>
     </VStack>
   );

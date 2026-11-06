@@ -135,3 +135,46 @@ html {
 .scroll-below-nav {
   scroll-margin-top: calc(var(--spacing-12) + var(--spacing-4));
 }
+
+.staff-workspace > .scroll-below-nav {
+  margin: var(--spacing-6);
+}
+
+[role="main"]:has(> .staff-workspace) {
+  min-inline-size: 0;
+}
+
+.scanner-viewport {
+  overflow: hidden;
+  padding: var(--spacing-6);
+}
+
+.staff-events-table table {
+  table-layout: fixed;
+}
+
+.staff-events-table th:first-child {
+  width: 25%;
+}
+
+.staff-events-table th:nth-child(2) {
+  width: 22%;
+}
+
+.staff-events-table th:nth-child(3) {
+  width: 14%;
+}
+
+.staff-events-table th:nth-child(4):not(:last-child) {
+  width: 19%;
+}
+
+.staff-events-table th:nth-child(5) {
+  width: 20%;
+}
+
+@media (max-width: 42rem) {
+  .staff-workspace :is(.astryx-button, .astryx-tab, .astryx-link) {
+    min-block-size: var(--spacing-10);
+  }
+}

@@ -5,10 +5,10 @@ allowBuilds:
   esbuild: true
   workerd: true
 minimumReleaseAgeExclude:
-  - "@astryxdesign/core@0.7.6"
-  - "@astryxdesign/richtext@0.7.6"
-  - "@astryxdesign/theme-neutral@0.7.6"
-  - "@astryxdesign/cli@0.7.6"
+  - "@astryxdesign/core@0.7.6 || 0.7.9"
+  - "@astryxdesign/richtext@0.7.6 || 0.7.9"
+  - "@astryxdesign/theme-neutral@0.7.6 || 0.7.9"
+  - "@astryxdesign/cli@0.7.6 || 0.7.9"
   - "@vitest/mocker@5.1.0"
   - "@vitest/spy@5.1.0"
   - vitest@5.1.0

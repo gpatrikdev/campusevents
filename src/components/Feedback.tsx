@@ -38,6 +38,7 @@ export function DataBoundary({
   pending = false,
   empty = false,
   emptyContent,
+  headingLevel = 3,
   title = 'No events in this view',
   description = 'Choose another filter or create a draft.',
 }: {
@@ -45,6 +46,7 @@ export function DataBoundary({
   pending?: boolean;
   empty?: boolean;
   emptyContent?: ReactNode;
+  headingLevel?: 1 | 2 | 3;
   title?: string;
   description?: string;
 }) {
@@ -62,13 +64,18 @@ export function DataBoundary({
   if (dataState === 'error')
     return (
       <EmptyNotice
+        headingLevel={headingLevel}
         fallbackIcon={<Icon icon="error" />}
         title={t('Data could not be loaded')}
         actions={<Button label={t('Try again')} onClick={reload} />}
       />
     );
   if (dataState === 'empty' || empty)
-    return emptyContent ?? <EmptyNotice title={t(title)} description={t(description)} />;
+    return (
+      emptyContent ?? (
+        <EmptyNotice headingLevel={headingLevel} title={t(title)} description={t(description)} />
+      )
+    );
   return children;
 }
 

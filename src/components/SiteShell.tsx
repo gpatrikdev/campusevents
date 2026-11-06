@@ -26,11 +26,22 @@ import { PeopleIcon } from './NavIcons';
 // The router marks a link as the current page whenever the URL starts with its
 // path, so /staff would also count on /staff/permissions. Matching only the exact
 // path leaves that to each Astryx nav item's isSelected.
-const ClientLink = forwardRef<HTMLAnchorElement, ComponentProps<'a'>>(({ href, ...props }, ref) => (
-  <RouterLink to={href ?? '/'} activeOptions={{ exact: true }} {...props} ref={ref} />
-));
+export const ClientLink = forwardRef<HTMLAnchorElement, ComponentProps<'a'>>(
+  ({ href, ...props }, ref) => (
+    <RouterLink to={href ?? '/'} activeOptions={{ exact: true }} {...props} ref={ref} />
+  ),
+);
 
 const isPublicEventPage = (pathname: string) => pathname === '/' || pathname.startsWith('/events/');
+
+function focusPageHeading(frame: HTMLElement | null) {
+  const heading =
+    frame?.querySelector<HTMLElement>('#staff-task-heading') ?? frame?.querySelector('h1');
+  if (heading) {
+    heading.tabIndex = -1;
+    heading.focus({ preventScroll: true });
+  }
+}
 
 export function LanguagePicker() {
   const { t, i18n } = useTranslation();
@@ -103,6 +114,11 @@ function Shell() {
   const router = useRouter();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const publicPage = isPublicEventPage(pathname);
+  const staffEventId = pathname.match(/^\/staff\/events\/([^/]+)/)?.[1];
+  const staffEvent = data.events.find((event) => event.id === staffEventId);
+  const staffWorkspace =
+    /^\/staff\/?$/.test(pathname) ||
+    (!!staffEventId && staffEventId !== 'new' && !/\/(edit|preview)\/?$/.test(pathname));
   const authPage = /^\/(sign-in|complete-profile)\/?$/.test(pathname);
   const notFound = useRouterState({
     select: (state) => state.matches.some((match) => match._notFound),
@@ -136,26 +152,39 @@ function Shell() {
                   : pathname.startsWith('/review')
                     ? t('Review this event')
                     : t('Events');
-    document.title = `${eventTitle || title} · ${'Campus Events'}`;
-  }, [eventTitle, notFound, pathname, t]);
+    const staffTask = pathname.endsWith('/attendees')
+      ? t('Attendees')
+      : pathname.endsWith('/scan')
+        ? t('QR scanner')
+        : pathname.endsWith('/reviews')
+          ? t('Review results')
+          : pathname.endsWith('/edit')
+            ? t('Edit draft')
+            : pathname.endsWith('/preview')
+              ? t('Preview event')
+              : '';
+    const staffTitle = staffEvent && [staffTask, staffEvent.title].filter(Boolean).join(' · ');
+    document.title = `${staffTitle || eventTitle || title} · ${'Campus Events'}`;
+  }, [eventTitle, staffEvent, notFound, pathname, t]);
   useEffect(
     () =>
       router.subscribe('onRendered', ({ fromLocation, toLocation, pathChanged }) => {
         if (
           !pathChanged ||
           !fromLocation ||
-          !isPublicEventPage(fromLocation.pathname) ||
-          !isPublicEventPage(toLocation.pathname)
+          !(
+            (isPublicEventPage(fromLocation.pathname) && isPublicEventPage(toLocation.pathname)) ||
+            toLocation.pathname.startsWith('/staff')
+          )
         )
           return;
-        const heading = pageFrame.current?.querySelector('h1');
-        if (heading) {
-          heading.tabIndex = -1;
-          heading.focus({ preventScroll: true });
-        }
+        focusPageHeading(pageFrame.current);
       }),
     [router],
   );
+  useEffect(() => {
+    if (staffWorkspace && dataState === 'ready') focusPageHeading(pageFrame.current);
+  }, [staffWorkspace, dataState]);
 
   const navItems = [{ label: t('Events'), href: '/', isSelected: publicPage }];
   if (user)
@@ -201,7 +230,7 @@ function Shell() {
       <AppShell
         height="auto"
         variant="elevated"
-        contentPadding={bare ? 0 : 6}
+        contentPadding={bare || staffWorkspace ? 0 : 6}
         mobileNav={
           bare
             ? false
@@ -265,16 +294,22 @@ function Shell() {
         }
       >
         <VStack
-          gap={bare ? 6 : 10}
+          gap={bare ? 6 : staffWorkspace ? 0 : 10}
           // Fills the window, so the shell's grey never shows under a short page.
-          minHeight={bare ? '100dvh' : belowNavHeight}
+          minHeight={
+            bare ? '100dvh' : staffWorkspace ? 'calc(100dvh - var(--spacing-12))' : belowNavHeight
+          }
           padding={bare ? 6 : undefined}
           vAlign={bare ? 'center' : undefined}
-          className="page-frame"
+          className={staffWorkspace ? 'page-frame staff-workspace' : 'page-frame'}
           ref={pageFrame}
         >
           <OutcomeNotice />
-          {!preview && dataState !== 'ready' ? <DataBoundary>{null}</DataBoundary> : <Outlet />}
+          {!preview && dataState !== 'ready' && (!staffWorkspace || !isStaff(user)) ? (
+            <DataBoundary>{null}</DataBoundary>
+          ) : (
+            <Outlet />
+          )}
         </VStack>
       </AppShell>
     </LinkProvider>

@@ -1,21 +1,24 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
-import { Card } from '@astryxdesign/core/Card';
 import { Heading } from '@astryxdesign/core/Heading';
+import { HStack } from '@astryxdesign/core/HStack';
+import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Selector } from '@astryxdesign/core/Selector';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { QrCodeIcon } from '../components/EventIcons';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
-import { formatDate } from '../domain/format';
-import { HOUR, instant, isStaff } from '../domain/rules';
+import { ScannerLayout } from '../components/ScannerLayout';
+import { isStaff } from '../domain/rules';
 import type { Outcome } from '../domain/types';
 import { useMock } from './hooks';
 
 export function SampleScanner({ eventId }: { eventId: string }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const compact = useMediaQuery('(max-width: 42rem)');
   const { data, user, run, setOutcome } = useMock();
   const [sample, setSample] = useState('valid');
   const [result, setResult] = useState<Outcome | null>(null);
@@ -41,50 +44,53 @@ export function SampleScanner({ eventId }: { eventId: string }) {
   }
   return (
     <DataBoundary>
-      <VStack gap={6} maxWidth={640} width="100%">
-        <VStack gap={3}>
-          <Heading level={1}>{t('QR scanner')}</Heading>
-          <Text weight="semibold">{event.title}</Text>
-          <Text color="secondary">
-            {t(
-              'Camera scanning is simulated in this phase. Use a sample scan to exercise ticket validation.',
-            )}
-          </Text>
-        </VStack>
-        <Text type="supporting">
-          {t('Check-in window')}:{' '}
-          {formatDate(instant(event.start) - HOUR, event.timezone, i18n.language)} –{' '}
-          {formatDate(event.end, event.timezone, i18n.language)} · {event.timezone}
-        </Text>
-        <Card variant="muted" padding={10}>
-          <VStack gap={4} hAlign="center">
-            <Icon icon="stop" size="lg" />
-            <Heading level={2}>{t('Scanner preview')}</Heading>
-            <Text>{t('No camera is active')}</Text>
-          </VStack>
-        </Card>
-        <Selector
-          label={t('Sample QR scan')}
-          value={sample}
-          options={[
-            { value: 'valid', label: t('Valid ticket') },
-            { value: 'duplicate', label: t('Already checked in') },
-            { value: 'cancelled', label: t('Cancelled ticket') },
-            { value: 'wrong', label: t('Wrong event') },
-            { value: 'unknown', label: t('Unknown ticket') },
-          ]}
-          onChange={(value) => {
-            setSample(value);
-            setResult(null);
-          }}
-        />
-        <Button label={t('Simulate QR scan')} variant="primary" onClick={scan} />
-        {result && (
-          <VStack role="status">
-            <Banner status={result.ok ? 'success' : 'warning'} title={t(result.message)} />
-          </VStack>
+      <ScannerLayout
+        event={event}
+        description={t(
+          'Camera scanning is simulated in this phase. Use a sample scan to exercise ticket validation.',
         )}
-      </VStack>
+        viewport={
+          <>
+            <Icon icon={QrCodeIcon} size="lg" />
+            <Heading level={3}>{t('Scanner preview')}</Heading>
+            <Text>{t('No camera is active')}</Text>
+          </>
+        }
+        controls={
+          <HStack gap={3} wrap="wrap" vAlign="end">
+            <Selector
+              label={t('Sample QR scan')}
+              width={compact ? '100%' : '20rem'}
+              value={sample}
+              options={[
+                { value: 'valid', label: t('Valid ticket') },
+                { value: 'duplicate', label: t('Already checked in') },
+                { value: 'cancelled', label: t('Cancelled ticket') },
+                { value: 'wrong', label: t('Wrong event') },
+                { value: 'unknown', label: t('Unknown ticket') },
+              ]}
+              onChange={(value) => {
+                setSample(value);
+                setResult(null);
+              }}
+            />
+            <Button
+              label={t('Simulate QR scan')}
+              variant="primary"
+              width={compact ? '100%' : undefined}
+              icon={<Icon icon={QrCodeIcon} />}
+              onClick={scan}
+            />
+          </HStack>
+        }
+        feedback={
+          result && (
+            <VStack role="status">
+              <Banner status={result.ok ? 'success' : 'warning'} title={t(result.message)} />
+            </VStack>
+          )
+        }
+      />
     </DataBoundary>
   );
 }

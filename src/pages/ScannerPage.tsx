@@ -1,7 +1,6 @@
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
-import { Card } from '@astryxdesign/core/Card';
-import { Heading } from '@astryxdesign/core/Heading';
+import { HStack } from '@astryxdesign/core/HStack';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
@@ -9,7 +8,9 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import wasmUrl from 'zxing-wasm/reader/zxing_reader.wasm?url';
 import { useApp } from '../api/context';
+import { QrCodeIcon } from '../components/EventIcons';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
+import { ScannerLayout } from '../components/ScannerLayout';
 import { formatDate } from '../domain/format';
 import { HOUR, hasEnded, instant, isStaff } from '../domain/rules';
 import type { Outcome } from '../domain/types';
@@ -110,78 +111,76 @@ function CameraScanner({ eventId }: { eventId: string }) {
   const cameraActive = active && allowed;
   return (
     <DataBoundary>
-      <VStack gap={6} maxWidth={640} width="100%">
-        <VStack gap={3}>
-          <Heading level={1}>{t('QR scanner')}</Heading>
-          <Text weight="semibold">{event.title}</Text>
-          <Text color="secondary">
-            {t('Point the camera at the QR code on the attendee’s ticket.')}
-          </Text>
-        </VStack>
-        <Text type="supporting">
-          {t('Check-in window')}{' '}
-          {formatDate(instant(event.start) - HOUR, event.timezone, i18n.language)} –{' '}
-          {formatDate(event.end, event.timezone, i18n.language)} · {event.timezone}
-        </Text>
-        <Card variant="muted" padding={cameraActive ? 0 : 6}>
-          <VStack gap={4} hAlign="center">
-            {cameraActive ? (
-              <>
-                <video
-                  ref={video}
-                  muted
-                  playsInline
-                  aria-label={t('Ticket camera')}
-                  className="ticket-camera"
-                />
-                {!cameraReady && <Text role="status">{t('Starting camera…')}</Text>}
-              </>
-            ) : (
-              <>
-                <Icon icon="stop" size="lg" />
-                <Text>{t('No camera is active')}</Text>
-              </>
-            )}
-          </VStack>
-        </Card>
-        {allowed ? (
-          <Button
-            label={t(
-              cameraActive ? 'Stop camera' : result ? 'Scan another ticket' : 'Start camera',
-            )}
-            variant="primary"
-            isLoading={scanning}
-            onClick={() => {
-              setActive(!cameraActive);
-              setCameraReady(false);
-              setResult(null);
-            }}
-          />
-        ) : (
-          <Text>
-            {t(
-              event.status === 'draft'
-                ? 'Publish the event before scanning tickets.'
-                : hasEnded(event, now)
-                  ? 'Check-in has closed.'
-                  : 'Check-in opens one hour before the start.',
-            )}
-          </Text>
-        )}
-        {result && (
-          <VStack role="status">
-            <Banner
-              status={result.ok ? 'success' : 'warning'}
-              title={t(result.message)}
-              description={
-                result.checkedInAt
-                  ? formatDate(result.checkedInAt, event.timezone, i18n.language)
-                  : undefined
-              }
-            />
-          </VStack>
-        )}
-      </VStack>
+      <ScannerLayout
+        event={event}
+        description={t('Point the camera at the QR code on the attendee’s ticket.')}
+        viewport={
+          cameraActive ? (
+            <>
+              <video
+                ref={video}
+                muted
+                playsInline
+                aria-label={t('Ticket camera')}
+                className="ticket-camera"
+              />
+              {!cameraReady && <Text role="status">{t('Starting camera…')}</Text>}
+            </>
+          ) : (
+            <>
+              <Icon icon={QrCodeIcon} size="lg" />
+              <Text>{t('No camera is active')}</Text>
+            </>
+          )
+        }
+        controls={
+          allowed && (
+            <HStack>
+              <Button
+                label={t(
+                  cameraActive ? 'Stop camera' : result ? 'Scan another ticket' : 'Start camera',
+                )}
+                variant="primary"
+                icon={<Icon icon={cameraActive ? 'stop' : QrCodeIcon} />}
+                isLoading={scanning}
+                onClick={() => {
+                  setActive(!cameraActive);
+                  setCameraReady(false);
+                  setResult(null);
+                }}
+              />
+            </HStack>
+          )
+        }
+        availability={
+          !allowed && (
+            <Text>
+              {t(
+                event.status === 'draft'
+                  ? 'Publish the event before scanning tickets.'
+                  : hasEnded(event, now)
+                    ? 'Check-in has closed.'
+                    : 'Check-in opens one hour before the start.',
+              )}
+            </Text>
+          )
+        }
+        feedback={
+          result && (
+            <VStack role="status">
+              <Banner
+                status={result.ok ? 'success' : 'warning'}
+                title={t(result.message)}
+                description={
+                  result.checkedInAt
+                    ? formatDate(result.checkedInAt, event.timezone, i18n.language)
+                    : undefined
+                }
+              />
+            </VStack>
+          )
+        }
+      />
     </DataBoundary>
   );
 }

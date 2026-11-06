@@ -4,3 +4,8 @@
   inset-block-end: max(var(--spacing-4), env(safe-area-inset-bottom));
   z-index: 1;
 }
+
+/* Leave room to scroll the last staff action above the floating preview controls. */
+.staff-workspace {
+  padding-block-end: calc(var(--spacing-10) + max(var(--spacing-6), env(safe-area-inset-bottom)));
+}

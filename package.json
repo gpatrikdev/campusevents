@@ -24,9 +24,9 @@
     "dev:mail": "node scripts/local-mail.mjs"
   },
   "dependencies": {
-    "@astryxdesign/core": "0.7.6",
-    "@astryxdesign/richtext": "0.7.6",
-    "@astryxdesign/theme-neutral": "0.7.6",
+    "@astryxdesign/core": "0.7.9",
+    "@astryxdesign/richtext": "0.7.9",
+    "@astryxdesign/theme-neutral": "0.7.9",
     "@better-auth/drizzle-adapter": "1.7.16",
     "@blobatar/react": "2.7.0",
     "@js-temporal/polyfill": "0.5.1",
@@ -67,7 +67,7 @@
     "zxing-wasm": "3.1.6"
   },
   "devDependencies": {
-    "@astryxdesign/cli": "0.7.6",
+    "@astryxdesign/cli": "0.7.9",
     "@biomejs/biome": "2.6.4",
     "@cloudflare/vite-plugin": "1.67.0",
     "@cloudflare/vitest-plugin": "1.5.1",
