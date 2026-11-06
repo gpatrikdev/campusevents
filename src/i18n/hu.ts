@@ -222,8 +222,11 @@ export const hu: Record<string, string> = {
   'Search by name or email': 'Keresés név vagy e-mail-cím alapján',
   'Attendance status': 'Jelenléti állapot',
   'Attendee list': 'Résztvevők listája',
-  'View only. Check-in is available through QR scanning only.':
-    'Csak megtekintés. Beléptetés kizárólag QR-kód beolvasásával lehetséges.',
+  'Everyone currently registered for this event, and whether they have checked in.':
+    'Az eseményre jelenleg jelentkezett résztvevők és beléptetési állapotuk.',
+  'View only.': 'Csak megtekintés.',
+  'Check-in is available through QR scanning only.':
+    'Beléptetés kizárólag QR-kód beolvasásával lehetséges.',
   'No attendees found': 'Nincs találat',
   'Try another name or email, or check back after registrations.':
     'Keressen más névre vagy e-mail-címre, vagy térjen vissza a jelentkezések után.',
@@ -235,8 +238,10 @@ export const hu: Record<string, string> = {
   'Check-in has closed.': 'A beléptetés lezárult.',
   'This attendee is already checked in.': 'Ez a résztvevő már belépett.',
   'Anonymous feedback': 'Névtelen visszajelzések',
-  'Only staff can see these results. Names and email addresses are not shown.':
-    'Az eredményeket csak munkatársak láthatják. Nevek és e-mail-címek nem jelennek meg.',
+  'The average rating and written feedback from attendees who checked in.':
+    'A beléptetett résztvevők átlagos értékelése és írásos visszajelzései.',
+  'Only staff can see these results.': 'Az eredményeket csak munkatársak láthatják.',
+  'Names and email addresses are not shown.': 'Nevek és e-mail-címek nem jelennek meg.',
   'Average rating': 'Átlagos értékelés',
   Responses: 'Válaszok',
   'out of 5': 'az 5-ből',

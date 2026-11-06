@@ -1,4 +1,5 @@
 import { Badge } from '@astryxdesign/core/Badge';
+import { Banner } from '@astryxdesign/core/Banner';
 import { Card } from '@astryxdesign/core/Card';
 import { Heading } from '@astryxdesign/core/Heading';
 import { proportional, Table } from '@astryxdesign/core/Table';
@@ -27,12 +28,18 @@ export function AttendeesPage({ eventId }: { eventId: string }) {
   const rows = attendees.map(({ id, name, email, checkedIn }) => ({ id, name, email, checkedIn }));
   return (
     <VStack gap={6}>
+      <Banner
+        status="info"
+        title={t('View only.')}
+        description={t('Check-in is available through QR scanning only.')}
+        isDismissable
+      />
       <VStack gap={3}>
         <Heading level={2} id="staff-task-heading">
           {t('Attendee list')}
         </Heading>
         <Text color="secondary">
-          {t('View only. Check-in is available through QR scanning only.')}
+          {t('Everyone currently registered for this event, and whether they have checked in.')}
         </Text>
       </VStack>
       <TextInput

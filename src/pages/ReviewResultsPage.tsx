@@ -1,3 +1,4 @@
+import { Banner } from '@astryxdesign/core/Banner';
 import { Divider } from '@astryxdesign/core/Divider';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
@@ -23,12 +24,18 @@ export function ReviewResultsPage({ eventId }: { eventId: string }) {
   };
   return (
     <VStack gap={6} width="100%">
+      <Banner
+        status="info"
+        title={t('Only staff can see these results.')}
+        description={t('Names and email addresses are not shown.')}
+        isDismissable
+      />
       <VStack gap={3}>
         <Heading level={2} id="staff-task-heading">
           {t('Review results')}
         </Heading>
         <Text color="secondary">
-          {t('Only staff can see these results. Names and email addresses are not shown.')}
+          {t('The average rating and written feedback from attendees who checked in.')}
         </Text>
       </VStack>
       <DataBoundary
