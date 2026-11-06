@@ -149,32 +149,10 @@ html {
   padding: var(--spacing-6);
 }
 
-.staff-events-table table {
-  table-layout: fixed;
-}
-
-.staff-events-table th:first-child {
-  width: 25%;
-}
-
-.staff-events-table th:nth-child(2) {
-  width: 22%;
-}
-
-.staff-events-table th:nth-child(3) {
-  width: 14%;
-}
-
-.staff-events-table th:nth-child(4):not(:last-child) {
-  width: 19%;
-}
-
-.staff-events-table th:nth-child(5) {
-  width: 20%;
-}
-
+/* Larger touch targets on phones. The rich-text toolbar keeps the small controls
+   Astryx gives it, since taller ones push more of its buttons off screen. */
 @media (max-width: 42rem) {
-  .staff-workspace :is(.astryx-button, .astryx-tab, .astryx-link) {
+  .staff-workspace :is(.astryx-button, .astryx-tab, .astryx-link):not(.astryx-rich-text-editor *) {
     min-block-size: var(--spacing-10);
   }
 }

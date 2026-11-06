@@ -116,15 +116,16 @@ function Shell() {
   const publicPage = isPublicEventPage(pathname);
   const staffEventId = pathname.match(/^\/staff\/events\/([^/]+)/)?.[1];
   const staffEvent = data.events.find((event) => event.id === staffEventId);
-  const staffWorkspace =
-    /^\/staff\/?$/.test(pathname) ||
-    (!!staffEventId && staffEventId !== 'new' && !/\/(edit|preview)\/?$/.test(pathname));
   const authPage = /^\/(sign-in|complete-profile)\/?$/.test(pathname);
   const notFound = useRouterState({
     select: (state) => state.matches.some((match) => match._notFound),
   });
   // Sign-in, profile completion and unknown URLs render without navigation.
   const bare = authPage || notFound;
+  // Dashboard pages draw their own header and insets with an Astryx Layout. The
+  // draft preview is left out because it must look like the public event page.
+  const staffWorkspace =
+    !bare && /^\/staff(\/|$)/.test(pathname) && !/\/preview\/?$/.test(pathname);
   const pageFrame = useRef<HTMLDivElement>(null);
   const eventTitle =
     publicPage &&

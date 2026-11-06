@@ -1,9 +1,12 @@
 import { Banner } from '@astryxdesign/core/Banner';
+import { BreadcrumbItem, Breadcrumbs } from '@astryxdesign/core/Breadcrumbs';
 import { Button } from '@astryxdesign/core/Button';
 import { DateTimeInput, type ISODateTimeString } from '@astryxdesign/core/DateTimeInput';
 import { Grid } from '@astryxdesign/core/Grid';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
+import { useMediaQuery } from '@astryxdesign/core/hooks';
+import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { type SearchSource, Typeahead } from '@astryxdesign/core/Typeahead';
@@ -37,14 +40,53 @@ const timezoneSource: SearchSource = {
 };
 
 export function EditorPage({ eventId }: { eventId?: string }) {
-  const { user, data } = useApp();
+  const { t } = useTranslation();
+  const { user, data, dataState } = useApp();
+  const compact = useMediaQuery('(max-width: 42rem)');
   if (!isStaff(user)) return <AccessNotice />;
   const event = data.events.find((item) => item.id === eventId);
-  if (eventId && !event) return <UnavailableEvent />;
+  // Dashboard pages render while their data loads, so an event that hasn't
+  // arrived yet is only reported missing once loading is over.
+  if (eventId && !event && dataState === 'ready') return <UnavailableEvent />;
+  const heading = t(eventId ? 'Edit draft' : 'Create an event');
   return (
-    <DataBoundary>
-      <DraftEditor key={eventId ?? 'new'} initial={event} />
-    </DataBoundary>
+    <Layout
+      height="auto"
+      padding={compact ? 4 : 6}
+      header={
+        <LayoutHeader hasDivider>
+          <VStack gap={5}>
+            <Breadcrumbs variant="supporting" label={t('Event navigation')}>
+              <BreadcrumbItem href="/staff">{t('Events')}</BreadcrumbItem>
+              {event && (
+                <BreadcrumbItem href={`/staff/events/${event.id}`}>
+                  <VStack maxWidth={compact ? '12rem' : '32rem'}>
+                    <Text type="inherit" maxLines={1}>
+                      {event.title}
+                    </Text>
+                  </VStack>
+                </BreadcrumbItem>
+              )}
+              <BreadcrumbItem isCurrent>{heading}</BreadcrumbItem>
+            </Breadcrumbs>
+            <VStack gap={3}>
+              <Heading level={1}>{heading}</Heading>
+              <Text color="secondary">
+                {t('Save a draft, preview the public page, then publish when ready.')}
+              </Text>
+            </VStack>
+          </VStack>
+        </LayoutHeader>
+      }
+      content={
+        <LayoutContent isScrollable={false}>
+          {/* The form reads its starting values once, so it mounts after loading. */}
+          <DataBoundary headingLevel={2}>
+            <DraftEditor key={eventId ?? 'new'} initial={event} />
+          </DataBoundary>
+        </LayoutContent>
+      }
+    />
   );
 }
 
@@ -131,12 +173,6 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
 
   return (
     <VStack gap={6} maxWidth={800} width="100%">
-      <VStack gap={3}>
-        <Heading level={1}>{t(initial ? 'Edit draft' : 'Create an event')}</Heading>
-        <Text color="secondary">
-          {t('Save a draft, preview the public page, then publish when ready.')}
-        </Text>
-      </VStack>
       {locked ? (
         <Banner
           status="info"

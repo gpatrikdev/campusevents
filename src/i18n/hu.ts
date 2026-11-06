@@ -150,6 +150,9 @@ export const hu: Record<string, string> = {
   'Event navigation': 'Eseménynavigáció',
   'Public page': 'Nyilvános oldal',
   'Drafts are visible to staff only.': 'A piszkozatokat csak a munkatársak láthatják.',
+  'Drafts are visible to staff only. Publish a draft more than 24 hours before it starts.':
+    'A piszkozatokat csak a munkatársak láthatják. A piszkozat a kezdése előtt több mint 24 órával tehető közzé.',
+  Status: 'Állapot',
   'Published details are locked.': 'A közzétett adatok zároltak.',
   'Manage university events': 'Egyetemi események kezelése',
   'All organizers and admins can manage every event.':

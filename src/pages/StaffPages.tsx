@@ -10,18 +10,9 @@ import { Icon } from '@astryxdesign/core/Icon';
 import { InfoTip } from '@astryxdesign/core/InfoTip';
 import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
 import { Link } from '@astryxdesign/core/Link';
-import { List, ListItem } from '@astryxdesign/core/List';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
-import { Section } from '@astryxdesign/core/Section';
-import { Tab, TabList } from '@astryxdesign/core/TabList';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-} from '@astryxdesign/core/Table';
+import { Selector } from '@astryxdesign/core/Selector';
+import { proportional, Table } from '@astryxdesign/core/Table';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import { RichTextView } from '@astryxdesign/richtext';
@@ -39,7 +30,6 @@ export function StaffPage() {
   const { filter = 'upcoming' } = useSearch({ from: '/staff' });
   const navigate = useNavigate({ from: '/staff/' });
   const compact = useMediaQuery('(max-width: 42rem)');
-  const list = useMediaQuery('(max-width: 64rem)');
   if (!isStaff(user)) return <AccessNotice />;
   const label = t(
     filter === 'draft'
@@ -62,148 +52,128 @@ export function StaffPage() {
     .sort((a, b) =>
       filter === 'past' ? instant(b.start) - instant(a.start) : instant(a.start) - instant(b.start),
     );
+  // Table rows must be plain objects, so copy what the columns show.
+  const rows = events.map((event) => ({
+    id: event.id,
+    title: event.title,
+    dates: formatDateRange(event.start, event.end, event.timezone, i18n.language),
+    timezone: event.timezone,
+    location: event.location,
+    closed: now >= registrationCutoff(event),
+  }));
   return (
     <Layout
       height="auto"
       padding={compact ? 4 : 6}
       header={
-        <LayoutHeader hasDivider paddingBlockEnd={0}>
-          <VStack gap={6}>
+        <LayoutHeader hasDivider>
+          <VStack gap={3}>
             <HStack hAlign="between" gap={4} wrap="wrap" vAlign="center">
               <Heading level={1}>{t('Events')}</Heading>
               <Button label={t('Create draft')} href="/staff/events/new" variant="primary" />
             </HStack>
-            <TabList
-              role="tablist"
-              value={filter}
-              onChange={(value) => {
-                if (
-                  value === 'draft' ||
-                  value === 'upcoming' ||
-                  value === 'ongoing' ||
-                  value === 'past'
-                )
-                  void navigate({ search: { filter: value }, replace: true, resetScroll: false });
-              }}
-              aria-label={t('Event filters')}
-              isFullBleed
-            >
-              <Tab value="draft" label={t('Draft')} panelId="staff-events" />
-              <Tab value="upcoming" label={t('Upcoming')} panelId="staff-events" />
-              <Tab value="ongoing" label={t('Ongoing')} panelId="staff-events" />
-              <Tab value="past" label={t('Past')} panelId="staff-events" />
-            </TabList>
+            <Text color="secondary">
+              {t(
+                'Drafts are visible to staff only. Publish a draft more than 24 hours before it starts.',
+              )}
+            </Text>
           </VStack>
         </LayoutHeader>
       }
       content={
-        <LayoutContent padding={0} isScrollable={false}>
-          <Section padding={compact ? 4 : 6}>
-            <VStack role="tabpanel" id="staff-events" aria-label={label} gap={0}>
-              <DataBoundary empty={events.length === 0} headingLevel={2}>
-                {list ? (
-                  <List hasDividers edge="outset" density="balanced" aria-label={label}>
-                    {events.map((event) => (
-                      <ListItem
-                        key={event.id}
-                        href={`/staff/events/${event.id}`}
-                        label={<Text weight="semibold">{event.title}</Text>}
-                        description={
-                          <VStack gap={1} paddingBlockStart={2}>
-                            <Text>
-                              {formatDateRange(
-                                event.start,
-                                event.end,
-                                event.timezone,
-                                i18n.language,
-                              )}
-                            </Text>
-                            <Text color="secondary">{event.timezone}</Text>
-                            <Text color="secondary">{event.location}</Text>
-                            {showRegistration && (
-                              <HStack>
-                                <Badge
-                                  label={t(now >= registrationCutoff(event) ? 'Closed' : 'Open')}
-                                  variant={now >= registrationCutoff(event) ? 'neutral' : 'green'}
-                                />
-                              </HStack>
-                            )}
-                          </VStack>
-                        }
-                      />
-                    ))}
-                  </List>
-                ) : (
-                  <VStack gap={0} className="staff-events-table">
-                    <Card>
-                      <Table
-                        density="balanced"
-                        dividers="rows"
-                        textOverflow="truncate"
-                        hasHover
-                        aria-label={label}
-                      >
-                        <TableHeader>
-                          <TableRow>
-                            <TableHeaderCell>{t('Event title')}</TableHeaderCell>
-                            <TableHeaderCell>{t('Date and time')}</TableHeaderCell>
-                            <TableHeaderCell>{t('Timezone')}</TableHeaderCell>
-                            <TableHeaderCell>{t('Location')}</TableHeaderCell>
-                            {showRegistration && (
-                              <TableHeaderCell>{t('Registration status')}</TableHeaderCell>
-                            )}
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {events.map((event) => (
-                            <TableRow key={event.id}>
-                              <TableCell>
-                                <Link
-                                  href={`/staff/events/${event.id}`}
-                                  weight="semibold"
-                                  color="primary"
-                                  isStandalone
-                                  maxLines={1}
-                                >
-                                  {event.title}
-                                </Link>
-                              </TableCell>
-                              <TableCell>
-                                <Text maxLines={1}>
-                                  {formatDateRange(
-                                    event.start,
-                                    event.end,
-                                    event.timezone,
-                                    i18n.language,
-                                  )}
-                                </Text>
-                              </TableCell>
-                              <TableCell>
-                                <Text maxLines={1} color="secondary">
-                                  {event.timezone}
-                                </Text>
-                              </TableCell>
-                              <TableCell>
-                                <Text maxLines={1}>{event.location}</Text>
-                              </TableCell>
-                              {showRegistration && (
-                                <TableCell>
-                                  <Badge
-                                    label={t(now >= registrationCutoff(event) ? 'Closed' : 'Open')}
-                                    variant={now >= registrationCutoff(event) ? 'neutral' : 'green'}
-                                  />
-                                </TableCell>
-                              )}
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Card>
-                  </VStack>
-                )}
-              </DataBoundary>
-            </VStack>
-          </Section>
+        <LayoutContent isScrollable={false}>
+          <VStack gap={6}>
+            {/* A filter bar. Later filters go beside this one, and the row wraps
+                onto a second line on phones. */}
+            <HStack gap={4} wrap="wrap" vAlign="end" role="group" aria-label={t('Event filters')}>
+              <Selector
+                label={t('Status')}
+                width="12rem"
+                value={filter}
+                options={[
+                  { value: 'draft', label: t('Draft') },
+                  { value: 'upcoming', label: t('Upcoming') },
+                  { value: 'ongoing', label: t('Ongoing') },
+                  { value: 'past', label: t('Past') },
+                ]}
+                onChange={(value) => {
+                  if (
+                    value === 'draft' ||
+                    value === 'upcoming' ||
+                    value === 'ongoing' ||
+                    value === 'past'
+                  )
+                    void navigate({ search: { filter: value }, replace: true, resetScroll: false });
+                }}
+              />
+            </HStack>
+            <DataBoundary empty={events.length === 0} headingLevel={2}>
+              {/* The column floors are wider than a phone, so there the table
+                    scrolls sideways inside its card. */}
+              <Card>
+                <Table
+                  data={rows}
+                  idKey="id"
+                  hasHover
+                  textOverflow="truncate"
+                  aria-label={label}
+                  columns={[
+                    {
+                      key: 'title',
+                      header: t('Event title'),
+                      width: proportional(5, { minWidth: 180 }),
+                      renderCell: (event) => (
+                        <Link
+                          href={`/staff/events/${event.id}`}
+                          weight="semibold"
+                          color="primary"
+                          isStandalone
+                          maxLines={1}
+                        >
+                          {event.title}
+                        </Link>
+                      ),
+                    },
+                    {
+                      key: 'dates',
+                      header: t('Date and time'),
+                      width: proportional(4, { minWidth: 180 }),
+                    },
+                    {
+                      key: 'timezone',
+                      header: t('Timezone'),
+                      width: proportional(3, { minWidth: 130 }),
+                      renderCell: (event) => (
+                        <Text type="inherit" color="secondary" maxLines={1}>
+                          {event.timezone}
+                        </Text>
+                      ),
+                    },
+                    {
+                      key: 'location',
+                      header: t('Location'),
+                      width: proportional(4, { minWidth: 150 }),
+                    },
+                    ...(showRegistration
+                      ? [
+                          {
+                            key: 'closed' as const,
+                            header: t('Registration status'),
+                            width: proportional(3, { minWidth: 140 }),
+                            renderCell: (event: (typeof rows)[number]) => (
+                              <Badge
+                                label={t(event.closed ? 'Closed' : 'Open')}
+                                variant={event.closed ? 'neutral' : 'green'}
+                              />
+                            ),
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
+              </Card>
+            </DataBoundary>
+          </VStack>
         </LayoutContent>
       }
     />
