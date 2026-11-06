@@ -38,12 +38,15 @@ Use `Section` for page regions and `Table` or `List` for collections. Following 
 
 ## Staff event collection
 
-Shorten the heading to "Events" within the dashboard context. Keep "Create draft" as the primary action. Below the heading, a one-line description says drafts are staff-only and must be published more than 24 hours before the start, matching the description under the Permissions heading.
+Shorten the heading to "Events" within the dashboard context. Keep "Create draft" as the primary action. Below the heading, a one-line description says what staff do here, matching the description under the Permissions heading. The drafts rule is easy to miss in that line, so it sits in a dismissable info `Banner` at the top of the content, as the admin note does on Permissions: "Drafts are visible to staff only." as the title and "Publish a draft more than 24 hours before it starts." as the description.
 
 ```text
 Events                                                    [Create draft]
-Drafts are visible to staff only. Publish a draft more than 24 hours before it starts.
+Create and publish events, then manage their attendees and check-in.
 ----------------------------------------------------------------------------------------
+(i) Drafts are visible to staff only.                                                [x]
+    Publish a draft more than 24 hours before it starts.
+
 Status
 [Upcoming v]
 
@@ -218,5 +221,7 @@ A later change replaced the collection's filter tabs with the "Status" selector 
 - Browser Back and the breadcrumb keep the chosen filter.
 - A dismissed banner returns on the next visit.
 - English, Hungarian, and dark mode show no page overflow at 390, 900, or 1280 pixels.
+
+A later change moved the drafts rule from the Events description into an info `Banner` and gave the heading a new description. The banner's dismiss button works from the keyboard and has a translated label.
 
 The scanner follow-up verified controls above the camera at 1440, 1024, 900, and 375 pixels, with check-in information separate from controls and feedback. English and Hungarian layouts, keyboard selection and activation, touch scanning, and an 844-by-390 landscape view passed without document overflow. Valid, duplicate, and invalid sample scans retained their outcomes. The camera capture and cleanup code was unchanged; physical camera scanning remains unverified.

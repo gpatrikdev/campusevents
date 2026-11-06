@@ -1,4 +1,5 @@
 import { Badge } from '@astryxdesign/core/Badge';
+import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Card } from '@astryxdesign/core/Card';
 import { Divider } from '@astryxdesign/core/Divider';
@@ -73,9 +74,7 @@ export function StaffPage() {
               <Button label={t('Create draft')} href="/staff/events/new" variant="primary" />
             </HStack>
             <Text color="secondary">
-              {t(
-                'Drafts are visible to staff only. Publish a draft more than 24 hours before it starts.',
-              )}
+              {t('Create and publish events, then manage their attendees and check-in.')}
             </Text>
           </VStack>
         </LayoutHeader>
@@ -83,6 +82,12 @@ export function StaffPage() {
       content={
         <LayoutContent isScrollable={false}>
           <VStack gap={6}>
+            <Banner
+              status="info"
+              title={t('Drafts are visible to staff only.')}
+              description={t('Publish a draft more than 24 hours before it starts.')}
+              isDismissable
+            />
             {/* A filter bar. Later filters go beside this one, and the row wraps
                 onto a second line on phones. */}
             <HStack gap={4} wrap="wrap" vAlign="end" role="group" aria-label={t('Event filters')}>
