@@ -30,7 +30,7 @@ function useMockState() {
   const user = data.users.find((item) => item.id === identity);
   const now = instant(clocks[clock]);
 
-  function run(action: MockAction) {
+  function run(action: MockAction, { notify = true } = {}) {
     const result = applyAction(current.current, action, {
       userId: user?.id ?? null,
       now,
@@ -39,7 +39,7 @@ function useMockState() {
     current.current = result.data;
     setData(result.data);
     setRevision((value) => value + 1);
-    setOutcome(result.outcome);
+    if (notify) setOutcome(result.outcome);
     return result.outcome;
   }
 
@@ -116,7 +116,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
           ...value,
           data: { ...data, attendees, results },
           preview: { SignIn, Scanner: SampleScanner },
-          run: async (action) => value.run(action),
+          run: async (action, options) => value.run(action, options),
           reload: () => value.setDataState('ready'),
           signOut: () => {
             value.setIdentity('visitor');

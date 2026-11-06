@@ -35,8 +35,7 @@ export function EventDetailPage({
   preview?: boolean;
 }) {
   const { t, i18n } = useTranslation();
-  const { data, user, now, run, setOutcome, preview: demo } = useApp();
-  const [joinError, setJoinError] = useState<{ eventId: string; message: string } | null>(null);
+  const { data, user, now, run, preview: demo } = useApp();
   const [ticketId, setTicketId] = useState<string | null>(null);
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [certificateEventId, setCertificateEventId] = useState<string | null>(null);
@@ -162,34 +161,22 @@ export function EventDetailPage({
         ) : issue ? (
           <Text color="secondary">{t(issue)}</Text>
         ) : (
-          <>
-            <Button
-              label={t('Join event')}
-              variant="primary"
-              size="lg"
-              width="100%"
-              clickAction={async () => {
-                setJoinError(null);
-                const heading = registrationHeading.current;
-                const outcome = await run({ type: 'join', eventId: event.id });
-                if (!outcome.ok) {
-                  setOutcome(null);
-                  setJoinError({ eventId: event.id, message: outcome.message });
-                  return;
-                }
-                requestAnimationFrame(() => {
-                  if (!heading?.isConnected) return;
-                  heading.tabIndex = -1;
-                  heading.focus();
-                });
-              }}
-            />
-            {joinError?.eventId === event.id && (
-              <VStack role="alert">
-                <Banner status="error" title={t(joinError.message)} />
-              </VStack>
-            )}
-          </>
+          <Button
+            label={t('Join event')}
+            variant="primary"
+            size="lg"
+            width="100%"
+            clickAction={async () => {
+              const heading = registrationHeading.current;
+              const outcome = await run({ type: 'join', eventId: event.id });
+              if (!outcome.ok) return;
+              requestAnimationFrame(() => {
+                if (!heading?.isConnected) return;
+                heading.tabIndex = -1;
+                heading.focus();
+              });
+            }}
+          />
         )}
         {!ended && !checkedIn && (
           <>

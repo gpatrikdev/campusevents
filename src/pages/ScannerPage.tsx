@@ -25,7 +25,7 @@ export function ScannerPage({ eventId }: { eventId: string }) {
 
 function CameraScanner({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
-  const { data, user, now, run, setOutcome } = useApp();
+  const { data, user, now, run } = useApp();
   const event = data.events.find((item) => item.id === eventId);
   const [active, setActive] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
@@ -41,8 +41,8 @@ function CameraScanner({ eventId }: { eventId: string }) {
   const onRead = useEffectEvent(async (ticket: string) => {
     setActive(false);
     setScanning(true);
-    const outcome = await run({ type: 'scan', eventId, ticket });
-    setOutcome(null);
+    // The result shows inline below the camera, so no toast.
+    const outcome = await run({ type: 'scan', eventId, ticket }, { notify: false });
     setResult(outcome);
     setScanning(false);
   });

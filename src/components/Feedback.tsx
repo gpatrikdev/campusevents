@@ -1,11 +1,11 @@
-import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Icon } from '@astryxdesign/core/Icon';
 import { Skeleton } from '@astryxdesign/core/Skeleton';
 import { Text } from '@astryxdesign/core/Text';
+import { useToast } from '@astryxdesign/core/Toast';
 import { VStack } from '@astryxdesign/core/VStack';
-import { type ComponentProps, type ReactNode, useContext } from 'react';
+import { type ComponentProps, type ReactNode, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext, useApp } from '../api/context';
 import { UserBlobatar } from './UserBlobatar';
@@ -96,19 +96,30 @@ export function UnavailableEvent() {
   );
 }
 
-export function OutcomeNotice() {
+/** Translates while it renders, so an open toast follows a language switch. */
+function OutcomeMessage({ message }: { message: string }) {
   const { t } = useTranslation();
+  return t(message);
+}
+
+/**
+ * Shows each action's outcome as a toast, then clears the outcome. A success is
+ * green (see app.css) and hides itself after five seconds. A failure stays until
+ * it is dismissed, and so does a success with a warning, since that message
+ * says where to find the ticket. A new toast replaces the one before it.
+ */
+export function OutcomeToast() {
   const { outcome, setOutcome } = useApp();
-  if (!outcome) return null;
-  return (
-    <VStack role={outcome.ok ? 'status' : 'alert'} aria-live="polite">
-      <Banner
-        key={`${outcome.message}-${outcome.ok}`}
-        status={outcome.warning ? 'warning' : outcome.ok ? 'success' : 'error'}
-        title={t(outcome.message)}
-        isDismissable
-        onDismiss={() => setOutcome(null)}
-      />
-    </VStack>
-  );
+  const toast = useToast();
+  useEffect(() => {
+    if (!outcome) return;
+    toast({
+      body: <OutcomeMessage message={outcome.message} />,
+      type: outcome.ok ? 'info' : 'error',
+      isAutoHide: outcome.ok && !outcome.warning,
+      uniqueID: 'outcome',
+    });
+    setOutcome(null);
+  }, [outcome, setOutcome, toast]);
+  return null;
 }

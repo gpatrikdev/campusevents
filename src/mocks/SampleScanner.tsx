@@ -16,7 +16,7 @@ import { useMock } from './hooks';
 
 export function SampleScanner({ eventId }: { eventId: string }) {
   const { t, i18n } = useTranslation();
-  const { data, user, run, setOutcome } = useMock();
+  const { data, user, run } = useMock();
   const [sample, setSample] = useState('valid');
   const [result, setResult] = useState<Outcome | null>(null);
   if (!isStaff(user)) return <AccessNotice />;
@@ -35,8 +35,10 @@ export function SampleScanner({ eventId }: { eventId: string }) {
             : sample === 'wrong'
               ? data.registrations.find((item) => item.eventId !== eventId)
               : undefined;
-    const outcome = run({ type: 'scan', eventId, ticket: ticket?.ticket ?? 'DEMO-unknown-ticket' });
-    setOutcome(null);
+    const outcome = run(
+      { type: 'scan', eventId, ticket: ticket?.ticket ?? 'DEMO-unknown-ticket' },
+      { notify: false },
+    );
     setResult(outcome);
   }
   return (

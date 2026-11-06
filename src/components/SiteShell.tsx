@@ -19,7 +19,7 @@ import { AppContext, useApp } from '../api/context';
 import { LiveProvider } from '../api/LiveProvider';
 import { isStaff } from '../domain/rules';
 import { returnSearch } from '../pages/AuthPages';
-import { belowNavHeight, DataBoundary, OutcomeNotice } from './Feedback';
+import { belowNavHeight, DataBoundary, OutcomeToast } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
 import { PeopleIcon } from './NavIcons';
 
@@ -273,7 +273,7 @@ function Shell() {
           className="page-frame"
           ref={pageFrame}
         >
-          <OutcomeNotice />
+          <OutcomeToast />
           {!preview && dataState !== 'ready' ? <DataBoundary>{null}</DataBoundary> : <Outlet />}
         </VStack>
       </AppShell>

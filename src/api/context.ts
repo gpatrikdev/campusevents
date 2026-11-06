@@ -25,7 +25,8 @@ export interface AppState {
   now: number;
   dataState: 'ready' | 'loading' | 'empty' | 'error';
   reload: () => void;
-  run: (action: Action) => Promise<Outcome>;
+  /** Runs an action and shows its outcome as a toast, unless `notify` is false. */
+  run: (action: Action, options?: { notify?: boolean }) => Promise<Outcome>;
   outcome: Outcome | null;
   setOutcome: (outcome: Outcome | null) => void;
   signOut: () => void;

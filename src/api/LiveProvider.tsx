@@ -84,14 +84,14 @@ export function LiveProvider({ children }: { children: ReactNode }) {
   }, [user?.profileComplete, user?.language, i18n]);
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['campus'] });
-  async function run(action: Action) {
+  async function run(action: Action, { notify = true } = {}) {
     let result = failure;
     try {
       result = await send(action, i18n.language === 'hu' ? 'hu' : 'en');
     } catch {
       // The request might have committed before the connection dropped.
     }
-    setOutcome(result);
+    if (notify) setOutcome(result);
     await refresh();
     return result;
   }
