@@ -14,13 +14,8 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import {
-  CertificateIcon,
-  LocationIcon,
-  QrCodeIcon,
-  ReviewIcon,
-  TicketIcon,
-} from '../components/EventIcons';
+import { EventDetails } from '../components/EventDetails';
+import { CertificateIcon, QrCodeIcon, ReviewIcon, TicketIcon } from '../components/EventIcons';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
 import { formatDate, formatDateRange } from '../domain/format';
@@ -248,19 +243,7 @@ export function EventDetailPage({
                   <Text type="label">{t('Ongoing')}</Text>
                 )}
               </VStack>
-              <MetadataList orientation="horizontal">
-                <MetadataListItem label={t('Date and time')} icon={<Icon icon="calendar" />}>
-                  <VStack gap={1}>
-                    <Text>
-                      {formatDateRange(event.start, event.end, event.timezone, i18n.language)}
-                    </Text>
-                    <Text type="supporting">{event.timezone}</Text>
-                  </VStack>
-                </MetadataListItem>
-                <MetadataListItem label={t('Location')} icon={<Icon icon={LocationIcon} />}>
-                  {event.location}
-                </MetadataListItem>
-              </MetadataList>
+              <EventDetails event={event} headingLevel={2} />
             </VStack>
           </LayoutHeader>
         }

@@ -3,15 +3,12 @@ import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Card } from '@astryxdesign/core/Card';
 import { Divider } from '@astryxdesign/core/Divider';
-import { Grid } from '@astryxdesign/core/Grid';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Icon } from '@astryxdesign/core/Icon';
-import { InfoTip } from '@astryxdesign/core/InfoTip';
 import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
 import { Link } from '@astryxdesign/core/Link';
-import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
 import { Selector } from '@astryxdesign/core/Selector';
 import { proportional, Table } from '@astryxdesign/core/Table';
 import { Text } from '@astryxdesign/core/Text';
@@ -20,9 +17,10 @@ import { RichTextView } from '@astryxdesign/richtext';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
-import { LocationIcon, PlusIcon } from '../components/EventIcons';
+import { EventDetails } from '../components/EventDetails';
+import { PlusIcon } from '../components/EventIcons';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
-import { formatDate, formatDateRange } from '../domain/format';
+import { formatDateRange } from '../domain/format';
 import { hasEnded, instant, isStaff, registrationCutoff } from '../domain/rules';
 
 export function StaffPage() {
@@ -192,43 +190,15 @@ export function StaffPage() {
 }
 
 export function StaffEventPage({ eventId }: { eventId: string }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { data, user } = useApp();
-  const compact = useMediaQuery('(max-width: 42rem)');
   if (!isStaff(user)) return <AccessNotice />;
   const event = data.events.find((item) => item.id === eventId);
   if (!event) return <UnavailableEvent />;
   return (
     <VStack gap={6}>
       <Heading level={2}>{t('Event details')}</Heading>
-      <Grid columns={{ minWidth: 280, max: 2 }} gap={8}>
-        <VStack as="section" gap={4}>
-          <HStack gap={2} vAlign="center">
-            <Icon icon="calendar" color="secondary" />
-            <Heading level={3}>{t('Date and time')}</Heading>
-            <InfoTip
-              label={t('About event times')}
-              content={t('Times are shown in the event’s timezone.')}
-            />
-          </HStack>
-          <MetadataList label={{ position: compact ? 'top' : 'start', width: '7rem' }}>
-            <MetadataListItem label={t('Starts at')}>
-              {formatDate(event.start, event.timezone, i18n.language)}
-            </MetadataListItem>
-            <MetadataListItem label={t('Ends at')}>
-              {formatDate(event.end, event.timezone, i18n.language)}
-            </MetadataListItem>
-            <MetadataListItem label={t('Timezone')}>{event.timezone}</MetadataListItem>
-          </MetadataList>
-        </VStack>
-        <VStack as="section" gap={4}>
-          <HStack gap={2} vAlign="center">
-            <Icon icon={LocationIcon} color="secondary" />
-            <Heading level={3}>{t('Location')}</Heading>
-          </HStack>
-          <Text>{event.location}</Text>
-        </VStack>
-      </Grid>
+      <EventDetails event={event} />
       <Divider />
       <VStack as="section" gap={4} className="event-description">
         <Heading level={3}>{t('About this event')}</Heading>

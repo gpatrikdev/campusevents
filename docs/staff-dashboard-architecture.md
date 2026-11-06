@@ -121,6 +121,8 @@ When check-in is open, Overview also shows a separate primary "Scan QR tickets" 
 
 The overview separates Starts at, Ends at, and Timezone from Location. An `InfoTip` beside Date and time explains that these times use the event's timezone. The existing rich-text event description appears below a divider.
 
+`EventDetails` draws these two sections, and the public event page and draft preview use it too, in the page header under the title. There the "Event details" heading is left out, since the event title sits right above, so the section headings keep their level-3 look but are level 2 for screen readers. On phones the details come before the Take part box.
+
 The shared `ScannerLayout` places scan controls above a bounded camera viewport, with scan feedback between the controls and camera. A separate 20rem information panel contains the check-in window and scanning instructions, divided into their own sections. Below 64rem, this information stacks beneath the camera; the controls stay above it. It presents both the sample scanner and live camera scanner without changing ticket validation or camera cleanup.
 
 Review empty states span the full content width and center within it. Populated results retain a 50rem reading width.
@@ -225,7 +227,7 @@ A later change replaced the collection's filter tabs with the "Status" selector 
 A later change moved the drafts rule from the Events description into an info `Banner` and gave the heading a new description. It also added icons where Astryx's own set has none, drawn to match it on a 24-pixel grid with 2-pixel round strokes:
 
 - Staff pages: a plus on "Create draft", `funnel` on the Status selector, and `search` on the Permissions and attendee search fields.
-- The public event page: a ticket on "Join event", the QR icon on "Show QR ticket", `close` on "Cancel registration", the star on "Write a review", and a rosette on "Request certificate". The "Date and time" and "Location" labels get the same calendar and location icons as the staff overview.
+- The public event page: a ticket on "Join event", the QR icon on "Show QR ticket", `close` on "Cancel registration", the star on "Write a review", and a rosette on "Request certificate".
 - The phone menu: every item has an icon, so the main items match the Dashboard section. The desktop top bar stays text only.
 - Profile: a globe replaces the wrench on the Language section.
 - Sign-in: an envelope on the email button, beside the Google button's mark.
@@ -233,3 +235,8 @@ A later change moved the drafts rule from the Events description into an info `B
 Table rows, dialog buttons, and Cancel or Close buttons have no icons. Checked in English, Hungarian, and dark mode at 390 and 1280 pixels, with no page overflow and no console errors. The banner's dismiss button works from the keyboard and has a translated label.
 
 The scanner follow-up verified controls above the camera at 1440, 1024, 900, and 375 pixels, with check-in information separate from controls and feedback. English and Hungarian layouts, keyboard selection and activation, touch scanning, and an 844-by-390 landscape view passed without document overflow. Valid, duplicate, and invalid sample scans retained their outcomes. The camera capture and cleanup code was unchanged; physical camera scanning remains unverified.
+
+A later change gave the public event page the staff overview's date, time, and location sections. Checked in the preview:
+
+- The public page, draft preview, and staff overview show the same details at 390, 900, and 1280 pixels, in English, Hungarian, and dark mode, with no page overflow or console errors.
+- The public page's headings read as h1, then h2 for Date and time and Location.
