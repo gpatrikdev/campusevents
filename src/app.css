@@ -129,3 +129,9 @@ html {
   max-height: 55dvh;
   object-fit: contain;
 }
+
+/* The top nav stays in place while the page scrolls, so a message scrolled
+   into view stops just below it instead of underneath. */
+.scroll-below-nav {
+  scroll-margin-top: calc(var(--spacing-12) + var(--spacing-4));
+}

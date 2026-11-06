@@ -77,16 +77,23 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
     enableBeforeUnload: dirty,
   });
   const locked = initial?.status === 'published';
+  const errorNotice = useRef<HTMLDivElement>(null);
   function changed() {
     setDirty(true);
     setError('');
+  }
+  function fail(message: string) {
+    setError(message);
+    // Save draft sits below a form that can be taller than the screen, so the
+    // message at the top of the form is brought into view, every time.
+    requestAnimationFrame(() => errorNotice.current?.scrollIntoView({ block: 'nearest' }));
   }
 
   async function save() {
     if (locked || saving) return;
     const text = editor.current?.getMarkdown() ?? '';
     if (!text.trim()) {
-      setError('Add an event description.');
+      fail('Add an event description.');
       return;
     }
     let event: CampusEvent;
@@ -102,14 +109,14 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
         content,
       };
     } catch {
-      setError(
+      fail(
         'This local time is invalid or ambiguous in the selected timezone. Choose another time.',
       );
       return;
     }
     const issue = eventInputIssue(event);
     if (issue) {
-      setError(issue);
+      fail(issue);
       return;
     }
     setSaving(true);
@@ -147,7 +154,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
           >
             <VStack gap={6}>
               {error && (
-                <VStack role="alert">
+                <VStack ref={errorNotice} className="scroll-below-nav" role="alert">
                   <Banner status="error" title={t(error)} />
                 </VStack>
               )}

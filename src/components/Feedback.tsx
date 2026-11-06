@@ -5,7 +5,7 @@ import { Icon } from '@astryxdesign/core/Icon';
 import { Skeleton } from '@astryxdesign/core/Skeleton';
 import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
-import { type ComponentProps, type ReactNode, useContext } from 'react';
+import { type ComponentProps, type ReactNode, useContext, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext, useApp } from '../api/context';
 import { UserBlobatar } from './UserBlobatar';
@@ -99,9 +99,20 @@ export function UnavailableEvent() {
 export function OutcomeNotice() {
   const { t } = useTranslation();
   const { outcome, setOutcome } = useApp();
+  const notice = useRef<HTMLDivElement>(null);
+  // On a long page the top can be off screen when an action finishes, so each
+  // new message is brought into view. One that is already visible stays put.
+  useEffect(() => {
+    if (outcome) notice.current?.scrollIntoView({ block: 'nearest' });
+  }, [outcome]);
   if (!outcome) return null;
   return (
-    <VStack role={outcome.ok ? 'status' : 'alert'} aria-live="polite">
+    <VStack
+      ref={notice}
+      className="scroll-below-nav"
+      role={outcome.ok ? 'status' : 'alert'}
+      aria-live="polite"
+    >
       <Banner
         key={`${outcome.message}-${outcome.ok}`}
         status={outcome.warning ? 'warning' : outcome.ok ? 'success' : 'error'}
