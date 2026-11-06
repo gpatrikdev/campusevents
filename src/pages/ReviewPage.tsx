@@ -28,6 +28,9 @@ export function ReviewPage({ eventId }: { eventId: string }) {
   useEffect(() => {
     model.locale = i18n.language;
     model.completeText = t('Submit review');
+    // Astryx forms mark required fields "∙ Required" rather than with a red
+    // asterisk. SurveyJS hides the mark from screen readers.
+    model.requiredMark = `∙ ${t('Required')}`;
   }, [model, i18n.language, t]);
   useEffect(() => {
     const submit = async (sender: Model, options: { allow: boolean }) => {

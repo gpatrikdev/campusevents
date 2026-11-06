@@ -149,6 +149,15 @@ html {
   padding: var(--spacing-6);
 }
 
+/* The review form's required mark, styled like the "∙ Required" note on
+   Astryx field labels instead of SurveyJS's red asterisk. */
+.sd-question__required-text {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  vertical-align: baseline;
+}
+
 /* Larger touch targets on phones. The rich-text toolbar keeps the small controls
    Astryx gives it, since taller ones push more of its buttons off screen. */
 @media (max-width: 42rem) {

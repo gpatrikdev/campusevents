@@ -312,6 +312,7 @@ export const hu: Record<string, string> = {
   'Check-in recorded.': 'A jelenlétet rögzítettük.',
   'Your feedback is anonymous to organizers and admins.':
     'A szervezők és az adminisztrátorok név nélkül látják a visszajelzéseket.',
+  Required: 'Kötelező',
   'Submit review': 'Értékelés elküldése',
   'Review submitted': 'Értékelés elküldve',
   'We will email the PDF using your confirmed name and selected language. You can request it once.':
