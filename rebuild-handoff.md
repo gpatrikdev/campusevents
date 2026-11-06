@@ -153,7 +153,7 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 ### Staff dashboard
 
 - Open directly to the event list.
-- Filters: Draft, Upcoming, Past.
+- Filters: status (All, Draft, Upcoming, Ongoing, Past; Upcoming by default), title search, a date range read in each event's timezone, location, and open or closed registration, which drafts never match. Every filter and table column shows for every status. The filters stay in the URL.
 - No separate statistics overview in the MVP.
 - Access event management, preview, attendee list, QR scanning, and review results here.
 - Admins additionally have organizer-role management.
