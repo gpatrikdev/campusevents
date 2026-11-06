@@ -13,6 +13,7 @@ export default defineConfig({
           compatibilityDate: '2026-11-03',
           compatibilityFlags: ['nodejs_compat'],
           hyperdrives: { HYPERDRIVE: database },
+          r2Buckets: ['IMAGES'],
           bindings: {
             BETTER_AUTH_URL: 'http://127.0.0.1:5173',
             BETTER_AUTH_SECRET: 'workers-test-local-only-0123456789-abcdef',

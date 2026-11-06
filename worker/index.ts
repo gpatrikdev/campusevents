@@ -1,13 +1,15 @@
 import { Scalar } from '@scalar/hono-api-reference';
-import { Hono } from 'hono';
+import { type Context, Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { openAPIRouteHandler } from 'hono-openapi';
+import { MAX_IMAGE_BYTES } from '../src/domain/rules';
 import { accounts } from './accounts';
 import { type Auth, createAuth } from './auth';
 import { openDatabase } from './db';
 import type { Env } from './env';
 import { eventRoutes } from './events';
 import { type ApiEnv, ApiError } from './http';
+import { imageRoutes, serveImage } from './images';
 import { inviteReviewers } from './invitations';
 
 const authRoutes = new Set([
@@ -135,13 +137,14 @@ app.get(
 );
 app.get('/docs', Scalar({ url: '/api/openapi.json' }));
 
-app.use(
-  '*',
-  bodyLimit({
-    maxSize: 512 * 1024,
-    onError: (c) => c.json({ ok: false, message: 'The submitted information is too large.' }, 413),
-  }),
-);
+const tooLarge = (c: Context) =>
+  c.json({ ok: false, message: 'The submitted information is too large.' }, 413);
+const formLimit = bodyLimit({ maxSize: 512 * 1024, onError: tooLarge });
+// Leaves room for the multipart wrapping around a full-size image.
+const imageLimit = bodyLimit({ maxSize: MAX_IMAGE_BYTES + 64 * 1024, onError: tooLarge });
+app.use('*', (c, next) => (c.req.path === '/api/staff/images' ? imageLimit : formLimit)(c, next));
+// Comes before the database middleware, which image reads don't need.
+app.get('/images/:imageId', serveImage);
 app.use('*', async (c, next) => {
   if (!['GET', 'HEAD', 'OPTIONS'].includes(c.req.method) && !c.req.path.startsWith('/api/auth/')) {
     const origin = c.req.header('origin');
@@ -166,7 +169,7 @@ app.on(['GET', 'POST'], '/auth/*', async (c) => {
   return new Response(response.body, { status: response.status, headers });
 });
 
-const routes = app.route('/', accounts).route('/', eventRoutes);
+const routes = app.route('/', accounts).route('/', eventRoutes).route('/', imageRoutes);
 export type AppType = typeof routes;
 
 export default {

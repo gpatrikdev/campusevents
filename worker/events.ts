@@ -19,6 +19,7 @@ import { readAccount } from './accounts';
 import type { Database, Transaction } from './db';
 import { events, registrations, user } from './db/schema';
 import { sendCertificate, sendTicket } from './email';
+import type { Env } from './env';
 import {
   type ApiEnv,
   ApiError,
@@ -101,10 +102,12 @@ async function activeRegistration(db: Transaction, eventId: string, userId: stri
   return registration;
 }
 
-function validatedEvent(input: z.infer<typeof eventSchema>, id: string) {
+async function validatedEvent(env: Env, input: z.infer<typeof eventSchema>, id: string) {
   const draft: CampusEvent = { ...input, id, status: 'draft' };
   const issue = eventInputIssue(draft);
   if (issue) throw new ApiError(400, issue);
+  if (input.banner && !(await env.IMAGES.head(input.banner)))
+    throw new ApiError(400, 'Upload the banner image again.');
   return input;
 }
 
@@ -189,7 +192,7 @@ export const eventRoutes = new Hono<ApiEnv>()
       requireStaff(await readAccount(c.var.db, await actorId(c)));
       const [created] = await c.var.db
         .insert(events)
-        .values(validatedEvent(c.req.valid('json'), ''))
+        .values(await validatedEvent(c.env, c.req.valid('json'), ''))
         .returning({ id: events.id });
       return c.json({ ok: true, message: 'Draft saved.', id: created.id });
     },
@@ -211,15 +214,13 @@ export const eventRoutes = new Hono<ApiEnv>()
     async (c) => {
       const id = await actorId(c);
       const { eventId } = c.req.valid('param');
+      const input = await validatedEvent(c.env, c.req.valid('json'), eventId);
       await c.var.db.transaction(async (tx) => {
         requireStaff(await readAccount(tx, id, true));
         const event = await readEvent(tx, eventId, true);
         if (event.status !== 'draft')
           throw new ApiError(409, 'Only drafts can be edited or published.');
-        await tx
-          .update(events)
-          .set(validatedEvent(c.req.valid('json'), eventId))
-          .where(eq(events.id, eventId));
+        await tx.update(events).set(input).where(eq(events.id, eventId));
       });
       return c.json({ ok: true, message: 'Draft saved.', id: eventId });
     },

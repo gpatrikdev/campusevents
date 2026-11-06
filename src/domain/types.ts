@@ -18,6 +18,7 @@ export interface CampusEvent {
   end: string;
   timezone: string;
   content: string;
+  banner: string | null;
   status: 'draft' | 'published';
 }
 

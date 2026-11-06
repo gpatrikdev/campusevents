@@ -117,6 +117,72 @@ html {
   margin-block-start: var(--spacing-5);
 }
 
+/* Description images, in the editor and on event pages, are never wider than
+   the text and keep their proportions. While selected in the editor, an image
+   carries the focus ring, which shows that Backspace will remove it. */
+.rich-image {
+  margin-inline: 0;
+  margin-block: var(--spacing-4);
+}
+
+.rich-image img {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius-element);
+}
+
+.rich-image img[data-selected] {
+  outline: var(--focus-outline-width) var(--focus-outline-style) var(--focus-outline-color);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.event-banner {
+  border-radius: var(--radius-container);
+  overflow: hidden;
+}
+
+/* Astryx gives text fields an inner ring on focus but not drop zones, so
+   drop zones get the same ring here. */
+.astryx-file-input[data-mode="dropzone"]:focus-within {
+  box-shadow: inset 0 0 0 2px var(--color-accent-muted);
+}
+
+/* The description image drop zone is a larger target than Astryx's default. */
+.image-dropzone {
+  min-block-size: calc(var(--spacing-10) * 6);
+}
+
+/* The banner drop zone has the event page's banner shape, so its size stays
+   the same when a banner is uploaded. */
+.banner-dropzone {
+  aspect-ratio: 3;
+}
+
+/* A drop zone holding an image shows it under a scrim, with the file name and
+   clear button in white. The scrim is half black in both themes, as Astryx's
+   Overlay is in the light theme, because its dark-theme scrim hides the photo. */
+.dropzone-preview {
+  --dropzone-scrim: color-mix(in srgb, var(--color-on-light) 50%, transparent);
+  background-image:
+    linear-gradient(var(--dropzone-scrim), var(--dropzone-scrim)), var(--dropzone-preview);
+  background-position: center;
+  background-size: cover;
+  --color-text-primary: var(--color-on-dark);
+  --color-text-secondary: var(--color-on-dark);
+  --color-icon-primary: var(--color-on-dark);
+  --color-icon-secondary: var(--color-on-dark);
+  --color-accent: var(--color-on-dark);
+}
+
+/* A 3:1 strip is too thin on a phone, so the crop gets taller there. */
+@media (max-width: 42rem) {
+  .event-banner,
+  .banner-dropzone {
+    aspect-ratio: 2 / 1;
+  }
+}
+
 @media (max-width: 48rem) {
   .page-frame {
     gap: var(--spacing-6);

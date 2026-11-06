@@ -2,6 +2,7 @@ import './preview.css';
 import { type ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../api/context';
+import { keepLocalImage } from '../api/images';
 import { instant } from '../domain/rules';
 import type { Outcome } from '../domain/types';
 import i18n from '../i18n';
@@ -117,6 +118,10 @@ export function MockProvider({ children }: { children: ReactNode }) {
           data: { ...data, attendees, results },
           preview: { SignIn, Scanner: SampleScanner },
           run: async (action) => value.run(action),
+          upload: async (file) =>
+            value.failActions
+              ? { ok: false, message: 'Simulated action failed. No change was saved.' }
+              : { ok: true, message: 'Image uploaded.', id: keepLocalImage(file) },
           reload: () => value.setDataState('ready'),
           signOut: () => {
             value.setIdentity('visitor');

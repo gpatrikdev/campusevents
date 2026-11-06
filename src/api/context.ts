@@ -26,6 +26,8 @@ export interface AppState {
   dataState: 'ready' | 'loading' | 'empty' | 'error';
   reload: () => void;
   run: (action: Action) => Promise<Outcome>;
+  // Stores an image and returns its id. Failures stay with the field, not the page banner.
+  upload: (file: File) => Promise<Outcome>;
   outcome: Outcome | null;
   setOutcome: (outcome: Outcome | null) => void;
   signOut: () => void;

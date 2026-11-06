@@ -26,6 +26,7 @@ export const events = pgTable(
     end: instant('ends_at').notNull(),
     timezone: text().notNull(),
     content: text().notNull(),
+    banner: uuid(),
     status: text({ enum: ['draft', 'published'] })
       .notNull()
       .default('draft'),

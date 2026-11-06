@@ -338,4 +338,19 @@ export const hu: Record<string, string> = {
   'Something went wrong. Try again.': 'Hiba történt. Próbálkozzon újra.',
   'Check the submitted information.': 'Ellenőrizze a megadott adatokat.',
   'The submitted information is too large.': 'A megadott adatok mérete túl nagy.',
+  'Insert image': 'Kép beszúrása',
+  Image: 'Kép',
+  'JPEG, PNG, WebP or GIF, up to 5 MB.': 'JPEG, PNG, WebP vagy GIF, legfeljebb 5 MB.',
+  'Alternative text': 'Helyettesítő szöveg',
+  'Describe the image for people who can’t see it. Leave it empty if the image is only decorative.':
+    'Írja le a képet azoknak, akik nem látják. Hagyja üresen, ha a kép csak díszítő elem.',
+  'Choose an image.': 'Válasszon egy képet.',
+  'Banner image': 'Borítókép',
+  'Shown across the top of the event page. JPEG, PNG, WebP or GIF, up to 5 MB.':
+    'Az eseményoldal tetején jelenik meg. JPEG, PNG, WebP vagy GIF, legfeljebb 5 MB.',
+  'Current banner': 'Jelenlegi borítókép',
+  'Image uploaded.': 'A képet feltöltöttük.',
+  'Images can be up to 5 MB.': 'A kép legfeljebb 5 MB lehet.',
+  'Choose a JPEG, PNG, WebP or GIF image.': 'Válasszon JPEG, PNG, WebP vagy GIF formátumú képet.',
+  'Upload the banner image again.': 'Töltse fel újra a borítóképet.',
 };

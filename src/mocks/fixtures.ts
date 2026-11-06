@@ -22,6 +22,7 @@ function event(
     timezone,
     status,
     content: markdownToEditorStateJSON(markdown),
+    banner: null,
   };
 }
 

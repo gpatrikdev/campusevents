@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
 import { EventDetails } from '../components/EventDetails';
 import { PlusIcon } from '../components/EventIcons';
+import { BannerImage, richTextNodes } from '../components/EventImage';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { formatDateRange } from '../domain/format';
 import { hasEnded, instant, isStaff, registrationCutoff } from '../domain/rules';
@@ -198,11 +199,12 @@ export function StaffEventPage({ eventId }: { eventId: string }) {
   return (
     <VStack gap={6}>
       <Heading level={2}>{t('Event details')}</Heading>
+      {event.banner && <BannerImage id={event.banner} />}
       <EventDetails event={event} />
       <Divider />
       <VStack as="section" gap={4} className="event-description">
         <Heading level={3}>{t('About this event')}</Heading>
-        <RichTextView value={event.content} />
+        <RichTextView value={event.content} nodes={richTextNodes} />
       </VStack>
     </VStack>
   );

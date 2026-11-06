@@ -2,11 +2,12 @@
 import { env as bindings } from 'cloudflare:workers';
 import { and, eq, inArray } from 'drizzle-orm';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { HOUR } from '../src/domain/rules';
+import { HOUR, MAX_IMAGE_BYTES } from '../src/domain/rules';
 import type { Outcome } from '../src/domain/types';
 import { openDatabase } from './db';
 import { events, registrations, user } from './db/schema';
 import type { Env } from './env';
+import { imageType } from './images';
 import worker from './index';
 
 const env = bindings as unknown as Env;
@@ -55,6 +56,25 @@ function request(path: string, cookie = '', method = 'GET', body?: unknown) {
     env,
   );
 }
+
+function upload(
+  cookie: string,
+  bytes: Uint8Array<ArrayBuffer>,
+  type = 'image/png',
+  name = 'picture.png',
+) {
+  const body = new FormData();
+  body.append('file', new File([bytes], name, { type }));
+  return worker.fetch(
+    new Request(`${origin}/api/staff/images`, {
+      method: 'POST',
+      headers: { origin, ...(cookie && { cookie }) },
+      body,
+    }),
+    env,
+  );
+}
+const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13]);
 
 async function login(label: string) {
   const email = `${label}-${testId}@example.test`;
@@ -455,5 +475,95 @@ describe('reviews and certificates', () => {
       subject: 'Értékeld az eseményt · University seminar',
       text: expect.stringContaining(`/review/${id}`),
     });
+  });
+});
+
+describe('images', () => {
+  it('stores staff uploads by their real type and refuses other files and accounts', async () => {
+    expect((await upload('', png)).status).toBe(401);
+    expect((await upload(attendee.cookie, png)).status).toBe(403);
+    const svg = new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg"><script/></svg>');
+    const refused = await upload(staff.cookie, svg, 'image/png');
+    expect(refused.status).toBe(415);
+    expect((await refused.json<Outcome>()).message).toBe('Choose a JPEG, PNG, WebP or GIF image.');
+    const large = new Uint8Array(MAX_IMAGE_BYTES + 1);
+    large.set(png);
+    const tooLarge = await upload(staff.cookie, large);
+    expect(tooLarge.status).toBe(413);
+    expect((await tooLarge.json<Outcome>()).message).toBe('Images can be up to 5 MB.');
+
+    // The declared type is ignored; the stored type comes from the bytes.
+    const stored = await upload(staff.cookie, png, 'image/jpeg', 'picture.jpg');
+    expect(stored.status).toBe(200);
+    const { id } = await stored.json<Outcome>();
+    const image = await request(`/images/${id}`);
+    expect(image.status).toBe(200);
+    expect(image.headers.get('content-type')).toBe('image/png');
+    expect(image.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+    expect(new Uint8Array(await image.arrayBuffer())).toEqual(png);
+    expect((await request(`/images/${crypto.randomUUID()}`)).status).toBe(404);
+    expect((await request('/images/not-an-id')).status).toBe(404);
+
+    const ascii = (text: string) => [...text].map((char) => char.charCodeAt(0));
+    expect(imageType(new Uint8Array([0xff, 0xd8, 0xff, 0xe0]))).toBe('image/jpeg');
+    expect(imageType(new Uint8Array([...ascii('RIFF'), 0, 0, 0, 0, ...ascii('WEBP')]))).toBe(
+      'image/webp',
+    );
+    expect(imageType(new Uint8Array(ascii('GIF89a')))).toBe('image/gif');
+  });
+
+  it('saves only uploaded banners and keeps the banner and images when unpublishing', async () => {
+    const missing = await request('/staff/events', staff.cookie, 'POST', {
+      ...input(),
+      banner: crypto.randomUUID(),
+    });
+    expect(missing.status).toBe(400);
+    expect((await missing.json<Outcome>()).message).toBe('Upload the banner image again.');
+
+    const { id: banner } = await (await upload(staff.cookie, png)).json<Outcome>();
+    const { id: picture } = await (await upload(staff.cookie, png)).json<Outcome>();
+    const content = JSON.stringify({
+      root: {
+        type: 'root',
+        children: [
+          { type: 'paragraph', children: [{ type: 'text', text: 'Discussion' }] },
+          { type: 'image', imageId: picture, altText: 'The lecture hall', version: 1 },
+        ],
+      },
+    });
+    const created = await request('/staff/events', staff.cookie, 'POST', {
+      ...input(),
+      content,
+      banner,
+    });
+    expect(created.status).toBe(200);
+    const { id } = await created.json<Outcome>();
+    eventIds.push(id ?? '');
+    expect((await request(`/staff/events/${id}/publish`, staff.cookie, 'POST', {})).status).toBe(
+      200,
+    );
+    const published = await (await request(`/events/${id}`)).json<{
+      event: { banner: string | null; content: string };
+    }>();
+    expect(published.event).toMatchObject({ banner, content });
+
+    expect((await request(`/staff/events/${id}/unpublish`, staff.cookie, 'POST', {})).status).toBe(
+      200,
+    );
+    const draft = await (await request(`/staff/events/${id}`, staff.cookie)).json<{
+      banner: string | null;
+      content: string;
+      status: string;
+    }>();
+    expect(draft).toMatchObject({ status: 'draft', banner, content });
+    expect((await request(`/images/${banner}`)).status).toBe(200);
+    expect((await request(`/images/${picture}`)).status).toBe(200);
+
+    expect(
+      (await request(`/staff/events/${id}`, staff.cookie, 'PATCH', { ...input(), content })).status,
+    ).toBe(200);
+    expect(
+      (await (await request(`/staff/events/${id}`, staff.cookie)).json<{ banner: null }>()).banner,
+    ).toBeNull();
   });
 });

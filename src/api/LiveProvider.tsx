@@ -95,6 +95,13 @@ export function LiveProvider({ children }: { children: ReactNode }) {
     await refresh();
     return result;
   }
+  async function upload(file: File): Promise<Outcome> {
+    try {
+      return await (await api.staff.images.$post({ form: { file } })).json();
+    } catch {
+      return failure;
+    }
+  }
   async function signOut() {
     try {
       const { error } = await auth.signOut();
@@ -141,6 +148,7 @@ export function LiveProvider({ children }: { children: ReactNode }) {
         outcome,
         setOutcome,
         run,
+        upload,
         signOut: () => {
           void signOut();
         },

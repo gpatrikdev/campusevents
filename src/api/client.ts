@@ -33,8 +33,8 @@ export async function send(action: Action, language: Language): Promise<Outcome>
         })
       ).json();
     case 'save': {
-      const { id, title, location, timezone, start, end, content } = action.event;
-      const json = { title, location, timezone, start, end, content };
+      const { id, title, location, timezone, start, end, content, banner } = action.event;
+      const json = { title, location, timezone, start, end, content, banner };
       return (
         await (id
           ? api.staff.events[':eventId'].$patch({ param: { eventId: id }, json })

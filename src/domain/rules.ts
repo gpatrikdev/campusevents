@@ -91,7 +91,12 @@ export const eventSchema = z.object({
   start: z.iso.datetime({ offset: true }),
   end: z.iso.datetime({ offset: true }),
   content: z.string().min(1).max(100_000),
+  banner: z.uuid().nullable().default(null),
 });
+
+// Uploaded banners and description images. SVG is left out because it can carry scripts.
+export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 export function localToInstant(value: string, timezone: string) {
   return Temporal.PlainDateTime.from(value)

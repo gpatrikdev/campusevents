@@ -16,6 +16,7 @@ import { useApp } from '../api/context';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { EventDetails } from '../components/EventDetails';
 import { CertificateIcon, QrCodeIcon, ReviewIcon, TicketIcon } from '../components/EventIcons';
+import { BannerImage, richTextNodes } from '../components/EventImage';
 import { HappeningNow } from '../components/EventListItem';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { TicketDialog } from '../components/TicketDialog';
@@ -236,6 +237,7 @@ export function EventDetailPage({
                   )}
                 />
               )}
+              {event.banner && <BannerImage id={event.banner} />}
               <VStack gap={3}>
                 <Heading level={1} type={compact ? 'display-3' : 'display-2'} textWrap="balance">
                   {event.title}
@@ -254,7 +256,7 @@ export function EventDetailPage({
               {narrow && takePart}
               <VStack gap={4} className="event-description">
                 <Heading level={2}>{t('About this event')}</Heading>
-                <RichTextView value={event.content} />
+                <RichTextView value={event.content} nodes={richTextNodes} />
               </VStack>
             </VStack>
           </LayoutContent>

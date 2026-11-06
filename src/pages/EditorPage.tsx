@@ -2,6 +2,7 @@ import { Banner } from '@astryxdesign/core/Banner';
 import { BreadcrumbItem, Breadcrumbs } from '@astryxdesign/core/Breadcrumbs';
 import { Button } from '@astryxdesign/core/Button';
 import { DateTimeInput, type ISODateTimeString } from '@astryxdesign/core/DateTimeInput';
+import { FileInput } from '@astryxdesign/core/FileInput';
 import { Grid } from '@astryxdesign/core/Grid';
 import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
@@ -18,12 +19,22 @@ import {
 } from '@astryxdesign/richtext';
 import { markdownToEditorStateJSON } from '@astryxdesign/richtext/markdown';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
-import { useRef, useState } from 'react';
+import { type CSSProperties, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
+import { imageUrl } from '../api/images';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { imageAccept, richTextNodes } from '../components/EventImage';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
-import { eventInputIssue, HOUR, instantToLocal, isStaff, localToInstant } from '../domain/rules';
+import { InsertImageButton, InsertImageDialog } from '../components/InsertImageButton';
+import {
+  eventInputIssue,
+  HOUR,
+  instantToLocal,
+  isStaff,
+  localToInstant,
+  MAX_IMAGE_BYTES,
+} from '../domain/rules';
 import type { CampusEvent } from '../domain/types';
 
 const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -92,7 +103,7 @@ export function EditorPage({ eventId }: { eventId?: string }) {
 
 function DraftEditor({ initial }: { initial?: CampusEvent }) {
   const { t } = useTranslation();
-  const { now, run } = useApp();
+  const { now, run, upload } = useApp();
   const navigate = useNavigate();
   const initialZone = initial?.timezone ?? browserTimezone;
   const [title, setTitle] = useState(initial?.title ?? '');
@@ -108,6 +119,10 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
     ),
   );
   const [content, setContent] = useState(initial?.content ?? markdownToEditorStateJSON(''));
+  const [banner, setBanner] = useState(initial?.banner ?? null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerError, setBannerError] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -120,6 +135,12 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
   });
   const locked = initial?.status === 'published';
   const errorNotice = useRef<HTMLDivElement>(null);
+  // FileInput shows its clear button only while it holds a file. A banner
+  // saved earlier has no File here, so a stand-in carries its name.
+  const bannerValue = useMemo(
+    () => (banner ? (bannerFile ?? new File([], t('Current banner'))) : null),
+    [banner, bannerFile, t],
+  );
   function changed() {
     setDirty(true);
     setError('');
@@ -131,8 +152,28 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
     requestAnimationFrame(() => errorNotice.current?.scrollIntoView({ block: 'nearest' }));
   }
 
+  // FileInput calls this with null only from its clear button. A rejected
+  // file reaches onChange alone, so it leaves the current banner in place.
+  async function changeBanner(file: File | File[] | null) {
+    if (file === null) {
+      setBanner(null);
+      setBannerFile(null);
+      changed();
+      return;
+    }
+    if (!(file instanceof File)) return;
+    setUploading(true);
+    const result = await upload(file);
+    setUploading(false);
+    if (result.ok && result.id) {
+      setBanner(result.id);
+      setBannerFile(file);
+      changed();
+    } else setBannerError(result.message);
+  }
+
   async function save() {
-    if (locked || saving) return;
+    if (locked || saving || uploading) return;
     const text = editor.current?.getMarkdown() ?? '';
     if (!text.trim()) {
       fail('Add an event description.');
@@ -149,6 +190,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
         start: localToInstant(start, timezone),
         end: localToInstant(end, timezone),
         content,
+        banner,
       };
     } catch {
       fail(
@@ -252,6 +294,27 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
                   isRequired
                 />
               </Grid>
+              <FileInput
+                label={t('Banner image')}
+                mode="dropzone"
+                controlClassName={banner ? 'banner-dropzone dropzone-preview' : 'banner-dropzone'}
+                controlStyle={
+                  banner
+                    ? ({ '--dropzone-preview': `url("${imageUrl(banner)}")` } as CSSProperties)
+                    : undefined
+                }
+                accept={imageAccept}
+                maxSize={MAX_IMAGE_BYTES}
+                description={t(
+                  'Shown across the top of the event page. JPEG, PNG, WebP or GIF, up to 5 MB.',
+                )}
+                value={bannerValue}
+                onChange={() => setBannerError('')}
+                changeAction={changeBanner}
+                status={bannerError ? { type: 'error', message: t(bannerError) } : undefined}
+                statusVariant="detached"
+                isOptional
+              />
             </VStack>
           </form>
           {/* RichText's link dialog owns a form, so the editor stays outside this form. */}
@@ -268,7 +331,9 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
               if (value !== initial?.content && initial?.content) changed();
               else if (!initial) changed();
             }}
-            toolbar={<RichTextEditorToolbar />}
+            nodes={richTextNodes}
+            toolbar={<RichTextEditorToolbar endContent={<InsertImageButton />} />}
+            plugins={<InsertImageDialog />}
             minHeight="16rem"
             isRequired
           />
@@ -278,6 +343,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
               type="submit"
               form="event-draft-form"
               isLoading={saving}
+              isDisabled={uploading}
               variant="primary"
             />
             <Button label={t('Cancel')} href={initial ? `/staff/events/${initial.id}` : '/staff'} />
