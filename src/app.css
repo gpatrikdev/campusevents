@@ -129,3 +129,15 @@ html {
   max-height: 55dvh;
   object-fit: contain;
 }
+
+/* Astryx toasts are either info or error. Here an info toast always reports an
+   action that worked, so it takes the success green. The text colour is set
+   too: the toast keeps any text that reaches 3:1 on its background, and the
+   default black reaches only 4.2:1 on this green, below the 4.5:1 that body
+   text needs. The close button reads the text token rather than the colour,
+   so that token is re-mapped too, as Astryx does for its inverted surfaces. */
+.astryx-toast[data-type="info"] {
+  background-color: var(--color-success);
+  color: var(--color-on-success);
+  --color-text-primary: var(--color-on-success);
+}
