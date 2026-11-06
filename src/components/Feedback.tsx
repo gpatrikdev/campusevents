@@ -105,6 +105,36 @@ export function AccessNotice({ admin = false }: { admin?: boolean }) {
   );
 }
 
+/** Stands in for a personal page until the visitor signs in and confirms a name. */
+export function AccountNotice({
+  returnTo,
+  description,
+}: {
+  returnTo: string;
+  description: string;
+}) {
+  const { t } = useTranslation();
+  const { user } = useApp();
+  const search = `?returnTo=${encodeURIComponent(returnTo)}`;
+  return user ? (
+    <EmptyNotice
+      minHeight={belowNavHeight}
+      headingLevel={1}
+      title={t('Complete your profile')}
+      description={t('Confirm your profile name first.')}
+      actions={<Button label={t('Complete your profile')} href={`/complete-profile${search}`} />}
+    />
+  ) : (
+    <EmptyNotice
+      minHeight={belowNavHeight}
+      headingLevel={1}
+      title={t('Sign in to continue.')}
+      description={description}
+      actions={<Button label={t('Sign in')} href={`/sign-in${search}`} />}
+    />
+  );
+}
+
 export function UnavailableEvent() {
   const { t } = useTranslation();
   return (

@@ -9,7 +9,7 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
 import { EventListItem } from '../components/EventListItem';
-import { belowNavHeight, DataBoundary, EmptyNotice } from '../components/Feedback';
+import { AccountNotice, DataBoundary, EmptyNotice } from '../components/Feedback';
 import { hasEnded, instant } from '../domain/rules';
 
 export function RegistrationsPage() {
@@ -17,31 +17,8 @@ export function RegistrationsPage() {
   const { data, user, now } = useApp();
   const compact = useMediaQuery('(max-width: 42rem)');
   const description = t('Open an event to manage your registration and follow-up actions.');
-  if (!user)
-    return (
-      <EmptyNotice
-        minHeight={belowNavHeight}
-        headingLevel={1}
-        title={t('Sign in to continue.')}
-        description={description}
-        actions={<Button label={t('Sign in')} href="/sign-in?returnTo=%2Fregistrations" />}
-      />
-    );
-  if (!user.profileComplete)
-    return (
-      <EmptyNotice
-        minHeight={belowNavHeight}
-        headingLevel={1}
-        title={t('Complete your profile')}
-        description={t('Confirm your profile name first.')}
-        actions={
-          <Button
-            label={t('Complete your profile')}
-            href="/complete-profile?returnTo=%2Fregistrations"
-          />
-        }
-      />
-    );
+  if (!user?.profileComplete)
+    return <AccountNotice returnTo="/registrations" description={description} />;
   const registrations = data.registrations
     .filter((item) => item.userId === user.id)
     .flatMap((registration) => {
