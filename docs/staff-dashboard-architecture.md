@@ -80,7 +80,8 @@ Open science in practice                              [external link]
 Overview     Attendees     QR scanner     Review results
 -------------------------------------------------------------------
                      [Scan QR tickets] [Unpublish event | Delete event]
-             Published details are locked. This event has already started.
+(i) Published details are locked.                                      [x]
+    An event cannot be unpublished after it starts.
 
 Event details
 Date and time (i)                       Location
@@ -113,7 +114,16 @@ The editor and Permissions still share the dashboard's page frame: a `Layout` he
 
 ### Actions and supporting details
 
-On Overview only, right-align an Astryx `ButtonGroup` labelled "Event actions" for Publish/Unpublish, Edit draft when applicable, and Delete event. There is no action dropdown. Preserve the existing confirmation wording. Align publication guidance below the controls. Attendees, scanning, and results omit this management region.
+On Overview only, right-align an Astryx `ButtonGroup` labelled "Event actions" for Publish/Unpublish, Edit draft when applicable, and Delete event. There is no action dropdown. Preserve the existing confirmation wording. Below the controls, a dismissable info `Banner` says what the publication status means and, when Publish or Unpublish is unavailable, why:
+
+| Event state                    | Banner title                      | Banner description                                   |
+| ------------------------------ | --------------------------------- | ---------------------------------------------------- |
+| Draft that can be published    | Drafts are visible to staff only. | Publish a draft more than 24 hours before it starts. |
+| Draft starting within 24 hours | Drafts are visible to staff only. | The start must be more than 24 hours away.           |
+| Published, not started         | Published details are locked.     | Unpublish before the start to edit.                  |
+| Published, already started     | Published details are locked.     | An event cannot be unpublished after it starts.      |
+
+The disabled button gets no tooltip, because the banner already gives the reason and tooltips don't show on touch. A dismissed banner returns when the status changes. Attendees, scanning, and results omit this management region.
 
 Keep public-page navigation outside this group: the title row uses an external-link `IconButton`, with a secondary surface, low elevation, a translated label and tooltip, at its far right. Drafts use the same position for their preview. The existing client-link adapter preserves preview routing and normal browser link behavior.
 
@@ -236,7 +246,8 @@ Table rows, dialog buttons, and Cancel or Close buttons have no icons. Checked i
 
 The scanner follow-up verified controls above the camera at 1440, 1024, 900, and 375 pixels, with check-in information separate from controls and feedback. English and Hungarian layouts, keyboard selection and activation, touch scanning, and an 844-by-390 landscape view passed without document overflow. Valid, duplicate, and invalid sample scans retained their outcomes. The camera capture and cleanup code was unchanged; physical camera scanning remains unverified.
 
-A later change gave the public event page the staff overview's date, time, and location sections. Checked in the preview:
+A later change gave the public event page the staff overview's date, time, and location sections, and replaced the grey publication notes under the Overview actions with the info banner described above. Checked in the preview:
 
+- All four banner states show the right text, and publishing a draft brings a dismissed banner back with the published wording.
 - The public page, draft preview, and staff overview show the same details at 390, 900, and 1280 pixels, in English, Hungarian, and dark mode, with no page overflow or console errors.
 - The public page's headings read as h1, then h2 for Date and time and Location.

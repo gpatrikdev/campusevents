@@ -1,4 +1,5 @@
 import { Badge } from '@astryxdesign/core/Badge';
+import { Banner } from '@astryxdesign/core/Banner';
 import { BreadcrumbItem, Breadcrumbs } from '@astryxdesign/core/Breadcrumbs';
 import { Button } from '@astryxdesign/core/Button';
 import { ButtonGroup } from '@astryxdesign/core/ButtonGroup';
@@ -188,18 +189,23 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
                     {deleteButton}
                   </ButtonGroup>
                 </HStack>
-                <VStack gap={2} hAlign="end">
-                  <Text color="secondary">
-                    {t(
-                      draft
-                        ? 'Drafts are visible to staff only.'
-                        : publicationIssue
-                          ? 'Published details are locked.'
-                          : 'Published details are locked. Unpublish before the start to edit.',
-                    )}
-                  </Text>
-                  {publicationIssue && <Text color="secondary">{t(publicationIssue)}</Text>}
-                </VStack>
+                {/* Says what the status means and, when Publish or Unpublish is
+                    greyed out, why. The key brings a dismissed banner back
+                    once the status changes. */}
+                <Banner
+                  key={`${event.id}-${event.status}`}
+                  status="info"
+                  title={t(
+                    draft ? 'Drafts are visible to staff only.' : 'Published details are locked.',
+                  )}
+                  description={t(
+                    publicationIssue ??
+                      (draft
+                        ? 'Publish a draft more than 24 hours before it starts.'
+                        : 'Unpublish before the start to edit.'),
+                  )}
+                  isDismissable
+                />
               </VStack>
             )}
             <DataBoundary

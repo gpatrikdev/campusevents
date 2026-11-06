@@ -156,6 +156,8 @@ export const hu: Record<string, string> = {
     'Hozzon létre és tegyen közzé eseményeket, majd kezelje a résztvevőket és a beléptetést.',
   Status: 'Állapot',
   'Published details are locked.': 'A közzétett adatok zároltak.',
+  'Unpublish before the start to edit.':
+    'Szerkesztéshez a kezdés előtt vonja vissza a közzétételt.',
   'Manage university events': 'Egyetemi események kezelése',
   'All organizers and admins can manage every event.':
     'Minden szervező és adminisztrátor az összes eseményt kezelheti.',
