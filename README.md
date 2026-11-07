@@ -63,7 +63,19 @@ The Worker tests use PostgreSQL through local Hyperdrive, run inside workerd, an
 
 [AGENTS.md](AGENTS.md) says when agents use each tool, and [the specification](rebuild-handoff.md#selected-agent-skills-and-mcps) lists the official sources. None of them are app dependencies. Install them without lifecycle hooks.
 
-The repository holds the Frontend Design and UI/UX Pro Max skills in `.agents/skills`. Codex reads that folder; Claude Code doesn't. For Claude Code, enable Anthropic's `frontend-design` plugin and link UI/UX Pro Max into `.claude/skills`. Then add `/.claude/skills/` to `.git/info/exclude`. UI/UX Pro Max's `scripts/search.py` needs Python 3.
+| Skill           | How to install                                                                                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend Design | In the repository at `.agents/skills/frontend-design`. For Claude Code, enable Anthropic's `frontend-design` plugin.                                        |
+| UI/UX Pro Max   | In the repository at `.agents/skills/ui-ux-pro-max`. For Claude Code, link it into `.claude/skills` as shown below. Its `scripts/search.py` needs Python 3. |
+| Astryx          | Run `pnpm exec astryx init --user`. It writes `~/.agents/skills/astryx` and links it into the skill folders of the agents it finds.                         |
+| Ponytail        | Copy `skills/ponytail` from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail).                                                          |
+| Impeccable      | Copy `.claude/skills/impeccable` from [pbakaus/impeccable](https://github.com/pbakaus/impeccable).                                                          |
+| code-structure  | Copy `code-structure` from [michaelshimeles/rstack](https://github.com/michaelshimeles/rstack).                                                             |
+| unslop          | Copy `pstack/skills/unslop` from [cursor/plugins](https://github.com/cursor/plugins).                                                                       |
+
+Copied skills go in the agent's user skill folder, `~/.claude/skills/<name>` for Claude Code or `~/.codex/skills/<name>` for Codex. Skip `npx impeccable install`, which offers the design hook that AGENTS.md leaves off. In unslop's `SKILL.md`, delete the `disable-model-invocation: true` line so agents can apply it to their own prose.
+
+Codex reads the skills in `.agents/skills`, but Claude Code doesn't. Link UI/UX Pro Max for Claude Code and keep the link out of Git by adding `/.claude/skills/` to `.git/info/exclude`:
 
 ```sh
 mkdir -p .claude/skills
@@ -71,17 +83,6 @@ ln -s ../../.agents/skills/ui-ux-pro-max .claude/skills/ui-ux-pro-max
 ```
 
 On Windows, create a junction instead: `New-Item -ItemType Junction -Path .claude\skills\ui-ux-pro-max -Target .agents\skills\ui-ux-pro-max`.
-
-`pnpm exec astryx init --user` writes the Astryx skill to `~/.agents/skills/astryx` and links it into the skill folders of the agents it finds. Copy the other skills into the agent's user skill folder, `~/.claude/skills/<name>` for Claude Code or `~/.codex/skills/<name>` for Codex:
-
-| Skill          | Folder to copy                                                                             |
-| -------------- | ------------------------------------------------------------------------------------------ |
-| Ponytail       | `skills/ponytail` in [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
-| Impeccable     | `.claude/skills/impeccable` in [pbakaus/impeccable](https://github.com/pbakaus/impeccable) |
-| code-structure | `code-structure` in [michaelshimeles/rstack](https://github.com/michaelshimeles/rstack)    |
-| unslop         | `pstack/skills/unslop` in [cursor/plugins](https://github.com/cursor/plugins)              |
-
-Skip `npx impeccable install`, which offers the design hook that AGENTS.md leaves off. In unslop's `SKILL.md`, delete the `disable-model-invocation: true` line so agents can apply it to their own prose.
 
 Codex reads the MCP servers from `.codex/config.toml`. Claude Code reads a project `.mcp.json`, which stays uncommitted because the Playwright command differs between systems:
 
