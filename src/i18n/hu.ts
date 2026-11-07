@@ -378,4 +378,100 @@ export const hu: Record<string, string> = {
   'Images can be up to 5 MB.': 'A kép legfeljebb 5 MB lehet.',
   'Choose a JPEG, PNG, WebP or GIF image.': 'Válasszon JPEG, PNG, WebP vagy GIF formátumú képet.',
   'Upload the banner image again.': 'Töltse fel újra a borítóképet.',
+  'Review templates': 'Értékelési sablonok',
+  'Review form': 'Értékelő űrlap',
+  'Attendees who checked in answer these questions after the event. Publishing locks the form.':
+    'A beléptetett résztvevők az esemény után válaszolnak ezekre a kérdésekre. Közzétételkor az űrlap zárolódik.',
+  'Without questions, this event has no review step.':
+    'Kérdések nélkül az eseményt nem lehet értékelni.',
+  'Copy a template': 'Sablon másolása',
+  'Choose a template': 'Válasszon sablont',
+  'Replaces the current questions.': 'A jelenlegi kérdések helyére kerül.',
+  'Remove form': 'Űrlap eltávolítása',
+  'A summary of each question from attendees who checked in.':
+    'A beléptetett résztvevők válaszainak összesítése kérdésenként.',
+  'Answers: {{count}}': 'Válaszok: {{count}}',
+  'No answers': 'Nincs válasz',
+  Average: 'Átlag',
+  Lowest: 'Legkisebb',
+  Highest: 'Legnagyobb',
+  Yes: 'Igen',
+  No: 'Nem',
+  'Template navigation': 'Sablonnavigáció',
+  'Template unavailable': 'A sablon nem érhető el',
+  'It may have been deleted.': 'Lehet, hogy törölték.',
+  'Template name': 'Sablon neve',
+  'Save template': 'Sablon mentése',
+  'Edit template': 'Sablon szerkesztése',
+  'A draft copies a template into its own review form. Editing a template later does not change events.':
+    'A piszkozat a saját értékelő űrlapjába másolja a sablont. A sablon későbbi módosítása nem változtatja meg az eseményeket.',
+  'New template': 'Új sablon',
+  Questions: 'Kérdések',
+  'Rating from 1 to 5': 'Értékelés 1-től 5-ig',
+  'Single choice': 'Egy választás',
+  'Multiple choice': 'Több választás',
+  Dropdown: 'Legördülő lista',
+  'Yes or no': 'Igen vagy nem',
+  Number: 'Szám',
+  'Free text': 'Szabad szöveg',
+  'Question {{position}}': '{{position}}. kérdés',
+  'Remove question {{position}}': 'A(z) {{position}}. kérdés eltávolítása',
+  Question: 'Kérdés',
+  'Option {{number}}': '{{number}}. lehetőség',
+  'Remove option {{number}}': 'A(z) {{number}}. lehetőség eltávolítása',
+  'Add option': 'Lehetőség hozzáadása',
+  'Question type': 'Kérdés típusa',
+  'Add question': 'Kérdés hozzáadása',
+  'No answer': 'Nincs válasz',
+  'This event has no review form.': 'Ehhez az eseményhez nincs értékelő űrlap.',
+  'Answer every required question.': 'Válaszoljon minden kötelező kérdésre.',
+  'One or more answers do not match the review form.':
+    'Egy vagy több válasz nem felel meg az értékelő űrlapnak.',
+  'Give every question a title of up to 300 characters.':
+    'Adjon minden kérdésnek legfeljebb 300 karakteres címet.',
+  'Give each choice question 2 to 20 different options of up to 200 characters.':
+    'Adjon minden választós kérdésnek 2–20 különböző, legfeljebb 200 karakteres lehetőséget.',
+  'Add at least one question.': 'Adjon hozzá legalább egy kérdést.',
+  'A review form can have up to 30 questions.': 'Egy értékelő űrlapon legfeljebb 30 kérdés lehet.',
+  'Check the review form questions.': 'Ellenőrizze az értékelő űrlap kérdéseit.',
+  'Give the template a name of up to 120 characters.':
+    'Adjon a sablonnak legfeljebb 120 karakteres nevet.',
+  'This template is unavailable.': 'A sablon nem érhető el.',
+  'Template saved.': 'Sablon mentve.',
+  'Template deleted. Events keep their copies.':
+    'Sablon törölve. Az események megtartják a másolatukat.',
+  'No review templates yet': 'Még nincs értékelési sablon',
+  'Create a template to reuse its questions across events.':
+    'Hozzon létre sablont, hogy a kérdéseit több eseménynél is használhassa.',
+  'Delete this template?': 'Törli ezt a sablont?',
+  'Events that already copied it keep their review forms.':
+    'Azok az események, amelyek már átmásolták, megtartják az értékelő űrlapjukat.',
+  'Delete template': 'Sablon törlése',
+  'Your unsaved template changes will be lost.': 'A sablon nem mentett módosításai elvesznek.',
+  'Add questions to the draft before publishing to collect reviews.':
+    'Értékelések gyűjtéséhez közzététel előtt adjon kérdéseket a piszkozathoz.',
+  'Remove question': 'Kérdés eltávolítása',
+  'Answer required': 'Kötelező válasz',
+  'Reorder question {{position}}': 'A(z) {{position}}. kérdés áthelyezése',
+  'Drag to reorder': 'Húzza az áthelyezéshez',
+  'To move a question, press Space or Enter on its handle, use the up and down arrow keys, then press Space or Enter to drop it. Press Escape to cancel.':
+    'Kérdés áthelyezéséhez nyomja meg a Szóköz vagy az Enter billentyűt a fogantyún, mozgassa a fel és le nyíllal, majd a Szóközzel vagy az Enterrel tegye le. A megszakításhoz nyomja meg az Escape billentyűt.',
+  'Picked up question {{position}}.': 'A(z) {{position}}. kérdés felemelve.',
+  'Question {{from}} is over position {{to}}.':
+    'A(z) {{from}}. kérdés a(z) {{to}}. hely fölött van.',
+  'Question {{from}} was dropped at position {{to}}.':
+    'A(z) {{from}}. kérdés a(z) {{to}}. helyre került.',
+  'Moving was cancelled. Question {{position}} kept its place.':
+    'Az áthelyezés megszakadt. A(z) {{position}}. kérdés a helyén maradt.',
+  'Reorder option {{number}}': 'A(z) {{number}}. lehetőség áthelyezése',
+  'To move an option, press Space or Enter on its handle, use the up and down arrow keys, then press Space or Enter to drop it. Press Escape to cancel.':
+    'Lehetőség áthelyezéséhez nyomja meg a Szóköz vagy az Enter billentyűt a fogantyún, mozgassa a fel és le nyíllal, majd a Szóközzel vagy az Enterrel tegye le. A megszakításhoz nyomja meg az Escape billentyűt.',
+  'Picked up option {{position}}.': 'A(z) {{position}}. lehetőség felemelve.',
+  'Option {{from}} is over position {{to}}.':
+    'A(z) {{from}}. lehetőség a(z) {{to}}. hely fölött van.',
+  'Option {{from}} was dropped at position {{to}}.':
+    'A(z) {{from}}. lehetőség a(z) {{to}}. helyre került.',
+  'Moving was cancelled. Option {{position}} kept its place.':
+    'Az áthelyezés megszakadt. A(z) {{position}}. lehetőség a helyén maradt.',
+  '{{score}} out of 5': '{{score}} az 5-ből',
 };

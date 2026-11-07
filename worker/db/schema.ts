@@ -3,13 +3,14 @@ import {
   boolean,
   check,
   index,
-  integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
+import type { ReviewAnswers, ReviewForm } from '../../src/domain/reviewForm';
 import { user } from './auth-schema';
 
 export * from './auth-schema';
@@ -27,6 +28,7 @@ export const events = pgTable(
     timezone: text().notNull(),
     content: text().notNull(),
     banner: uuid(),
+    form: jsonb().$type<ReviewForm>(),
     status: text({ enum: ['draft', 'published'] })
       .notNull()
       .default('draft'),
@@ -51,8 +53,7 @@ export const registrations = pgTable(
     ticket: uuid().notNull().defaultRandom().unique(),
     active: boolean().notNull().default(true),
     checkedInAt: instant('checked_in_at'),
-    rating: integer(),
-    comment: text(),
+    answers: jsonb().$type<ReviewAnswers>(),
     certificate: text({ enum: ['none', 'pending', 'sent', 'failed'] })
       .notNull()
       .default('none'),
@@ -64,7 +65,13 @@ export const registrations = pgTable(
       .where(sql`${table.active}`),
     index('registration_event').on(table.eventId),
     index('registration_user').on(table.userId),
-    check('review_rating', sql`${table.rating} between 1 and 5`),
     check('certificate_status', sql`${table.certificate} in ('none', 'pending', 'sent', 'failed')`),
   ],
 );
+
+export const reviewTemplates = pgTable('review_templates', {
+  id: uuid().primaryKey().defaultRandom(),
+  name: text().notNull(),
+  form: jsonb().$type<ReviewForm>().notNull(),
+  updatedAt: instant('updated_at').notNull().defaultNow(),
+});

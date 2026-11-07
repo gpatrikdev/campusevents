@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { z } from 'zod';
+import { answersSchema, formIssue, reviewFormSchema } from './reviewForm';
 import type { CampusEvent, Registration, User } from './types';
 
 export const HOUR = 3_600_000;
@@ -39,6 +40,7 @@ export function reviewIssue(
   registration: Registration | undefined,
   now: number,
 ) {
+  if (!event.form) return 'This event has no review form.';
   if (!isPublic(event) || !registration?.active || !registration.checkedIn)
     return 'Only checked-in attendees are eligible.';
   if (registration.review) return 'Review submitted';
@@ -80,10 +82,7 @@ export function checkInIssue(
 
 export const profileSchema = z.string().trim().min(2).max(120);
 export const emailSchema = z.email().max(254);
-export const reviewSchema = z.object({
-  rating: z.number().int().min(1).max(5),
-  comment: z.string().trim().max(2000).default(''),
-});
+export const reviewSchema = z.object({ answers: answersSchema });
 export const eventSchema = z.object({
   title: z.string().trim().min(1).max(200),
   location: z.string().trim().min(1).max(300),
@@ -92,6 +91,7 @@ export const eventSchema = z.object({
   end: z.iso.datetime({ offset: true }),
   content: z.string().min(1).max(100_000),
   banner: z.uuid().nullable().default(null),
+  form: reviewFormSchema.nullable().default(null),
 });
 
 // Uploaded banners and description images. SVG is left out because it can carry scripts.
@@ -123,6 +123,10 @@ function hasText(node: unknown, depth = 0): boolean {
 }
 
 export function eventInputIssue(event: CampusEvent) {
+  if (event.form) {
+    const issue = formIssue(event.form);
+    if (issue) return issue;
+  }
   if (!eventSchema.safeParse(event).success) return 'Complete all required event fields.';
   try {
     Temporal.Instant.from(event.start).toZonedDateTimeISO(event.timezone);

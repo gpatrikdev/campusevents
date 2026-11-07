@@ -8,6 +8,7 @@ import type {
   Outcome,
   Registration,
   ReviewResults,
+  ReviewTemplate,
   User,
 } from '../domain/types';
 
@@ -17,6 +18,7 @@ export type AppData = {
   registrations: Registration[];
   attendees?: Record<string, Attendee[]>;
   results?: Record<string, ReviewResults>;
+  templates?: ReviewTemplate[];
 };
 
 export interface AppState {

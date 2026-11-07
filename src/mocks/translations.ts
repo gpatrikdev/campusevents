@@ -62,4 +62,7 @@ export const previewHu: Record<string, string> = {
     'A szervezői jogosultságot módosítottuk az előnézetben.',
   'Simulated action failed. No change was saved.':
     'A szimulált művelet sikertelen. Nem mentettünk módosítást.',
+  'Template saved in this preview.': 'Sablon mentve ebben az előnézetben.',
+  'Template deleted in this preview. Events keep their copies.':
+    'Sablon törölve ebben az előnézetben. Az események megtartják a másolatukat.',
 };

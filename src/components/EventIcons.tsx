@@ -61,6 +61,20 @@ export function LocationIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+// Six dots, the usual mark for a handle that drags an item to a new place.
+export function GripIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Outline {...props} fill="currentColor" stroke="none">
+      <circle cx="9" cy="6" r="1.5" />
+      <circle cx="15" cy="6" r="1.5" />
+      <circle cx="9" cy="12" r="1.5" />
+      <circle cx="15" cy="12" r="1.5" />
+      <circle cx="9" cy="18" r="1.5" />
+      <circle cx="15" cy="18" r="1.5" />
+    </Outline>
+  );
+}
+
 export function PlusIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <Outline {...props}>

@@ -141,23 +141,25 @@ function Shell() {
       ? t('Page not found')
       : pathname.startsWith('/staff/permissions')
         ? t('Permissions')
-        : pathname.startsWith('/staff')
-          ? t('Staff dashboard')
-          : pathname.startsWith('/registrations')
-            ? t('Registrations')
-            : pathname.startsWith('/profile')
-              ? t('Profile')
-              : pathname.startsWith('/sign-in')
-                ? t('Sign in')
-                : pathname.startsWith('/complete-profile')
-                  ? t('Complete your profile')
-                  : /^\/reviews\/?$/.test(pathname)
-                    ? t('Reviews')
-                    : pathname.startsWith('/reviews/')
-                      ? t('Your review')
-                      : pathname.startsWith('/review')
-                        ? t('Review this event')
-                        : t('Events');
+        : pathname.startsWith('/staff/templates')
+          ? t('Review templates')
+          : pathname.startsWith('/staff')
+            ? t('Staff dashboard')
+            : pathname.startsWith('/registrations')
+              ? t('Registrations')
+              : pathname.startsWith('/profile')
+                ? t('Profile')
+                : pathname.startsWith('/sign-in')
+                  ? t('Sign in')
+                  : pathname.startsWith('/complete-profile')
+                    ? t('Complete your profile')
+                    : /^\/reviews\/?$/.test(pathname)
+                      ? t('Reviews')
+                      : pathname.startsWith('/reviews/')
+                        ? t('Your review')
+                        : pathname.startsWith('/review')
+                          ? t('Review this event')
+                          : t('Events');
     const staffTask = pathname.endsWith('/attendees')
       ? t('Attendees')
       : pathname.endsWith('/scan')
@@ -220,6 +222,7 @@ function Shell() {
   // Dashboard pages get their own side nav. Only staff see it, since anyone
   // else gets an access notice there.
   const permissionsPage = pathname.startsWith('/staff/permissions');
+  const templatesPage = pathname.startsWith('/staff/templates');
   const dashboardItems: ComponentProps<typeof SideNavItem>[] =
     !bare && isStaff(user) && pathname.startsWith('/staff')
       ? [
@@ -227,7 +230,13 @@ function Shell() {
             label: t('Events'),
             href: '/staff',
             icon: 'calendar',
-            isSelected: !permissionsPage,
+            isSelected: !permissionsPage && !templatesPage,
+          },
+          {
+            label: t('Review templates'),
+            href: '/staff/templates',
+            icon: ReviewIcon,
+            isSelected: templatesPage,
           },
         ]
       : [];

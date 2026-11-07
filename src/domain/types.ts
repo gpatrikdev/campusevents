@@ -1,3 +1,7 @@
+import type { ReviewAnswers, ReviewForm, ReviewResults, ReviewTemplate } from './reviewForm';
+
+export type { ReviewAnswers, ReviewForm, ReviewResults, ReviewTemplate };
+
 export type Role = 'organizer' | 'admin' | null;
 export type Language = 'en' | 'hu';
 
@@ -19,6 +23,7 @@ export interface CampusEvent {
   timezone: string;
   content: string;
   banner: string | null;
+  form: ReviewForm | null;
   status: 'draft' | 'published';
 }
 
@@ -34,14 +39,10 @@ export interface Registration {
   certificate: 'none' | 'pending' | 'sent' | 'failed';
 }
 
-export interface ReviewAnswers {
-  rating: number;
-  comment: string;
-}
-
-export interface Review extends ReviewAnswers {
+export interface Review {
   id: string;
   eventId: string;
+  answers: ReviewAnswers;
 }
 
 export interface MockData {
@@ -49,6 +50,7 @@ export interface MockData {
   users: User[];
   registrations: Registration[];
   reviews: Review[];
+  templates: ReviewTemplate[];
   sequence: number;
 }
 
@@ -67,17 +69,13 @@ export interface Attendee {
   checkedIn: boolean;
 }
 
-export interface ReviewResults {
-  count: number;
-  average: number;
-  comments: string[];
-}
-
 export type Action =
   | { type: 'join' | 'publish' | 'unpublish' | 'delete' | 'certificate'; eventId: string }
   | { type: 'cancel'; registrationId: string }
   | { type: 'scan'; eventId: string; ticket: string }
-  | { type: 'review'; eventId: string; rating: number; comment: string }
+  | { type: 'review'; eventId: string; answers: ReviewAnswers }
+  | { type: 'saveTemplate'; template: ReviewTemplate }
+  | { type: 'deleteTemplate'; templateId: string }
   | { type: 'save'; event: CampusEvent }
   | { type: 'profile'; name: string }
   | { type: 'role'; userId: string; organizer: boolean };

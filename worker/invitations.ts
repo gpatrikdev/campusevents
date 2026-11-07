@@ -22,7 +22,8 @@ export async function inviteReviewers(env: Env, db: Database, now: number) {
           gt(events.end, new Date(now - 72 * HOUR).toISOString()),
           eq(registrations.active, true),
           isNotNull(registrations.checkedInAt),
-          isNull(registrations.rating),
+          isNotNull(events.form),
+          isNull(registrations.answers),
           isNull(registrations.invitedAt),
         ),
       )

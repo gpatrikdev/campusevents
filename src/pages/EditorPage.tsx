@@ -8,6 +8,8 @@ import { Heading } from '@astryxdesign/core/Heading';
 import { HStack } from '@astryxdesign/core/HStack';
 import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
+import { Selector } from '@astryxdesign/core/Selector';
+import { StackItem } from '@astryxdesign/core/Stack';
 import { Text } from '@astryxdesign/core/Text';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { type SearchSource, Typeahead } from '@astryxdesign/core/Typeahead';
@@ -27,6 +29,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { imageAccept, richTextNodes } from '../components/EventImage';
 import { AccessNotice, DataBoundary, UnavailableEvent } from '../components/Feedback';
 import { InsertImageButton, InsertImageDialog } from '../components/InsertImageButton';
+import type { Question } from '../domain/reviewForm';
 import {
   eventInputIssue,
   HOUR,
@@ -36,6 +39,7 @@ import {
   MAX_IMAGE_BYTES,
 } from '../domain/rules';
 import type { CampusEvent } from '../domain/types';
+import { FormEditor } from '../reviews/FormEditor';
 
 const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const timezones = [
@@ -120,6 +124,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
   );
   const [content, setContent] = useState(initial?.content ?? markdownToEditorStateJSON(''));
   const [banner, setBanner] = useState(initial?.banner ?? null);
+  const [questions, setQuestions] = useState<Question[]>(initial?.form?.elements ?? []);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerError, setBannerError] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -191,6 +196,7 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
         end: localToInstant(end, timezone),
         content,
         banner,
+        form: questions.length ? { elements: questions } : null,
       };
     } catch {
       fail(
@@ -337,6 +343,13 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
             minHeight="16rem"
             isRequired
           />
+          <ReviewFormFields
+            questions={questions}
+            onChange={(next) => {
+              setQuestions(next);
+              changed();
+            }}
+          />
           <HStack gap={3} wrap="wrap">
             <Button
               label={t('Save draft')}
@@ -363,6 +376,53 @@ function DraftEditor({ initial }: { initial?: CampusEvent }) {
           if (blocker.status === 'blocked') blocker.proceed();
         }}
       />
+    </VStack>
+  );
+}
+
+function ReviewFormFields({
+  questions,
+  onChange,
+}: {
+  questions: Question[];
+  onChange: (questions: Question[]) => void;
+}) {
+  const { t } = useTranslation();
+  const templates = useApp().data.templates ?? [];
+  return (
+    <VStack gap={4}>
+      <VStack gap={2}>
+        <Heading level={2}>{t('Review form')}</Heading>
+        <Text color="secondary">
+          {questions.length
+            ? t(
+                'Attendees who checked in answer these questions after the event. Publishing locks the form.',
+              )
+            : t('Without questions, this event has no review step.')}
+        </Text>
+      </VStack>
+      {(templates.length > 0 || questions.length > 0) && (
+        <HStack gap={3} vAlign="end">
+          {templates.length > 0 && (
+            <StackItem size="fill">
+              <Selector
+                label={t('Copy a template')}
+                placeholder={t('Choose a template')}
+                value=""
+                options={templates.map(({ id, name }) => ({ value: id, label: name }))}
+                description={questions.length ? t('Replaces the current questions.') : undefined}
+                onChange={(id) => {
+                  const template = templates.find((item) => item.id === id);
+                  if (template) onChange(structuredClone(template.form.elements));
+                }}
+                width="100%"
+              />
+            </StackItem>
+          )}
+          {questions.length > 0 && <Button label={t('Remove form')} onClick={() => onChange([])} />}
+        </HStack>
+      )}
+      <FormEditor questions={questions} onChange={onChange} />
     </VStack>
   );
 }

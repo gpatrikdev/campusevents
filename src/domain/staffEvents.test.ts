@@ -15,6 +15,7 @@ function event(id: string, start: string, end: string, extra: Partial<CampusEven
     timezone: 'Europe/Budapest',
     content: '',
     banner: null,
+    form: null,
     status: 'published',
     ...extra,
   } satisfies CampusEvent;

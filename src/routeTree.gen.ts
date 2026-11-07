@@ -23,6 +23,9 @@ import { Route as StaffIndexRouteImport } from './routes/staff.index'
 import { Route as StaffPermissionsRouteImport } from './routes/staff.permissions'
 import { Route as StaffEventsEventIdRouteImport } from './routes/staff.events.$eventId'
 import { Route as StaffEventsNewRouteImport } from './routes/staff.events.new'
+import { Route as StaffTemplatesIndexRouteImport } from './routes/staff.templates.index'
+import { Route as StaffTemplatesTemplateIdRouteImport } from './routes/staff.templates.$templateId'
+import { Route as StaffTemplatesNewRouteImport } from './routes/staff.templates.new'
 import { Route as StaffEventsEventIdIndexRouteImport } from './routes/staff.events.$eventId.index'
 import { Route as StaffEventsEventIdAttendeesRouteImport } from './routes/staff.events.$eventId.attendees'
 import { Route as StaffEventsEventIdEditRouteImport } from './routes/staff.events.$eventId.edit'
@@ -100,6 +103,22 @@ const StaffEventsNewRoute = StaffEventsNewRouteImport.update({
   path: '/events/new',
   getParentRoute: () => StaffRoute,
 } as any)
+const StaffTemplatesIndexRoute = StaffTemplatesIndexRouteImport.update({
+  id: '/templates/',
+  path: '/templates/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffTemplatesTemplateIdRoute =
+  StaffTemplatesTemplateIdRouteImport.update({
+    id: '/templates/$templateId',
+    path: '/templates/$templateId',
+    getParentRoute: () => StaffRoute,
+  } as any)
+const StaffTemplatesNewRoute = StaffTemplatesNewRouteImport.update({
+  id: '/templates/new',
+  path: '/templates/new',
+  getParentRoute: () => StaffRoute,
+} as any)
 const StaffEventsEventIdIndexRoute = StaffEventsEventIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -149,6 +168,9 @@ export interface FileRoutesByFullPath {
   '/staff/': typeof StaffIndexRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdRouteWithChildren
   '/staff/events/new': typeof StaffEventsNewRoute
+  '/staff/templates/$templateId': typeof StaffTemplatesTemplateIdRoute
+  '/staff/templates/new': typeof StaffTemplatesNewRoute
+  '/staff/templates/': typeof StaffTemplatesIndexRoute
   '/staff/events/$eventId/attendees': typeof StaffEventsEventIdAttendeesRoute
   '/staff/events/$eventId/edit': typeof StaffEventsEventIdEditRoute
   '/staff/events/$eventId/preview': typeof StaffEventsEventIdPreviewRoute
@@ -169,6 +191,9 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsIndexRoute
   '/staff': typeof StaffIndexRoute
   '/staff/events/new': typeof StaffEventsNewRoute
+  '/staff/templates/$templateId': typeof StaffTemplatesTemplateIdRoute
+  '/staff/templates/new': typeof StaffTemplatesNewRoute
+  '/staff/templates': typeof StaffTemplatesIndexRoute
   '/staff/events/$eventId/attendees': typeof StaffEventsEventIdAttendeesRoute
   '/staff/events/$eventId/edit': typeof StaffEventsEventIdEditRoute
   '/staff/events/$eventId/preview': typeof StaffEventsEventIdPreviewRoute
@@ -192,6 +217,9 @@ export interface FileRoutesById {
   '/staff/': typeof StaffIndexRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdRouteWithChildren
   '/staff/events/new': typeof StaffEventsNewRoute
+  '/staff/templates/$templateId': typeof StaffTemplatesTemplateIdRoute
+  '/staff/templates/new': typeof StaffTemplatesNewRoute
+  '/staff/templates/': typeof StaffTemplatesIndexRoute
   '/staff/events/$eventId/attendees': typeof StaffEventsEventIdAttendeesRoute
   '/staff/events/$eventId/edit': typeof StaffEventsEventIdEditRoute
   '/staff/events/$eventId/preview': typeof StaffEventsEventIdPreviewRoute
@@ -216,6 +244,9 @@ export interface FileRouteTypes {
     | '/staff/'
     | '/staff/events/$eventId'
     | '/staff/events/new'
+    | '/staff/templates/$templateId'
+    | '/staff/templates/new'
+    | '/staff/templates/'
     | '/staff/events/$eventId/attendees'
     | '/staff/events/$eventId/edit'
     | '/staff/events/$eventId/preview'
@@ -236,6 +267,9 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/staff'
     | '/staff/events/new'
+    | '/staff/templates/$templateId'
+    | '/staff/templates/new'
+    | '/staff/templates'
     | '/staff/events/$eventId/attendees'
     | '/staff/events/$eventId/edit'
     | '/staff/events/$eventId/preview'
@@ -258,6 +292,9 @@ export interface FileRouteTypes {
     | '/staff/'
     | '/staff/events/$eventId'
     | '/staff/events/new'
+    | '/staff/templates/$templateId'
+    | '/staff/templates/new'
+    | '/staff/templates/'
     | '/staff/events/$eventId/attendees'
     | '/staff/events/$eventId/edit'
     | '/staff/events/$eventId/preview'
@@ -379,6 +416,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffEventsNewRouteImport
       parentRoute: typeof StaffRoute
     }
+    '/staff/templates/': {
+      id: '/staff/templates/'
+      path: '/templates'
+      fullPath: '/staff/templates/'
+      preLoaderRoute: typeof StaffTemplatesIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/templates/$templateId': {
+      id: '/staff/templates/$templateId'
+      path: '/templates/$templateId'
+      fullPath: '/staff/templates/$templateId'
+      preLoaderRoute: typeof StaffTemplatesTemplateIdRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/templates/new': {
+      id: '/staff/templates/new'
+      path: '/templates/new'
+      fullPath: '/staff/templates/new'
+      preLoaderRoute: typeof StaffTemplatesNewRouteImport
+      parentRoute: typeof StaffRoute
+    }
     '/staff/events/$eventId/': {
       id: '/staff/events/$eventId/'
       path: '/'
@@ -450,6 +508,9 @@ interface StaffRouteChildren {
   StaffIndexRoute: typeof StaffIndexRoute
   StaffEventsEventIdRoute: typeof StaffEventsEventIdRouteWithChildren
   StaffEventsNewRoute: typeof StaffEventsNewRoute
+  StaffTemplatesTemplateIdRoute: typeof StaffTemplatesTemplateIdRoute
+  StaffTemplatesNewRoute: typeof StaffTemplatesNewRoute
+  StaffTemplatesIndexRoute: typeof StaffTemplatesIndexRoute
 }
 
 const StaffRouteChildren: StaffRouteChildren = {
@@ -457,6 +518,9 @@ const StaffRouteChildren: StaffRouteChildren = {
   StaffIndexRoute: StaffIndexRoute,
   StaffEventsEventIdRoute: StaffEventsEventIdRouteWithChildren,
   StaffEventsNewRoute: StaffEventsNewRoute,
+  StaffTemplatesTemplateIdRoute: StaffTemplatesTemplateIdRoute,
+  StaffTemplatesNewRoute: StaffTemplatesNewRoute,
+  StaffTemplatesIndexRoute: StaffTemplatesIndexRoute,
 }
 
 const StaffRouteWithChildren = StaffRoute._addFileChildren(StaffRouteChildren)

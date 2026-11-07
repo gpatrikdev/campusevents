@@ -1,27 +1,5 @@
 import type { ITheme } from 'survey-core';
 
-export const reviewForm = {
-  showQuestionNumbers: 'off',
-  showCompletedPage: false,
-  elements: [
-    {
-      type: 'rating',
-      name: 'rating',
-      title: { default: 'Overall rating', hu: 'Összesített értékelés' },
-      isRequired: true,
-      rateMin: 1,
-      rateMax: 5,
-      displayMode: 'buttons',
-    },
-    {
-      type: 'comment',
-      name: 'comment',
-      title: { default: 'Comment (optional)', hu: 'Megjegyzés (nem kötelező)' },
-      maxLength: 2000,
-    },
-  ],
-};
-
 // SurveyJS v3 semantic tokens follow the unmodified Astryx Neutral theme. The
 // sizes copy Astryx's own controls: 14px text with 20px lines, a 36px
 // large button, and 1.5px emphasized borders on fields.

@@ -33,8 +33,8 @@ export async function send(action: Action, language: Language): Promise<Outcome>
         })
       ).json();
     case 'save': {
-      const { id, title, location, timezone, start, end, content, banner } = action.event;
-      const json = { title, location, timezone, start, end, content, banner };
+      const { id, title, location, timezone, start, end, content, banner, form } = action.event;
+      const json = { title, location, timezone, start, end, content, banner, form };
       return (
         await (id
           ? api.staff.events[':eventId'].$patch({ param: { eventId: id }, json })
@@ -70,7 +70,22 @@ export async function send(action: Action, language: Language): Promise<Outcome>
       return (
         await api.events[':eventId'].review.$post({
           param: { eventId: action.eventId },
-          json: { rating: action.rating, comment: action.comment },
+          json: { answers: action.answers },
+        })
+      ).json();
+    case 'saveTemplate': {
+      const { id, name, form } = action.template;
+      const json = { name, form };
+      return (
+        await (id
+          ? api.staff.templates[':templateId'].$patch({ param: { templateId: id }, json })
+          : api.staff.templates.$post({ json }))
+      ).json();
+    }
+    case 'deleteTemplate':
+      return (
+        await api.staff.templates[':templateId'].$delete({
+          param: { templateId: action.templateId },
         })
       ).json();
     case 'certificate':

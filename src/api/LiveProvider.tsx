@@ -9,7 +9,7 @@ import { AppContext, type AppData } from './context';
 
 const emptyData: AppData = { events: [], users: [], registrations: [] };
 const failure = { ok: false, message: 'Something went wrong. Try again.' };
-const validEventId = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+const validId = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 
 async function loadPage(path: string, user: User | undefined): Promise<AppData> {
   const [, first, second, third, fourth] = path.split('/');
@@ -25,18 +25,31 @@ async function loadPage(path: string, user: User | undefined): Promise<AppData> 
       };
     }
     const eventPage = first === 'events' || first === 'review' || first === 'reviews';
-    if (eventPage && validEventId.test(second ?? '')) {
+    if (eventPage && validId.test(second ?? '')) {
       const { event, registrations } = await read(
         api.events[':eventId'].$get({ param: { eventId: second } }),
       );
       return { ...emptyData, events: [event], registrations };
     }
-    if (first === 'admin' && user?.profileComplete && user.role === 'admin') {
-      return { ...emptyData, users: await read(api.admin.accounts.$get()) };
-    }
     if (first === 'staff' && isStaff(user)) {
       if (!second) return { ...emptyData, events: await read(api.staff.events.$get()) };
-      if (second === 'events' && validEventId.test(third ?? '')) {
+      if (second === 'permissions' && user?.role === 'admin')
+        return { ...emptyData, users: await read(api.admin.accounts.$get()) };
+      if (second === 'templates') {
+        if (!third || third === 'new')
+          return { ...emptyData, templates: await read(api.staff.templates.$get()) };
+        if (!validId.test(third)) return emptyData;
+        const param = { templateId: third };
+        return {
+          ...emptyData,
+          templates: [await read(api.staff.templates[':templateId'].$get({ param }))],
+        };
+      }
+      // The draft editor attaches templates, so it loads them beside the event.
+      const templates = () => read(api.staff.templates.$get());
+      if (second === 'events' && third === 'new')
+        return { ...emptyData, templates: await templates() };
+      if (second === 'events' && validId.test(third ?? '')) {
         const route = api.staff.events[':eventId'];
         const param = { eventId: third };
         if (fourth === 'attendees') {
@@ -46,6 +59,10 @@ async function loadPage(path: string, user: User | undefined): Promise<AppData> 
         if (fourth === 'reviews') {
           const { event, results } = await read(route.reviews.$get({ param }));
           return { ...emptyData, events: [event], results: { [third]: results } };
+        }
+        if (fourth === 'edit') {
+          const [event, list] = await Promise.all([read(route.$get({ param })), templates()]);
+          return { ...emptyData, events: [event], templates: list };
         }
         return { ...emptyData, events: [await read(route.$get({ param }))] };
       }

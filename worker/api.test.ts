@@ -2,10 +2,11 @@
 import { env as bindings } from 'cloudflare:workers';
 import { and, eq, inArray } from 'drizzle-orm';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ReviewForm } from '../src/domain/reviewForm';
 import { HOUR, MAX_IMAGE_BYTES } from '../src/domain/rules';
 import type { Outcome } from '../src/domain/types';
 import { openDatabase } from './db';
-import { events, registrations, user } from './db/schema';
+import { events, registrations, reviewTemplates, user } from './db/schema';
 import type { Env } from './env';
 import { imageType } from './images';
 import worker from './index';
@@ -16,6 +17,7 @@ const realNow = Date.now();
 const testId = crypto.randomUUID();
 const accountIds: string[] = [];
 const eventIds: string[] = [];
+const templateIds: string[] = [];
 let clock = realNow;
 
 interface Message {
@@ -125,11 +127,29 @@ const input = (start = realNow + 48 * HOUR, end = start + HOUR) => ({
     },
   }),
 });
-async function seedEvent(start = realNow + 48 * HOUR, status: 'draft' | 'published' = 'published') {
+const form: ReviewForm = {
+  elements: [
+    {
+      type: 'rating',
+      name: 'qrating',
+      title: 'Overall rating',
+      isRequired: true,
+      rateMin: 1,
+      rateMax: 5,
+      displayMode: 'buttons',
+    },
+    { type: 'comment', name: 'qcomment', title: 'Comment', isRequired: false, maxLength: 2000 },
+  ],
+};
+async function seedEvent(
+  start = realNow + 48 * HOUR,
+  status: 'draft' | 'published' = 'published',
+  reviewForm: ReviewForm | null = form,
+) {
   const [event] = await database((db) =>
     db
       .insert(events)
-      .values({ ...input(start), status })
+      .values({ ...input(start), status, form: reviewForm })
       .returning(),
   );
   eventIds.push(event.id);
@@ -186,6 +206,8 @@ afterAll(async () => {
   vi.unstubAllGlobals();
   await database(async (db) => {
     await db.delete(user).where(inArray(user.id, accountIds));
+    if (templateIds.length)
+      await db.delete(reviewTemplates).where(inArray(reviewTemplates.id, templateIds));
   });
 });
 
@@ -282,7 +304,8 @@ describe('accounts and authorization', () => {
     expect((await request(`/registrations/${ticket.id}/ticket`, other.cookie)).status).toBe(200);
     clock += 49 * HOUR;
     expect(
-      (await request(`/events/${id}/review`, other.cookie, 'POST', { rating: 4 })).status,
+      (await request(`/events/${id}/review`, other.cookie, 'POST', { answers: { qrating: 4 } }))
+        .status,
     ).toBe(200);
     expect((await request(`/events/${id}/certificate`, other.cookie, 'POST', {})).status).toBe(200);
     expect(
@@ -400,20 +423,24 @@ describe('reviews and certificates', () => {
     await seedTicket(id, attendee, true);
     await seedTicket(id, other);
     await seedTicket(lateEvent, attendee, true);
-    const review = (eventId = id, account = attendee, rating = 5) =>
+    const formless = await seedEvent(start, 'published', null);
+    await seedTicket(formless, attendee, true);
+    const review = (eventId = id, account = attendee, rating: unknown = 5, extra = {}) =>
       request(`/events/${eventId}/review`, account.cookie, 'POST', {
-        rating,
-        comment: 'Useful discussion.',
+        answers: { qrating: rating, qcomment: 'Useful discussion.', ...extra },
       });
     clock = start + HOUR - 1;
     expect((await review()).status).toBe(409);
     clock++;
     expect((await review(id, other)).status).toBe(409);
     expect((await review(id, attendee, 6)).status).toBe(400);
+    expect((await review(id, attendee, '5')).status).toBe(400);
+    expect((await review(id, attendee, 5, { qunknown: 'x' })).status).toBe(400);
+    expect((await review(formless)).status).toBe(409);
     expect((await review()).status).toBe(200);
     expect((await review()).status).toBe(409);
     // Only the reviewer's own responses carry their answers.
-    const own = { rating: 5, comment: 'Useful discussion.' };
+    const own = { qrating: 5, qcomment: 'Useful discussion.' };
     const detail = async (account: { cookie: string }) =>
       (await request(`/events/${id}`, account.cookie)).json<{
         registrations: { review: unknown }[];
@@ -427,7 +454,26 @@ describe('reviews and certificates', () => {
     const path = `/staff/events/${id}/reviews`;
     expect((await request(path, attendee.cookie)).status).toBe(403);
     const results = await (await request(path, staff.cookie)).json<{ results: unknown }>();
-    expect(results.results).toEqual({ count: 1, average: 5, comments: ['Useful discussion.'] });
+    expect(results.results).toEqual({
+      count: 1,
+      questions: [
+        {
+          name: 'qrating',
+          title: 'Overall rating',
+          kind: 'rating',
+          count: 1,
+          average: 5,
+          scores: [0, 0, 0, 0, 1],
+        },
+        {
+          name: 'qcomment',
+          title: 'Comment',
+          kind: 'text',
+          count: 1,
+          answers: ['Useful discussion.'],
+        },
+      ],
+    });
     clock += 72 * HOUR;
     expect((await review(lateEvent)).status).toBe(409);
     clock--;
@@ -471,8 +517,10 @@ describe('reviews and certificates', () => {
   it('claims review invitations once and only for checked-in attendees in the review window', async () => {
     const start = realNow + 12 * HOUR;
     const id = await seedEvent(start);
+    const formless = await seedEvent(start, 'published', null);
     await seedTicket(id, attendee, true);
     await seedTicket(id, other);
+    await seedTicket(formless, other, true);
     clock = start + HOUR - 1;
     const scheduled = () =>
       worker.scheduled({ cron: '*/5 * * * *', scheduledTime: clock, noRetry() {} }, env);
@@ -483,10 +531,63 @@ describe('reviews and certificates', () => {
     await scheduled();
     await scheduled();
     expect(invitations()).toHaveLength(1);
+    expect(messages.filter(({ text }) => text.includes(`/review/${formless}`))).toHaveLength(0);
     expect(invitations()[0]).toMatchObject({
       subject: 'Értékeld az eseményt · University seminar',
       text: expect.stringContaining(`/review/${id}`),
     });
+  });
+});
+
+describe('review templates and event forms', () => {
+  it('lets only staff manage templates and keeps event copies independent', async () => {
+    const template = { name: `Feedback ${testId}`, form };
+    expect((await request('/staff/templates', '', 'POST', template)).status).toBe(401);
+    expect((await request('/staff/templates', attendee.cookie, 'POST', template)).status).toBe(403);
+    expect((await request('/staff/templates', attendee.cookie)).status).toBe(403);
+    const invalid = {
+      name: 'Broken',
+      form: { elements: [{ ...form.elements[0], type: 'matrix' }] },
+    };
+    expect((await request('/staff/templates', staff.cookie, 'POST', invalid)).status).toBe(400);
+    const created = await (
+      await request('/staff/templates', staff.cookie, 'POST', template)
+    ).json<Outcome>();
+    expect(created.ok).toBe(true);
+    const templateId = created.id ?? '';
+    templateIds.push(templateId);
+    const path = `/staff/templates/${templateId}`;
+    expect(await (await request(path, admin.cookie)).json()).toEqual({
+      id: templateId,
+      ...template,
+    });
+    const list = await (await request('/staff/templates', staff.cookie)).json<{ id: string }[]>();
+    expect(list.map((item) => item.id)).toContain(templateId);
+
+    // A draft saves its own copy, and later template edits leave it alone.
+    const draft = await (
+      await request('/staff/events', staff.cookie, 'POST', { ...input(), banner: null, form })
+    ).json<Outcome>();
+    const eventId = draft.id ?? '';
+    eventIds.push(eventId);
+    const changed = { ...template, form: { elements: [form.elements[1]] } };
+    expect((await request(path, staff.cookie, 'PATCH', changed)).status).toBe(200);
+    const event = async () =>
+      (await request(`/staff/events/${eventId}`, staff.cookie)).json<{ form: unknown }>();
+    expect((await event()).form).toEqual(form);
+    expect(
+      (await request(`/staff/events/${eventId}/publish`, staff.cookie, 'POST', {})).status,
+    ).toBe(200);
+    const edit = { ...input(), banner: null, form: null };
+    expect((await request(`/staff/events/${eventId}`, staff.cookie, 'PATCH', edit)).status).toBe(
+      409,
+    );
+    expect((await event()).form).toEqual(form);
+
+    expect((await request(path, attendee.cookie, 'DELETE')).status).toBe(403);
+    expect((await request(path, staff.cookie, 'DELETE')).status).toBe(200);
+    expect((await request(path, staff.cookie)).status).toBe(404);
+    expect((await event()).form).toEqual(form);
   });
 });
 

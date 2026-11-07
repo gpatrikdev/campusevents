@@ -3,6 +3,7 @@ import { type ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../api/context';
 import { keepLocalImage } from '../api/images';
+import { summarize } from '../domain/reviewForm';
 import { instant } from '../domain/rules';
 import type { Outcome } from '../domain/types';
 import i18n from '../i18n';
@@ -96,19 +97,13 @@ export function MockProvider({ children }: { children: ReactNode }) {
     ]),
   );
   const results = Object.fromEntries(
-    data.events.map(({ id }) => {
-      const reviews = data.reviews.filter((row) => row.eventId === id);
-      return [
-        id,
-        {
-          count: reviews.length,
-          average: reviews.length
-            ? reviews.reduce((sum, row) => sum + row.rating, 0) / reviews.length
-            : 0,
-          comments: reviews.map((row) => row.comment).filter(Boolean),
-        },
-      ];
-    }),
+    data.events.map(({ id, form }) => [
+      id,
+      summarize(
+        form,
+        data.reviews.filter((row) => row.eventId === id).map((row) => row.answers),
+      ),
+    ]),
   );
   return (
     <MockContext.Provider value={value}>

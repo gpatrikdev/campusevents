@@ -1,3 +1,4 @@
+import { answersIssue, templateIssue, templateSchema } from '../domain/reviewForm';
 import {
   certificateIssue,
   checkInIssue,
@@ -54,6 +55,32 @@ export function applyAction(
     if (context.fail) return fail();
     target.role = action.organizer ? 'organizer' : null;
     return finish(true, 'Organizer permission updated in this preview.');
+  }
+
+  if (action.type === 'saveTemplate') {
+    if (!isStaff(user)) return finish(false, 'Staff access is required.');
+    const issue = templateIssue(action.template);
+    if (issue) return finish(false, issue);
+    const index = next.templates.findIndex((item) => item.id === action.template.id);
+    if (action.template.id && index < 0) return finish(false, 'This template is unavailable.');
+    if (context.fail) return fail();
+    const { name, form } = templateSchema.parse({
+      name: action.template.name,
+      form: action.template.form,
+    });
+    const saved = { id: action.template.id || `template-${++next.sequence}`, name, form };
+    if (index >= 0) next.templates[index] = saved;
+    else next.templates.push(saved);
+    return finish(true, 'Template saved in this preview.', saved.id);
+  }
+
+  if (action.type === 'deleteTemplate') {
+    if (!isStaff(user)) return finish(false, 'Staff access is required.');
+    if (!next.templates.some((item) => item.id === action.templateId))
+      return finish(false, 'This template is unavailable.');
+    if (context.fail) return fail();
+    next.templates = next.templates.filter((item) => item.id !== action.templateId);
+    return finish(true, 'Template deleted in this preview. Events keep their copies.');
   }
 
   if (action.type === 'save') {
@@ -149,15 +176,14 @@ export function applyAction(
     case 'review': {
       const issue = reviewIssue(event, mine, context.now);
       if (issue) return finish(false, issue);
-      const value = reviewSchema.safeParse({ rating: action.rating, comment: action.comment });
-      if (!value.success)
-        return finish(
-          false,
-          'Choose a rating from 1 to 5. Comments can contain up to 2,000 characters.',
-        );
+      const value = reviewSchema.safeParse({ answers: action.answers });
+      if (!value.success) return finish(false, 'One or more answers do not match the review form.');
+      const mismatch = event.form && answersIssue(event.form, value.data.answers);
+      if (mismatch) return finish(false, mismatch);
       if (context.fail) return fail();
-      if (mine) mine.review = value.data;
-      next.reviews.push({ id: `review-${++next.sequence}`, eventId: event.id, ...value.data });
+      const { answers } = value.data;
+      if (mine) mine.review = answers;
+      next.reviews.push({ id: `review-${++next.sequence}`, eventId: event.id, answers });
       return finish(true, 'Review saved in this preview.');
     }
     case 'certificate': {

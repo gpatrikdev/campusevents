@@ -98,7 +98,7 @@ export function EventDetailPage({
                   size="lg"
                   width="100%"
                 />
-              ) : review ? (
+              ) : !event.form ? null : review ? (
                 <Text color="secondary">{t(review)}</Text>
               ) : (
                 <Button

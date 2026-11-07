@@ -260,3 +260,22 @@ html {
     min-block-size: var(--spacing-10);
   }
 }
+
+/* Review form editor. A pointer drag on the handle must not scroll the page
+   on touch screens, and the lifted question or option sits above its neighbours. */
+.drag-handle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.sortable-item {
+  position: relative;
+}
+
+.sortable-item.is-dragging {
+  z-index: 1;
+}
+
+.sortable-item.is-dragging .drag-handle {
+  cursor: grabbing;
+}

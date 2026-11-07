@@ -1,7 +1,8 @@
-import { and, asc, eq, gt, sql } from 'drizzle-orm';
+import { and, asc, eq, gt, isNotNull, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { validator } from 'hono-openapi';
 import { z } from 'zod';
+import { answersIssue, answersSchema, summarize } from '../src/domain/reviewForm';
 import {
   certificateIssue,
   checkInIssue,
@@ -41,7 +42,7 @@ const registrationDto = z.object({
   userId: z.string(),
   active: z.boolean(),
   checkedIn: z.boolean(),
-  review: z.object({ rating: z.number(), comment: z.string() }).nullable(),
+  review: answersSchema.nullable(),
   certificate: z.enum(['none', 'pending', 'sent', 'failed']),
 });
 const eventDetailDto = z.object({ event: eventDto, registrations: z.array(registrationDto) });
@@ -53,8 +54,8 @@ const attendeeDto = z.object({
 });
 const reviewResultsDto = z.object({
   count: z.number(),
-  average: z.number(),
-  comments: z.array(z.string()),
+  // One summary per question, in form order. Its fields depend on the question's kind.
+  questions: z.array(z.record(z.string(), z.unknown())),
 });
 const eventParams = validator('param', z.object({ eventId: idSchema }), validationHook);
 const registrationParams = validator(
@@ -69,16 +70,8 @@ export function toEvent(row: typeof events.$inferSelect): CampusEvent {
 }
 
 function toRegistration(row: typeof registrations.$inferSelect): Registration {
-  const { id, eventId, userId, active, checkedInAt, rating, comment, certificate } = row;
-  return {
-    id,
-    eventId,
-    userId,
-    active,
-    checkedIn: !!checkedInAt,
-    review: rating === null ? null : { rating, comment: comment ?? '' },
-    certificate,
-  };
+  const { id, eventId, userId, active, checkedInAt, answers, certificate } = row;
+  return { id, eventId, userId, active, checkedIn: !!checkedInAt, review: answers, certificate };
 }
 
 async function readEvent(db: Database | Transaction, eventId: string, lock = false) {
@@ -456,15 +449,18 @@ export const eventRoutes = new Hono<ApiEnv>()
     async (c) => {
       const id = await actorId(c);
       const { eventId } = c.req.valid('param');
+      const { answers } = c.req.valid('json');
       await c.var.db.transaction(async (tx) => {
         requireProfile(await readAccount(tx, id, true));
         const event = await readEvent(tx, eventId, true);
         if (event.status !== 'published') throw unavailable();
         const registration = await activeRegistration(tx, eventId, id);
         conflict(reviewIssue(event, registration && toRegistration(registration), Date.now()));
+        const issue = event.form && answersIssue(event.form, answers);
+        if (issue) throw new ApiError(400, issue);
         await tx
           .update(registrations)
-          .set(c.req.valid('json'))
+          .set({ answers })
           .where(eq(registrations.id, registration.id));
       });
       return c.json({ ok: true, message: 'Review submitted' });
@@ -473,24 +469,25 @@ export const eventRoutes = new Hono<ApiEnv>()
   .get(
     '/staff/events/:eventId/reviews',
     operation(
-      'Read aggregate rating, response count and anonymous comments',
+      'Read the response count and an anonymous summary for each question',
       z.object({ event: eventDto, results: reviewResultsDto }),
     ),
     eventParams,
     async (c) => {
       requireStaff(await readAccount(c.var.db, await actorId(c)));
       const event = await readEvent(c.var.db, c.req.valid('param').eventId);
-      const [results] = await c.var.db
-        .select({
-          count: sql<number>`count(${registrations.rating})::int`,
-          average: sql<number>`coalesce(avg(${registrations.rating}), 0)::float8`,
-          comments: sql<
-            string[]
-          >`coalesce(array_agg(${registrations.comment} order by ${registrations.comment}) filter (where ${registrations.rating} is not null and ${registrations.comment} <> ''), '{}'::text[])`,
-        })
+      const rows = await c.var.db
+        .select({ answers: registrations.answers })
         .from(registrations)
-        .where(and(eq(registrations.eventId, event.id), eq(registrations.active, true)));
-      return c.json({ event, results });
+        .where(
+          and(
+            eq(registrations.eventId, event.id),
+            eq(registrations.active, true),
+            isNotNull(registrations.answers),
+          ),
+        );
+      const responses = rows.flatMap((row) => (row.answers ? [row.answers] : []));
+      return c.json({ event, results: summarize(event.form, responses) });
     },
   )
   .post(

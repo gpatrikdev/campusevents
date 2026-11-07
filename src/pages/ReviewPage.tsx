@@ -33,6 +33,7 @@ export function ReviewPage({ eventId }: { eventId: string }) {
   // A submitted review, including one just sent from this form, opens read-only.
   if (registration?.review) return <Navigate to="/reviews/$eventId" params={{ eventId }} replace />;
   const issue = reviewIssue(event, registration, now);
+  const form = event.form;
   return (
     <VStack gap={6} maxWidth={720} width="100%">
       <VStack gap={3}>
@@ -41,8 +42,8 @@ export function ReviewPage({ eventId }: { eventId: string }) {
         <Text color="secondary">{t('Your feedback is anonymous to organizers and admins.')}</Text>
       </VStack>
       <DataBoundary isPage>
-        {issue ? (
-          <EmptyNotice title={t(issue)} />
+        {issue || !form ? (
+          <EmptyNotice title={t(issue ?? 'This event has no review form.')} />
         ) : (
           <>
             <Text type="supporting">
@@ -50,7 +51,8 @@ export function ReviewPage({ eventId }: { eventId: string }) {
               {formatDate(reviewCutoff(event), event.timezone, i18n.language)} · {event.timezone}
             </Text>
             <ReviewSurvey
-              onSubmit={async (answers) => (await run({ type: 'review', eventId, ...answers })).ok}
+              form={form}
+              onSubmit={async (answers) => (await run({ type: 'review', eventId, answers })).ok}
             />
           </>
         )}

@@ -29,7 +29,13 @@ export function ReviewsPage() {
     .filter((item) => item.userId === user.id && item.active)
     .flatMap(({ eventId, review }) => {
       const event = data.events.find((item) => item.id === eventId && item.status === 'published');
-      return event && review ? [{ event, review }] : [];
+      if (!event || !review) return [];
+      // The list shows the first rating question's answer, when the form has one.
+      const question = event.form?.elements.find((item) => item.type === 'rating');
+      const value = question && review[question.name];
+      const rating =
+        question && typeof value === 'number' ? { title: question.title, value } : null;
+      return [{ event, rating }];
     })
     .sort((a, b) => instant(b.event.start) - instant(a.event.start));
   return (
@@ -69,20 +75,22 @@ export function ReviewsPage() {
                 hasDividers
                 header={<Heading level={2}>{t('Submitted reviews')}</Heading>}
               >
-                {reviews.map(({ event, review }) => (
+                {reviews.map(({ event, rating }) => (
                   <EventListItem
                     key={event.id}
                     event={event}
                     compact={compact}
                     href={`/reviews/${event.id}`}
                     endContent={
-                      <HStack gap={1} vAlign="center">
-                        <Icon icon={ReviewIcon} size="sm" color="secondary" />
-                        <Text color="secondary">
-                          <VisuallyHidden>{t('Overall rating')}: </VisuallyHidden>
-                          {review.rating}/5
-                        </Text>
-                      </HStack>
+                      rating && (
+                        <HStack gap={1} vAlign="center">
+                          <Icon icon={ReviewIcon} size="sm" color="secondary" />
+                          <Text color="secondary">
+                            <VisuallyHidden>{rating.title}: </VisuallyHidden>
+                            {rating.value}/5
+                          </Text>
+                        </HStack>
+                      )
                     }
                   />
                 ))}

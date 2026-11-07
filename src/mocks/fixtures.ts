@@ -1,5 +1,61 @@
 import { markdownToEditorStateJSON } from '@astryxdesign/richtext/markdown';
-import type { CampusEvent, MockData } from '../domain/types';
+import type { CampusEvent, MockData, ReviewForm } from '../domain/types';
+
+const standardForm: ReviewForm = {
+  elements: [
+    {
+      type: 'rating',
+      name: 'qrating',
+      title: 'Overall rating',
+      isRequired: true,
+      rateMin: 1,
+      rateMax: 5,
+      displayMode: 'buttons',
+    },
+    { type: 'comment', name: 'qcomment', title: 'Comment', isRequired: false, maxLength: 2000 },
+  ],
+};
+
+const workshopForm: ReviewForm = {
+  elements: [
+    standardForm.elements[0],
+    {
+      type: 'radiogroup',
+      name: 'qformat',
+      title: 'Which part was most useful?',
+      isRequired: true,
+      choices: ['Talks', 'Group discussion', 'Case studies'],
+    },
+    {
+      type: 'checkbox',
+      name: 'qtopics',
+      title: 'Which topics should a future event cover?',
+      isRequired: false,
+      choices: ['Data protection', 'Open data', 'Authorship'],
+    },
+    {
+      type: 'dropdown',
+      name: 'qsource',
+      title: 'How did you hear about the event?',
+      isRequired: false,
+      choices: ['Email', 'University website', 'A colleague'],
+    },
+    {
+      type: 'boolean',
+      name: 'qrecommend',
+      title: 'Would you recommend this event to a colleague?',
+      isRequired: true,
+    },
+    {
+      type: 'text',
+      name: 'qevents',
+      title: 'How many university events have you attended this term?',
+      isRequired: false,
+      inputType: 'number',
+    },
+    standardForm.elements[1],
+  ],
+};
 
 export const REFERENCE_NOW = '2026-11-03T11:00:00Z';
 
@@ -23,12 +79,17 @@ function event(
     status,
     content: markdownToEditorStateJSON(markdown),
     banner: null,
+    form: status === 'published' ? standardForm : null,
   };
 }
 
 function buildFixtures(): MockData {
   return {
     sequence: 100,
+    templates: [
+      { id: 'template-standard', name: 'Standard review', form: standardForm },
+      { id: 'template-workshop', name: 'Workshop feedback', form: workshopForm },
+    ],
     users: [
       {
         id: 'attendee',
@@ -197,7 +258,7 @@ function buildFixtures(): MockData {
         ticket: 'DEMO-sustainability-r4',
         active: true,
         checkedIn: true,
-        review: { rating: 4, comment: 'Clear and practical. Thank you.' },
+        review: { qrating: 4, qcomment: 'Clear and practical. Thank you.' },
         certificate: 'sent',
       },
       {
@@ -235,21 +296,37 @@ function buildFixtures(): MockData {
       {
         id: 'review-1',
         eventId: 'ethics',
-        rating: 5,
-        comment: 'The examples from different disciplines made the discussion useful.',
+        answers: {
+          qrating: 5,
+          qformat: 'Case studies',
+          qtopics: ['Open data', 'Authorship'],
+          qsource: 'Email',
+          qrecommend: true,
+          qevents: 4,
+          qcomment: 'The examples from different disciplines made the discussion useful.',
+        },
       },
       {
         id: 'review-2',
         eventId: 'ethics',
-        rating: 4,
-        comment: 'Több időt hagynék a közös beszélgetésre.',
+        answers: {
+          qrating: 4,
+          qformat: 'Group discussion',
+          qtopics: ['Data protection'],
+          qrecommend: true,
+          qevents: 2,
+          qcomment: 'Több időt hagynék a közös beszélgetésre.',
+        },
       },
-      { id: 'review-3', eventId: 'ethics', rating: 5, comment: '' },
+      {
+        id: 'review-3',
+        eventId: 'ethics',
+        answers: { qrating: 5, qformat: 'Case studies', qrecommend: false },
+      },
       {
         id: 'review-4',
         eventId: 'sustainability',
-        rating: 4,
-        comment: 'Clear and practical. Thank you.',
+        answers: { qrating: 4, qcomment: 'Clear and practical. Thank you.' },
       },
     ],
   };
@@ -264,7 +341,15 @@ export const clocks = {
   reviewClosed: '2026-11-09T15:00:00Z',
 };
 
-const fixtures = buildFixtures();
+function withForms(data: MockData): MockData {
+  for (const item of data.events) {
+    if (item.id === 'ethics') item.form = workshopForm;
+    if (item.id === 'archives') item.form = null;
+  }
+  return data;
+}
+
+const fixtures = withForms(buildFixtures());
 
 export function createFixtures(): MockData {
   return structuredClone(fixtures);

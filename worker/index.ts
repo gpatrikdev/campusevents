@@ -11,6 +11,7 @@ import { eventRoutes } from './events';
 import { type ApiEnv, ApiError } from './http';
 import { imageRoutes, serveImage } from './images';
 import { inviteReviewers } from './invitations';
+import { templateRoutes } from './templates';
 
 const authRoutes = new Set([
   'POST /api/auth/sign-in/magic-link',
@@ -169,7 +170,11 @@ app.on(['GET', 'POST'], '/auth/*', async (c) => {
   return new Response(response.body, { status: response.status, headers });
 });
 
-const routes = app.route('/', accounts).route('/', eventRoutes).route('/', imageRoutes);
+const routes = app
+  .route('/', accounts)
+  .route('/', eventRoutes)
+  .route('/', imageRoutes)
+  .route('/', templateRoutes);
 export type AppType = typeof routes;
 
 export default {

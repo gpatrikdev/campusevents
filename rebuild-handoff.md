@@ -128,7 +128,7 @@ On 7 November 2026 the user approved review forms built from reusable templates.
 
 - A new draft has no review form.
 - In a draft, staff attach a template, which copies its questions into the event. Later template edits do not reach that event.
-- Staff can add, remove, reword, and reorder the event's questions in the draft, or remove the form.
+- Staff can add, remove, reword, and reorder the event's questions in the draft, or remove the form. Questions are reordered by dragging a handle, which also works from the keyboard.
 - Publishing locks the form with the other event details. Unpublishing keeps it, like other event content.
 - An event without a form has no review step and sends no review invitation. Certificates work the same either way.
 - The server rejects an invalid form and any answer that does not match its question.
@@ -207,6 +207,7 @@ Choose the **latest stable, mutually compatible versions when building**. Do not
 | Authentication | `better-auth`, `@better-auth/drizzle-adapter`; `auth` CLI for schema generation |
 | Localization | `i18next`, `react-i18next`; translations stored in the project, no hosted translation service |
 | Reviews | `survey-core`, `survey-react-ui`; use Astryx for the template and form editors and for staff results |
+| Question reordering | `@dnd-kit/core`, `@dnd-kit/sortable`, approved on 7 November 2026. Staff drag a question's handle, or use the keyboard on it, to change the order. |
 | PDF | `pdf-lib`, `@pdf-lib/fontkit` |
 | QR generation | `qrcode`; use one generator for in-app and email images where supported |
 | QR scanning | `barcode-detector`, `zxing-wasm`; bundle fallback WASM rather than depend on a third-party CDN |
@@ -254,7 +255,6 @@ Use Impeccable for focused review and refinement rather than introducing a secon
 - `lucide-react` and separate interface font packages.
 - A custom Markdown editor and direct `react-markdown` dependency.
 - `qrcode.react`; use `qrcode` for generation.
-- `@dnd-kit/*` packages. Staff reorder review questions with buttons.
 - The paid SurveyJS Creator, and any second form-builder library.
 - ESLint and its related packages: `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals`.
 - Prettier; Biome is the formatter and linter.

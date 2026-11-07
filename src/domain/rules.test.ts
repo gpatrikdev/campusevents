@@ -19,6 +19,17 @@ function findEvent(data: MockData, id: string) {
   return event;
 }
 const symposium = () => findEvent(createFixtures(), 'symposium');
+// The 'ethics' fixture uses the workshop form, whose required questions are these three.
+const review = (eventId: string, rating = 4, comment = ''): MockAction => ({
+  type: 'review',
+  eventId,
+  answers: {
+    qrating: rating,
+    qformat: 'Talks',
+    qrecommend: true,
+    ...(comment ? { qcomment: comment } : {}),
+  },
+});
 
 describe('registration and cancellation', () => {
   it.each([
@@ -191,9 +202,7 @@ describe('post-event actions', () => {
     const data = createFixtures();
     const event = findEvent(data, 'ethics');
     const now = instant(event.end) + offset;
-    expect(
-      run(data, { type: 'review', eventId: event.id, rating: 4, comment: '' }, { now }).outcome.ok,
-    ).toBe(offset >= 0);
+    expect(run(data, review(event.id), { now }).outcome.ok).toBe(offset >= 0);
     expect(run(data, { type: 'certificate', eventId: event.id }, { now }).outcome.ok).toBe(
       offset >= 0,
     );
@@ -201,36 +210,28 @@ describe('post-event actions', () => {
   it.each([-1, 0, 1])('closes reviews exactly 72 elapsed hours later at offset %i ms', (offset) => {
     const data = createFixtures();
     const event = findEvent(data, 'ethics');
-    const result = run(
-      data,
-      { type: 'review', eventId: event.id, rating: 4, comment: '' },
-      { now: reviewCutoff(event) + offset },
-    );
+    const result = run(data, review(event.id), { now: reviewCutoff(event) + offset });
     expect(result.outcome.ok).toBe(offset < 0);
   });
   it('requires check-in and prevents duplicate or invalid reviews', () => {
     const data = createFixtures();
-    expect(
-      run(data, { type: 'review', eventId: 'archives', rating: 5, comment: '' }).outcome.ok,
-    ).toBe(false);
+    expect(run(data, review('archives', 5)).outcome.ok).toBe(false);
     expect(run(data, { type: 'certificate', eventId: 'archives' }).outcome.ok).toBe(false);
-    expect(
-      run(data, { type: 'review', eventId: 'ethics', rating: 6, comment: '' }).outcome.ok,
-    ).toBe(false);
-    const result = run(data, { type: 'review', eventId: 'ethics', rating: 4, comment: 'Useful.' });
-    expect(
-      run(result.data, { type: 'review', eventId: 'ethics', rating: 4, comment: 'Again' }).outcome
-        .ok,
-    ).toBe(false);
-    expect(result.data.reviews.at(-1)).toMatchObject({
-      eventId: 'ethics',
-      rating: 4,
-      comment: 'Useful.',
+    expect(run(data, review('ethics', 6)).outcome.ok).toBe(false);
+    const result = run(data, review('ethics', 4, 'Useful.'));
+    expect(run(result.data, review('ethics', 4, 'Again')).outcome.ok).toBe(false);
+    const answers = { qrating: 4, qformat: 'Talks', qrecommend: true, qcomment: 'Useful.' };
+    expect(result.data.reviews.at(-1)).toMatchObject({ eventId: 'ethics', answers });
+    expect(result.data.registrations.find((item) => item.id === 'r3')?.review).toEqual(answers);
+  });
+  it('offers no review for an event without a form', () => {
+    const data = createFixtures();
+    findEvent(data, 'ethics').form = null;
+    expect(run(data, review('ethics')).outcome).toMatchObject({
+      ok: false,
+      message: 'This event has no review form.',
     });
-    expect(result.data.registrations.find((item) => item.id === 'r3')?.review).toEqual({
-      rating: 4,
-      comment: 'Useful.',
-    });
+    expect(run(data, { type: 'certificate', eventId: 'ethics' }).outcome.ok).toBe(true);
   });
   it('allows one certificate request without a later deadline and never retries a failed request', () => {
     const data = createFixtures();
