@@ -31,7 +31,7 @@ No payments, capacity limits, or waitlists are in scope.
 - **Organizer** is a global role, not a per-event assignment. Organizers manage every event.
 - **Admins** have event-management permissions and can grant or remove organizer status.
 - Admin accounts are created manually. The application must not provide granting or removing admin status.
-- Organizers and admins can create, publish, unpublish, edit drafts, and delete any event; view attendees; scan tickets; and read review results.
+- Organizers and admins can create, publish, unpublish, edit drafts, and delete any event; manage review templates and event review forms; view attendees; scan tickets; and read review results.
 - Staff cannot join new events as attendees.
 - Promoting a registered user to organizer leaves existing registrations intact. They retain existing tickets and eligibility for certificates and reviews.
 - No organization/team system or separate permissions library is needed.
@@ -70,7 +70,7 @@ Use Astryx RichText and its Markdown capabilities. Staff can upload images into 
 | Preview | The same event page and content that public visitors will see, rather than a separate approximation. |
 | Publish | Allowed only when the start is **more than 24 hours away**. Makes the event public and locks editing. |
 | Edit | Drafts only. Published event details cannot be edited directly. |
-| Unpublish | Allowed only **before the event starts**. Return to draft, remove registrations, and invalidate their tickets. Preserve event content and any images. |
+| Unpublish | Allowed only **before the event starts**. Return to draft, remove registrations, and invalidate their tickets. Preserve event content, any images, and the review form. |
 | Republish | After editing the draft, apply the same rule: start must be more than 24 hours away. |
 | Delete | Staff can delete any event, including published events with registrations or completed events. No deletion notification email for the MVP. |
 
@@ -109,16 +109,42 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 
 ## Reviews
 
+On 7 November 2026 the user approved review forms built from reusable templates. They replace the single fixed form of a required 1–5 rating and an optional comment.
+
 - Use the free SurveyJS renderer embedded as React components, **not an iframe or externally hosted form service**.
-- Forms and responses remain within the app and its PostgreSQL database.
-- One fixed form for all events:
-  - Required overall rating from 1 to 5.
-  - Optional free-text comment.
-- No staff question builder, custom event questionnaires, reusable templates, paid Survey Creator, or paid results dashboard.
+- Staff edit templates and event forms in the app's own Astryx screens, which save SurveyJS JSON. The paid Survey Creator and paid results dashboard stay out of scope.
+- Templates, forms, and responses remain within the app and its PostgreSQL database.
+
+### Templates
+
+- Organizers and admins create, edit, and delete named review templates.
+- A template is an ordered list of questions. The question types are a 1–5 rating, single choice, multiple choice, dropdown, yes/no, number, and free text. Any question can be required.
+- No question is built in. A template can leave out a rating or a comment.
+- Question text stays in the language staff wrote it in, like event content.
+- No conditional logic, matrices, ranking, or other SurveyJS question types, and no approval step for templates.
+- Deleting a template does not change the events that copied it.
+
+### Event forms
+
+- A new draft has no review form.
+- In a draft, staff attach a template, which copies its questions into the event. Later template edits do not reach that event.
+- Staff can add, remove, reword, and reorder the event's questions in the draft, or remove the form.
+- Publishing locks the form with the other event details. Unpublishing keeps it, like other event content.
+- An event without a form has no review step and sends no review invitation. Certificates work the same either way.
+- The server rejects an invalid form and any answer that does not match its question.
+
+### Submission and results
+
 - Only checked-in attendees may submit, once per event.
 - Open at event end and close **72 hours afterward**.
-- Send a review invitation email after the event to eligible checked-in attendees only. A short scheduling delay is acceptable.
-- Staff see average rating, number of responses, and anonymous comments.
+- Send a review invitation email after the event to eligible checked-in attendees of events with a form. A short scheduling delay is acceptable.
+- Attendees can read their own submitted answers.
+- Staff see the number of responses and a summary for each question:
+  - Rating: the average and the count for each score.
+  - Number: the average, lowest, and highest answer.
+  - Single choice, multiple choice, dropdown, and yes/no: the count for each option.
+  - Free text: the anonymous answers.
+- Events have no shared overall rating to compare.
 - Results are not public. Reviewer identities are hidden from admins and organizers. The approved requirement is staff-facing anonymity; do not promise cryptographically unlinked storage.
 
 ## Navigation and user experience
@@ -156,6 +182,7 @@ Deleting an event removes attendees' access to its tickets, review actions, and 
 - Filters: status (All, Draft, Upcoming, Ongoing, Past; All by default), title search, a date range read in each event's timezone, location, and open or closed registration, which drafts never match. Every filter and table column shows for every status. The filters stay in the URL.
 - No separate statistics overview in the MVP.
 - Access event management, preview, attendee list, QR scanning, and review results here.
+- Review templates have their own staff page.
 - Admins additionally have organizer-role management.
 
 ## Approved technology choices
@@ -179,7 +206,7 @@ Choose the **latest stable, mutually compatible versions when building**. Do not
 | Database | Neon PostgreSQL, Cloudflare Hyperdrive, `drizzle-orm`, `pg`, `drizzle-kit` |
 | Authentication | `better-auth`, `@better-auth/drizzle-adapter`; `auth` CLI for schema generation |
 | Localization | `i18next`, `react-i18next`; translations stored in the project, no hosted translation service |
-| Reviews | `survey-core`, `survey-react-ui`; use Astryx for simple staff results presentation |
+| Reviews | `survey-core`, `survey-react-ui`; use Astryx for the template and form editors and for staff results |
 | PDF | `pdf-lib`, `@pdf-lib/fontkit` |
 | QR generation | `qrcode`; use one generator for in-app and email images where supported |
 | QR scanning | `barcode-detector`, `zxing-wasm`; bundle fallback WASM rather than depend on a third-party CDN |
@@ -227,7 +254,8 @@ Use Impeccable for focused review and refinement rather than introducing a secon
 - `lucide-react` and separate interface font packages.
 - A custom Markdown editor and direct `react-markdown` dependency.
 - `qrcode.react`; use `qrcode` for generation.
-- `@dnd-kit/*` packages and custom questionnaire/template logic.
+- `@dnd-kit/*` packages. Staff reorder review questions with buttons.
+- The paid SurveyJS Creator, and any second form-builder library.
 - ESLint and its related packages: `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals`.
 - Prettier; Biome is the formatter and linter.
 - `drizzle-zod` initially; plain Zod input schemas suffice.
@@ -237,7 +265,7 @@ Use Impeccable for focused review and refinement rather than introducing a secon
 - Resend SDK, Nodemailer, and React Email packages; direct API calls and simple templates suffice.
 - Additional form libraries; native React forms with Zod suffice outside SurveyJS reviews.
 - Moment, Luxon, and date-fns alongside Temporal.
-- Calendar export, capacity handling, template library, custom question builder, certificate verification pages, and a separate dashboard statistics overview.
+- Calendar export, capacity handling, certificate verification pages, and a separate dashboard statistics overview.
 
 ## Required safeguards
 

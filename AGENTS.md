@@ -36,7 +36,7 @@ Use `code-structure`, if available, only when actual shared mechanics justify ex
 - Astryx Neutral supplies components, layout conventions, icons, and interface fonts. Use plain CSS for app-specific styling.
 - Do not introduce Tailwind, shadcn, direct Radix usage, Lucide, extra interface fonts, or another design system.
 - Use Astryx RichText rather than building another editor. Description images use the project's own image node (`src/components/EventImage.tsx`), not a second editor.
-- Use the approved fixed SurveyJS form for reviews. Its styles should fit the app, but do not replace it with a custom form builder.
+- Render review forms with the approved SurveyJS packages, styled to fit the app. Staff build review templates and event forms in the app's own Astryx screens, which save SurveyJS JSON. Do not add the paid SurveyJS Creator or another form-builder library.
 - Frontend Design helps compose a page; UI/UX Pro Max checks how it works; Impeccable refines the result. Do not let each skill redesign the previous skill's work.
 - Ponytail reduces unnecessary code, not approved requirements. Do not reopen settled packages solely to reduce the dependency count.
 
@@ -74,7 +74,7 @@ Playwright MCP is an agent tool. It does not authorize adding `@playwright/test`
 
 Use TypeScript for type checking, Biome for formatting and linting, and Vitest with the Cloudflare plugin for business-rule and API tests. Use the repository's actual scripts once they exist; do not invent command names or claim checks ran when they did not.
 
-Focus tests on consequential behavior: authorization, registration and cancellation cutoffs, publishing and unpublishing, ticket invalidation, check-in eligibility, certificate-request uniqueness, and the review window. Test the Workers execution path where relevant. Browser checks complement these tests.
+Focus tests on consequential behavior: authorization, registration and cancellation cutoffs, publishing and unpublishing, ticket invalidation, check-in eligibility, certificate-request uniqueness, the review window, review-form locking at publication, and checks that answers match their questions. Test the Workers execution path where relevant. Browser checks complement these tests.
 
 Lefthook runs Biome before commits. Do not bypass failing hooks to claim completion. Do not add ESLint or Prettier alongside Biome.
 
