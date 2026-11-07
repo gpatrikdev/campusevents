@@ -4,7 +4,9 @@ Campus Events is a university event service with a React and Astryx Neutral fron
 
 ## Run locally
 
-Use Node 22.13 or later in the 22.x line, Node 24, or Node 26+, and pnpm 12.8.1. The example uses Podman and a fresh local PostgreSQL database.
+Use Node 22.13 or later in the 22.x line, Node 24, or Node 26+, and pnpm 12.8.1. Node 25 and later don't ship Corepack, so install pnpm with `npm install -g pnpm@12.8.1`. The example uses Podman and a fresh local PostgreSQL database.
+
+The commands are for a POSIX shell. On Windows, run them in Git Bash, and clone with `git clone -c core.autocrlf=false` so files keep their LF line endings. With Git's Windows default, Biome reports a formatting error in every file.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -21,6 +23,8 @@ pnpm dev
 ```
 
 For an existing local container, use `podman start campus-events-dev-pg`.
+
+Neon branches can replace the container. Create a `dev` and a `test` branch in the Neon project and copy each branch's direct connection string, the one whose host has no `-pooler` suffix. Use the `dev` string as `DATABASE_URL` above and the `test` string as `TEST_DATABASE_URL` under [Checks](#checks). Keep both in a gitignored file such as `.env.neon`. Run the admin `UPDATE` below in the Neon SQL editor on the `dev` branch.
 
 Run `pnpm dev:mail` in a second terminal before signing in. Open the [app](http://127.0.0.1:5173/) and request a magic link with a test address. Copy the link from the message's `text` field in the [local inbox](http://127.0.0.1:5174/emails) into the same browser. The inbox keeps messages and attachments in memory until the process stops.
 
@@ -54,6 +58,47 @@ pnpm test:worker
 ```
 
 The Worker tests use PostgreSQL through local Hyperdrive, run inside workerd, and intercept email delivery. Use a separate development database for these tests. For local git hooks, run `pnpm hooks:install`.
+
+## Agent tooling
+
+[AGENTS.md](AGENTS.md) says when agents use each tool, and [the specification](rebuild-handoff.md#selected-agent-skills-and-mcps) lists the official sources. None of them are app dependencies. Install them without lifecycle hooks.
+
+The repository holds the Frontend Design and UI/UX Pro Max skills in `.agents/skills`. Codex reads that folder; Claude Code doesn't. For Claude Code, enable Anthropic's `frontend-design` plugin and link UI/UX Pro Max into `.claude/skills`. Then add `/.claude/skills/` to `.git/info/exclude`. UI/UX Pro Max's `scripts/search.py` needs Python 3.
+
+```sh
+mkdir -p .claude/skills
+ln -s ../../.agents/skills/ui-ux-pro-max .claude/skills/ui-ux-pro-max
+```
+
+On Windows, create a junction instead: `New-Item -ItemType Junction -Path .claude\skills\ui-ux-pro-max -Target .agents\skills\ui-ux-pro-max`.
+
+`pnpm exec astryx init --user` writes the Astryx skill to `~/.agents/skills/astryx` and links it into the skill folders of the agents it finds. Copy the other skills into the agent's user skill folder, `~/.claude/skills/<name>` for Claude Code or `~/.codex/skills/<name>` for Codex:
+
+| Skill          | Folder to copy                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| Ponytail       | `skills/ponytail` in [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
+| Impeccable     | `.claude/skills/impeccable` in [pbakaus/impeccable](https://github.com/pbakaus/impeccable) |
+| code-structure | `code-structure` in [michaelshimeles/rstack](https://github.com/michaelshimeles/rstack)    |
+| unslop         | `pstack/skills/unslop` in [cursor/plugins](https://github.com/cursor/plugins)              |
+
+Skip `npx impeccable install`, which offers the design hook that AGENTS.md leaves off. In unslop's `SKILL.md`, delete the `disable-model-invocation: true` line so agents can apply it to their own prose.
+
+Codex reads the MCP servers from `.codex/config.toml`. Claude Code reads a project `.mcp.json`, which stays uncommitted because the Playwright command differs between systems:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.84", "--headless", "--isolated", "--sandbox"]
+    },
+    "context7": { "type": "http", "url": "https://mcp.context7.com/mcp" },
+    "Neon": { "type": "http", "url": "https://mcp.neon.tech/mcp" }
+  }
+}
+```
+
+On Windows, set `"command": "cmd"` and start `args` with `"/c", "npx"`. Playwright opens Chrome by default; without Chrome, add `"--browser", "msedge"`. Context7 needs no key. Neon asks you to sign in on first use and can create the database branches.
 
 ## Cloud setup
 

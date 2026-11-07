@@ -200,7 +200,7 @@ Use Vitest and the Cloudflare plugin for meaningful business-rule/API tests, wit
 
 ## Selected agent skills and MCPs
 
-The user selected these development-agent tools. They are separate from application runtime dependencies. Ponytail and Impeccable are installed as standalone Codex skills, without lifecycle hooks. Installation and connection of the other selected tools must be verified separately.
+The user selected these development-agent tools. They are separate from application runtime dependencies. Install them as standalone skills and servers, without lifecycle hooks. The README's [Agent tooling](README.md#agent-tooling) section says where each one goes for Codex and Claude Code.
 
 | Tool | Role | Official source |
 | --- | --- | --- |
@@ -212,7 +212,7 @@ The user selected these development-agent tools. They are separate from applicat
 | Playwright MCP | Agent-operated browser validation and screenshots; does not require adding a project Playwright test suite | https://github.com/microsoft/playwright-mcp |
 | Context7 MCP | Retrieve current library documentation and examples, matching the selected package versions where available | https://github.com/upstash/context7 |
 
-Use Astryx's official skill rather than creating a custom Astryx UI skill. Astryx documents a CLI-maintained guide at `~/.agents/skills/astryx/SKILL.md`, created on first CLI execution and refreshed after upgrades; installing the CLI alone does not create it. Project agent documentation can be generated through the official CLI when setup is authorized.
+Use Astryx's official skill rather than creating a custom Astryx UI skill. Astryx documents a CLI-maintained guide at `~/.agents/skills/astryx/SKILL.md`. `astryx init --user` writes it and links it into agent skill folders, and upgrades refresh it. Installing the CLI alone does not create it. Project agent documentation can be generated through the official CLI when setup is authorized.
 
 The approved specification and Astryx Neutral theme take precedence over generic design suggestions. Frontend Design and UI/UX Pro Max must not introduce an alternative component library, fonts, palette, or new features without user approval. Use Astryx's own documentation for its APIs; use Context7 for other libraries where coverage exists, falling back to official documentation when necessary.
 
