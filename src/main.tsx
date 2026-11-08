@@ -11,6 +11,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { createRoot } from 'react-dom/client';
 import { useTranslation } from 'react-i18next';
 import { defaultThemeSlug, themes } from './astryx-themes';
+import { useColorMode } from './colorMode';
 import { intlLocale } from './domain/format';
 import { routeTree } from './routeTree.gen';
 
@@ -44,8 +45,9 @@ async function start() {
 
 function App({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
+  const mode = useColorMode();
   return (
-    <Theme theme={themes[defaultThemeSlug]}>
+    <Theme theme={themes[defaultThemeSlug]} mode={mode}>
       {/* Astryx date and time fields format from this locale, so it matches the
           app's own dates. "en-GB" falls back to Astryx's English strings. */}
       <InternationalizationProvider

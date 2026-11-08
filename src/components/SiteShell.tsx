@@ -17,12 +17,23 @@ import { type ComponentProps, forwardRef, useContext, useEffect, useRef } from '
 import { useTranslation } from 'react-i18next';
 import { AppContext, useApp } from '../api/context';
 import { LiveProvider } from '../api/LiveProvider';
+import { isColorMode, setColorMode, useColorMode } from '../colorMode';
 import { isStaff } from '../domain/rules';
 import { returnSearch } from '../pages/AuthPages';
 import { ReviewIcon, TicketIcon } from './EventIcons';
 import { belowNavHeight, DataBoundary, OutcomeNotice } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
-import { DashboardIcon, HomeIcon, PeopleIcon, SignInIcon, SignOutIcon, UserIcon } from './NavIcons';
+import {
+  DarkModeIcon,
+  DashboardIcon,
+  HomeIcon,
+  LightModeIcon,
+  PeopleIcon,
+  SignInIcon,
+  SignOutIcon,
+  SystemModeIcon,
+  UserIcon,
+} from './NavIcons';
 
 // The router marks a link as the current page whenever the URL starts with its
 // path, so /staff would also count on /staff/permissions. Matching only the exact
@@ -60,6 +71,33 @@ export function LanguagePicker() {
       ]}
       onChange={(language) => {
         if (language === 'en' || language === 'hu') void setLanguage(language);
+      }}
+    />
+  );
+}
+
+export function useColorModeOptions() {
+  const { t } = useTranslation();
+  return [
+    { value: 'system', label: t('System'), icon: SystemModeIcon },
+    { value: 'light', label: t('Light'), icon: LightModeIcon },
+    { value: 'dark', label: t('Dark'), icon: DarkModeIcon },
+  ];
+}
+
+export function ColorModePicker() {
+  const { t } = useTranslation();
+  const mode = useColorMode();
+  return (
+    <Selector
+      label={t('Colour mode')}
+      isLabelHidden
+      variant="ghost"
+      size="sm"
+      value={mode}
+      options={useColorModeOptions()}
+      onChange={(value) => {
+        if (isColorMode(value)) setColorMode(value);
       }}
     />
   );
@@ -311,6 +349,7 @@ function Shell() {
               ))}
               endContent={
                 <>
+                  <ColorModePicker />
                   <LanguagePicker />
                   <DesktopAccountLinks
                     isSignedIn={!!user}

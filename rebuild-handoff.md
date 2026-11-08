@@ -173,8 +173,12 @@ On 7 November 2026 the user approved review forms built from reusable templates.
 - On the event page, Cancel registration uses destructive styling and gives way to Show QR ticket at the 24-hour cutoff. Eligible review and certificate actions appear after the event ends.
 - Attendance, review, and certificate statuses appear on the event page. The registration deadline is shown only to visitors without an active registration. After check-in, the attendee sees their checked-in status in place of the QR action and check-in window.
 - Clicking an event title opens its public event page.
-- **Profile** contains account information and language preference. No name-editing control.
+- **Profile** contains account information, language preference and colour mode. No name-editing control.
 - Promoted staff retain access to their existing registrations and post-event actions.
+
+### Colour mode
+
+On 8 November 2026 the user approved a colour mode control. Visitors choose System, Light or Dark beside the language selector in the top navigation or under Appearance on the Profile page. System is the default and follows the device. The choice is kept per browser in `localStorage`, not on the account, and falls back to System when storage is blocked. Switching uses the Astryx `Theme` mode, so every token-based colour, charts included, follows it.
 
 ### Staff dashboard
 

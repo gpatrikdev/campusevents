@@ -13,14 +13,18 @@ import { VStack } from '@astryxdesign/core/VStack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../../api/context';
+import { isColorMode, setColorMode, useColorMode } from '../../colorMode';
 import { belowNavHeight, EmptyNotice } from '../../components/Feedback';
-import { GlobeIcon } from '../../components/NavIcons';
+import { GlobeIcon, LightModeIcon } from '../../components/NavIcons';
+import { useColorModeOptions } from '../../components/SiteShell';
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
   const { user, setLanguage } = useApp();
   const narrow = useMediaQuery('(max-width: 48rem)');
   const [section, setSection] = useState('account');
+  const colorMode = useColorMode();
+  const colorModeOptions = useColorModeOptions();
   if (!user)
     return (
       <EmptyNotice
@@ -43,6 +47,7 @@ export default function ProfilePage() {
   const sections = [
     { value: 'account', label: t('Account information'), icon: 'info' },
     { value: 'language', label: t('Language'), icon: GlobeIcon },
+    { value: 'appearance', label: t('Appearance'), icon: LightModeIcon },
   ] as const;
   return (
     <Layout
@@ -119,7 +124,7 @@ export default function ProfilePage() {
                   </Text>
                 )}
               </VStack>
-            ) : (
+            ) : section === 'language' ? (
               <VStack
                 as="section"
                 id="language-panel"
@@ -140,6 +145,28 @@ export default function ProfilePage() {
                     if (value === 'en' || value === 'hu') void setLanguage(value);
                   }}
                   description={t('This preference also applies to emails and certificates.')}
+                />
+              </VStack>
+            ) : (
+              <VStack
+                as="section"
+                id="appearance-panel"
+                role={narrow ? 'tabpanel' : undefined}
+                aria-label={t('Appearance')}
+                gap={6}
+                maxWidth={640}
+              >
+                <Heading level={2}>{t('Appearance')}</Heading>
+                <Selector
+                  label={t('Colour mode')}
+                  value={colorMode}
+                  options={colorModeOptions}
+                  onChange={(value) => {
+                    if (isColorMode(value)) setColorMode(value);
+                  }}
+                  description={t(
+                    'System follows your device. This choice is saved in this browser only.',
+                  )}
                 />
               </VStack>
             )}

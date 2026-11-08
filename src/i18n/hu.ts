@@ -5,6 +5,13 @@ export const hu: Record<string, string> = {
   'Sign in': 'Bejelentkezés',
   'Sign out': 'Kijelentkezés',
   Language: 'Nyelv',
+  'Colour mode': 'Színmód',
+  System: 'Rendszer',
+  Light: 'Világos',
+  Dark: 'Sötét',
+  Appearance: 'Megjelenés',
+  'System follows your device. This choice is saved in this browser only.':
+    'A Rendszer az eszköz beállítását követi. A választást csak ebben a böngészőben mentjük.',
   'Main navigation': 'Fő navigáció',
   Attendee: 'Résztvevő',
   Organizer: 'Szervező',
