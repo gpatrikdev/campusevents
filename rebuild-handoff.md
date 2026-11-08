@@ -31,7 +31,7 @@ No payments, capacity limits, or waitlists are in scope.
 - **Organizer** is a global role, not a per-event assignment. Organizers manage every event.
 - **Admins** have event-management permissions and can grant or remove organizer status.
 - Admin accounts are created manually. The application must not provide granting or removing admin status.
-- Organizers and admins can create, publish, unpublish, edit drafts, and delete any event; manage review templates and event review forms; view attendees; scan tickets; and read review results.
+- Organizers and admins can create, publish, unpublish, edit drafts, and delete any event; manage review templates and event review forms; view attendees and event statistics; scan tickets; and read review results.
 - Staff cannot join new events as attendees.
 - Promoting a registered user to organizer leaves existing registrations intact. They retain existing tickets and eligibility for certificates and reviews.
 - No organization/team system or separate permissions library is needed.
@@ -180,10 +180,25 @@ On 7 November 2026 the user approved review forms built from reusable templates.
 
 - Open directly to the event list.
 - Filters: status (All, Draft, Upcoming, Ongoing, Past; All by default), title search, a date range read in each event's timezone, location, and open or closed registration, which drafts never match. Every filter and table column shows for every status. The filters stay in the URL.
-- No separate statistics overview in the MVP.
-- Access event management, preview, attendee list, QR scanning, and review results here.
+- Each event has a Statistics page. There is no statistics overview that compares events.
+- Access event management, preview, attendee list, QR scanning, statistics, and review results here.
 - Review templates have their own staff page.
 - Admins additionally have organizer-role management.
+
+### Event statistics
+
+On 8 November 2026 the user approved a Statistics tab for each event. It sits in the event's staff navigation beside Attendees and Review results, and covers that one event only.
+
+- Headline numbers: active registrations, checked-in attendees, no-shows, cancellations, review responses, and certificate requests with the number of failed sends.
+- No-shows are active registrations without a check-in. Cancellations count distinct users who cancelled and have no active registration now.
+- The attendance rate is checked-in attendees out of active registrations. Show it as counts and a percentage, such as "38 of 52 (73%)", with an Astryx `ProgressBar`.
+- A funnel shows registered, checked in, reviewed, and certificate requested as horizontal bars on one scale. Each step shows its count and its share of the step before it. Events without a review form leave out the reviewed step.
+- A column chart shows check-ins in equal time intervals across the check-in window, in the event's timezone, with the start time marked.
+- The review response rate divides responses by checked-in attendees, because only they can review. Each rating question shows its average and score distribution. The tab links to the full review results rather than repeating them. There is no overall event score.
+- Every percentage appears with the counts behind it. An event with no registrations, including any draft, shows an empty state instead of 0%.
+- Organizers and admins can open it, and the server enforces this. It shows no attendee names, and reviewer identities stay hidden.
+- Build it from Astryx components and plain CSS, with plain CSS or inline SVG for the bars and columns. Do not add a chart library or use Astryx's dashboard templates, which need `recharts`, `@heroicons/react`, and a StyleX compiler.
+- Registration and cancellation times are not stored, so the tab has no sign-up timeline.
 
 ## Approved technology choices
 
@@ -265,7 +280,7 @@ Use Impeccable for focused review and refinement rather than introducing a secon
 - Resend SDK, Nodemailer, and React Email packages; direct API calls and simple templates suffice.
 - Additional form libraries; native React forms with Zod suffice outside SurveyJS reviews.
 - Moment, Luxon, and date-fns alongside Temporal.
-- Calendar export, capacity handling, certificate verification pages, and a separate dashboard statistics overview.
+- Calendar export, capacity handling, certificate verification pages, and a statistics overview that compares events.
 
 ## Required safeguards
 
