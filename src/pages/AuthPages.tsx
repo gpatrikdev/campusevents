@@ -9,6 +9,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
+import { AppBrand } from '../components/FacultyLogo';
 import { profileSchema } from '../domain/rules';
 
 export function returnSearch(search: Record<string, unknown>) {
@@ -31,6 +32,7 @@ export function CompleteProfilePage({ returnTo }: { returnTo: string }) {
   const [saving, setSaving] = useState(false);
   return (
     <VStack gap={6} className="form-page" maxWidth={480} width="100%">
+      <AppBrand />
       <Card padding={8}>
         <VStack gap={6}>
           <VStack gap={3}>

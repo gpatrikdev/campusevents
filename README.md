@@ -1,6 +1,6 @@
 # Campus Events
 
-Campus Events is a university event service with a React and Astryx Neutral frontend and a Hono API on Cloudflare Workers. The Worker serves the frontend and API from the same origin.
+Campus Events is a university event service with a React and Astryx frontend themed in ELTE Faculty of Informatics colours and a Hono API on Cloudflare Workers. The Worker serves the frontend and API from the same origin.
 
 ## Run locally
 

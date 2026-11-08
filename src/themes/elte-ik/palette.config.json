@@ -1,0 +1,54 @@
+{
+  "recipe": "astryx-oklch-v1",
+  "vibrancy": 50,
+  "neutralProfile": "neutral-v1",
+  "modeStrategy": "light-and-dark",
+  "families": [
+    {
+      "id": "ik-teal",
+      "name": "ELTE IK teal (Pantone 321 C)",
+      "seed": "#008c95",
+      "anchors": [
+        {
+          "mode": "light",
+          "stop": 50,
+          "color": "#008c95",
+          "policy": "exact"
+        }
+      ]
+    },
+    {
+      "id": "elte-blue",
+      "name": "ELTE blue (Pantone 295 C)",
+      "seed": "#012850",
+      "anchors": [
+        {
+          "mode": "light",
+          "stop": 15,
+          "color": "#012850",
+          "policy": "exact"
+        }
+      ]
+    },
+    {
+      "id": "elte-gray",
+      "name": "ELTE grey (Cool Gray 11 C, Cool Gray 3 C)",
+      "seed": "#53565a",
+      "kind": "neutral",
+      "anchors": [
+        {
+          "mode": "light",
+          "stop": 35,
+          "color": "#53565a",
+          "policy": "exact"
+        },
+        {
+          "mode": "light",
+          "stop": 80,
+          "color": "#c8c9c7",
+          "policy": "flexible"
+        }
+      ]
+    }
+  ]
+}

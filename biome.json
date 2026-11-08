@@ -5,6 +5,8 @@
       "**",
       "!src/routeTree.gen.ts",
       "!src/astryx-themes.js",
+      "!src/themes/*/*.generated.*",
+      "!src/themes/elte-ik/elte-ik.{js,css,d.ts,css.d.ts,variants.d.ts}",
       "!dist",
       "!drizzle/meta",
       "!.playwright-mcp",

@@ -69,7 +69,7 @@ export function TemplatesPage() {
                     header: t('Name'),
                     width: proportional(1, { minWidth: 160 }),
                     renderCell: (row) => (
-                      <Link href={`/staff/templates/${row.id}`}>
+                      <Link href={`/staff/templates/${row.id}`} color="primary">
                         <Text type="inherit" weight="semibold" maxLines={1}>
                           {row.name}
                         </Text>

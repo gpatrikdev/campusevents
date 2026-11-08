@@ -4,7 +4,7 @@
 
 Read `rebuild-handoff.md` beside this file before working. It contains the approved product specification and technology choices. Build from that specification; no reference application is required.
 
-Follow the user's latest instructions and the approved specification. General skill suggestions must stay within that scope and the chosen Astryx Neutral design system. Respect higher-priority platform instructions.
+Follow the user's latest instructions and the approved specification. General skill suggestions must stay within that scope and the app's ELTE IK Astryx theme, which extends Astryx Neutral. Respect higher-priority platform instructions.
 
 The specification is approved. Implementation planning and coding require explicit user authorization. A request to configure tools or edit documentation does not authorize application implementation. Once authorization is given, carry out that work without repeatedly asking for the same approval.
 
@@ -24,7 +24,7 @@ Ask clarification questions one at a time. Resolve routine implementation detail
 | Skill | When and how to use it |
 | --- | --- |
 | Official Astryx skill | Before choosing or using UI components, layouts, theme APIs, icons, date/time controls, or the rich text editor. Consult the project's Astryx CLI and installed-version documentation. Use the official skill, not a custom replacement. |
-| Frontend Design | When implementing an authorized new page or substantially changing layout. Improve hierarchy and composition within Astryx Neutral. Do not choose a new palette, font family, component library, or decorative direction. |
+| Frontend Design | When implementing an authorized new page or substantially changing layout. Improve hierarchy and composition within the ELTE IK theme. Do not choose a new palette, font family, component library, or decorative direction. |
 | UI/UX Pro Max | For interaction decisions and focused reviews of forms, navigation, mobile behavior, keyboard access, and accessibility. Apply relevant guidance rather than its suggested alternative stacks or generated themes. |
 | Impeccable | For targeted `critique`, `audit`, `polish`, `harden`, and `adapt` work. Choose the relevant playbook. Most application screens serve task completion, so favor clarity and restraint. Follow its context-loading and visual-verification instructions when invoked. |
 | Ponytail | During authorized coding, fixes, reviews, and dependency decisions. Prefer the smallest complete solution using the platform and approved libraries. Preserve security, accessibility, validation, error handling, and meaningful tests. |
@@ -33,7 +33,7 @@ Use `code-structure`, if available, only when actual shared mechanics justify ex
 
 ### Avoid conflicting design advice
 
-- Astryx Neutral supplies components, layout conventions, icons, and interface fonts. Use plain CSS for app-specific styling.
+- Astryx supplies components, layout conventions, and icons. The ELTE IK theme (`src/themes/elte-ik`) supplies the university colours and the self-hosted Open Sans font. Show the faculty logo through `src/components/FacultyLogo.tsx`; never recolour or redraw it. Use plain CSS for app-specific styling.
 - Do not introduce Tailwind, shadcn, direct Radix usage, Lucide, extra interface fonts, or another design system.
 - Use Astryx RichText rather than building another editor. Description images use the project's own image node (`src/components/EventImage.tsx`), not a second editor.
 - Render review forms with the approved SurveyJS packages, styled to fit the app. Staff build review templates and event forms in the app's own Astryx screens, which save SurveyJS JSON. Do not add the paid SurveyJS Creator or another form-builder library.
@@ -44,7 +44,7 @@ Use `code-structure`, if available, only when actual shared mechanics justify ex
 
 Use the installed Astryx CLI's documented discovery commands and help. Do not guess component exports or props. Keep any officially generated Astryx guidance in a clearly identified section and preserve these project instructions when setup tools update `AGENTS.md`.
 
-Read applicable product and design context before invoking Impeccable. The handoff already establishes product requirements and the Neutral theme. Do not make the user repeat settled decisions. Generating or changing `PRODUCT.md`, `DESIGN.md`, mockups, or UX plans must fit the current authorization.
+Read applicable product and design context before invoking Impeccable. The handoff already establishes product requirements and the ELTE IK theme. Do not make the user repeat settled decisions. Generating or changing `PRODUCT.md`, `DESIGN.md`, mockups, or UX plans must fit the current authorization.
 
 Automatic lifecycle hooks, Impeccable Live mode, and permission-bypassing commands are not required. Do not enable them as an incidental part of UI work.
 
@@ -97,7 +97,7 @@ When finishing authorized work, state what changed, how it was verified, and any
 
 ## Official Astryx CLI-generated guidance
 
-The managed block below is generated by Astryx. The approved specification and project instructions above take precedence, including Astryx Neutral, plain CSS for app-specific styling, and the authorization boundary for implementation.
+The managed block below is generated by Astryx. The approved specification and project instructions above take precedence, including the ELTE IK theme, plain CSS for app-specific styling, and the authorization boundary for implementation.
 
 <!-- ASTRYX:START -->
 Astryx v0.7.9 · 174 components

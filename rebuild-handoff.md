@@ -180,6 +180,28 @@ On 7 November 2026 the user approved review forms built from reusable templates.
 
 On 8 November 2026 the user approved a colour mode control. Visitors choose System, Light or Dark beside the language selector in the top navigation or under Appearance on the Profile page. System is the default and follows the device. The choice is kept per browser in `localStorage`, not on the account, and falls back to System when storage is blocked. Switching uses the Astryx `Theme` mode, so every token-based colour, charts included, follows it.
 
+### Visual identity
+
+On 8 November 2026 the user replaced the development theme with an ELTE Faculty of Informatics theme that follows the faculty colour sheet (`elte_ik_kari_szinek_01.pdf`).
+
+- The app's own Astryx theme, `elte-ik` in `src/themes/elte-ik`, extends Neutral and keeps its components, icons, spacing and status colours.
+- Faculty teal (Pantone 321 C, `#008C95`) is the accent. White text on it measures 4.05:1, below the 4.5:1 AA minimum for labels, so buttons and other filled controls use the next darker generated stop (`#007D85`, 4.92:1). The exact teal marks selection rings and chart bars.
+- The central ELTE colours are supplementary, as the sheet allows: ELTE blue (Pantone 295 C, `#012850`) is the info colour, and ELTE grey (Cool Gray 11 C, `#53565A`) is secondary text. ELTE gold has no interface role.
+- Interface text uses Open Sans, ELTE's central typeface, self-hosted from ELTE's files instead of loading Figtree from Google Fonts. Open Sans has no 500 weight, so the theme maps medium to 600. Goldenbook, ELTE's display face, is not used: it is a commercial font, and the files ELTE supplies may not be licensed for web embedding.
+- Regenerate the palette from `palette.config.json` and rebuild the theme with the Astryx CLI after changing either.
+
+#### Logos
+
+On 8 November 2026 the user approved the ELTE IK logos in the interface. They are SVGs in `src/assets/logo`, converted path for path from ELTE's own vector PDFs (the `rgb_online` set) and cropped to the artwork. Each comes in teal for light mode and white for dark mode. The logos are never recoloured, stretched or redrawn.
+
+- The top bar shows "ELTE | IK" and links to the events list. Both full logos' second line ("INFORMATIKAI KAR", "FACULTY OF INFORMATICS") is unreadable at top-bar height, so the top bar uses the short logo in both languages. Below 70rem it shows only the emblem (crest and rings): staff's four nav items, with Hungarian labels, leave no room for the wordmark on narrower screens.
+- The phone menu takes over below the `lg` breakpoint (1024px) instead of `md`. At `md` widths, staff's nav items already overlapped the colour and language pickers.
+- Sign-in, complete profile and the error page have no top bar, so they show the full logo on its own: Hungarian with "INFORMATIKAI KAR", English with "FACULTY OF INFORMATICS". On sign-in it replaces the earlier calendar icon and "Campus Events" title. The product name stays only in the browser tab title.
+- Page not found shows no logo, as the user decided.
+- The browser tab icon (`public/favicon.svg`) is the white crest on a teal tile. The teal crest alone disappears on dark browser tabs.
+- ELTE supplied no logo usage manual (clear space, minimum size). Check these placements against ELTE's brand manual if one becomes available.
+- Emails and certificate PDFs carry no logo yet.
+
 ### Staff dashboard
 
 - Open directly to the event list.
@@ -217,9 +239,9 @@ Choose the **latest stable, mutually compatible versions when building**. Do not
 | Routing | `@tanstack/react-router`, `@tanstack/router-plugin` |
 | Server state | `@tanstack/react-query` |
 | Build | `vite`, `@vitejs/plugin-react`, `@cloudflare/vite-plugin` |
-| UI | `@astryxdesign/core`, `@stylexjs/stylex`, `@astryxdesign/theme-neutral` |
+| UI | `@astryxdesign/core`, `@stylexjs/stylex`, `@astryxdesign/theme-neutral` as the base of the app's `elte-ik` theme |
 | UI styling | Astryx layout components and plain CSS. StyleX remains a required Astryx dependency; no additional custom StyleX build integration has been agreed. |
-| Icons/fonts | Use Astryx-supplied icons and theme fonts. PDF font is a separate bundled asset. |
+| Icons/fonts | Use Astryx-supplied icons. Interface text uses Open Sans, self-hosted with the `elte-ik` theme. PDF font is a separate bundled asset. |
 | Avatars | `blobatar`, `@blobatar/react`. Signed-in users with a confirmed profile name see their blobatar, generated from that name, on top of empty, error and status notices, and on wide screens at the corner of the home page's side panel. |
 | Editor | `@astryxdesign/richtext`, `lexical`, and the required `@lexical/*` peers for the selected release |
 | API | `hono`, `zod`; Hono's built-in typed client, no Axios or additional RPC framework |
@@ -257,18 +279,18 @@ The user selected these development-agent tools. They are separate from applicat
 | Frontend Design skill | Visual hierarchy, layout, and frontend design quality within the approved Astryx design system | https://github.com/anthropics/skills/tree/main/skills/frontend-design |
 | UI/UX Pro Max skill | Usability, accessibility, responsive behavior, and interaction guidance | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
 | Ponytail skill | Keep solutions minimal, reuse platform and selected library capabilities, and avoid speculative abstractions while retaining validation and meaningful tests | https://github.com/DietrichGebert/ponytail |
-| Impeccable skill | Focused UI critique, accessibility review, responsive checks, and polish within Astryx Neutral | https://github.com/pbakaus/impeccable |
+| Impeccable skill | Focused UI critique, accessibility review, responsive checks, and polish within the ELTE IK theme | https://github.com/pbakaus/impeccable |
 | Official Astryx skill/agent guide | Component APIs, theme conventions, and Astryx-specific implementation guidance | https://astryx.atmeta.com/docs/global |
 | Playwright MCP | Agent-operated browser validation and screenshots; does not require adding a project Playwright test suite | https://github.com/microsoft/playwright-mcp |
 | Context7 MCP | Retrieve current library documentation and examples, matching the selected package versions where available | https://github.com/upstash/context7 |
 
 Use Astryx's official skill rather than creating a custom Astryx UI skill. Astryx documents a CLI-maintained guide at `~/.agents/skills/astryx/SKILL.md`. `astryx init --user` writes it and links it into agent skill folders, and upgrades refresh it. Installing the CLI alone does not create it. Project agent documentation can be generated through the official CLI when setup is authorized.
 
-The approved specification and Astryx Neutral theme take precedence over generic design suggestions. Frontend Design and UI/UX Pro Max must not introduce an alternative component library, fonts, palette, or new features without user approval. Use Astryx's own documentation for its APIs; use Context7 for other libraries where coverage exists, falling back to official documentation when necessary.
+The approved specification and the ELTE IK theme take precedence over generic design suggestions. Frontend Design and UI/UX Pro Max must not introduce an alternative component library, fonts, palette, or new features without user approval. Use Astryx's own documentation for its APIs; use Context7 for other libraries where coverage exists, falling back to official documentation when necessary.
 
 Apply Ponytail within the approved scope: reduce unnecessary code, not requested features, security checks, accessibility, or meaningful tests. Do not use it to reopen agreed package choices without a concrete compatibility issue or user request. The standalone skill is sufficient; always-on plugin hooks are not required.
 
-Use Impeccable for focused review and refinement rather than introducing a second visual system. The specification and Astryx Neutral remain authoritative for components, fonts, colors, and feature scope. Automatic design hooks and Live mode have not been requested. Do not run project initialization, generate design plans, or edit UI before the relevant user authorization.
+Use Impeccable for focused review and refinement rather than introducing a second visual system. The specification and the ELTE IK theme remain authoritative for components, fonts, colors, and feature scope. Automatic design hooks and Live mode have not been requested. Do not run project initialization, generate design plans, or edit UI before the relevant user authorization.
 
 ## Dependencies and features outside the MVP
 

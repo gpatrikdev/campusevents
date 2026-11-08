@@ -1,10 +1,11 @@
 import { AppShell, useAppShellMobile } from '@astryxdesign/core/AppShell';
 import { Button } from '@astryxdesign/core/Button';
+import { useMediaQuery } from '@astryxdesign/core/hooks';
 import { LinkProvider } from '@astryxdesign/core/Link';
 import { MobileNav } from '@astryxdesign/core/MobileNav';
 import { Selector } from '@astryxdesign/core/Selector';
 import { SideNav, SideNavItem, SideNavSection } from '@astryxdesign/core/SideNav';
-import { TopNav, TopNavItem } from '@astryxdesign/core/TopNav';
+import { TopNav, TopNavHeading, TopNavItem } from '@astryxdesign/core/TopNav';
 import { VStack } from '@astryxdesign/core/VStack';
 import {
   Navigate,
@@ -21,6 +22,7 @@ import { isColorMode, setColorMode, useColorMode } from '../colorMode';
 import { isStaff } from '../domain/rules';
 import { returnSearch } from '../pages/AuthPages';
 import { ReviewIcon, TicketIcon } from './EventIcons';
+import { FacultyLogo } from './FacultyLogo';
 import { belowNavHeight, DataBoundary, OutcomeNotice } from './Feedback';
 import { HungaryFlag, UnitedKingdomFlag } from './Flags';
 import {
@@ -122,6 +124,13 @@ function DesktopAccountLinks({
       <Button label={t('Sign out')} variant="ghost" size="sm" onClick={onSignOut} />
     </>
   );
+}
+
+// Below this width the bar holds the emblem only: on phones beside the pickers
+// and menu, and on narrow desktops beside staff's four Hungarian nav items.
+function NavLogo() {
+  const roomy = useMediaQuery('(min-width: 70rem)');
+  return <FacultyLogo variant={roomy ? 'short' : 'emblem'} decorative />;
 }
 
 function DrawerItem({ onClick, ...props }: ComponentProps<typeof SideNavItem>) {
@@ -293,6 +302,11 @@ function Shell() {
   return (
     <LinkProvider component={ClientLink}>
       <AppShell
+        // Astryx measures the top bar only when the shell mounts, and the side
+        // nav subtracts that height from the window. Pages without the bar
+        // (sign-in first, most often) left it unmeasured, so dashboard pages
+        // scrolled by the bar's height. A fresh shell measures it again.
+        key={bare ? 'bare' : 'with-top-bar'}
         height="auto"
         variant="elevated"
         contentPadding={bare || staffWorkspace ? 0 : 6}
@@ -300,7 +314,9 @@ function Shell() {
           bare
             ? false
             : {
-                breakpoint: 'md',
+                // Staff see four nav items beside the logo and pickers, which
+                // overlap below this width, longer Hungarian labels included.
+                breakpoint: 'lg',
                 content: (
                   <MobileNav header={t('Main navigation')}>
                     {navItems.map((item) => (
@@ -344,6 +360,13 @@ function Shell() {
           !bare && (
             <TopNav
               label={t('Main navigation')}
+              heading={
+                <TopNavHeading
+                  logo={<NavLogo />}
+                  logoLabel={t('ELTE IK Campus Events, home')}
+                  headingHref="/"
+                />
+              }
               startContent={navItems.map(({ label, href, isSelected }) => (
                 <TopNavItem key={href} label={label} href={href} isSelected={isSelected} />
               ))}

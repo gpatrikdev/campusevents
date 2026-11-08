@@ -28,7 +28,7 @@ import { formatDate, formatTime } from '../domain/format';
 import { HOUR, hasEnded, instant, isStaff } from '../domain/rules';
 
 // Astryx data colours, so the charts follow the theme and dark mode.
-const BAR = 'var(--color-data-categorical-blue)';
+const BAR = 'var(--color-data-categorical-teal)';
 const GRID = 'var(--color-border)';
 const TOOLTIP = {
   contentStyle: {

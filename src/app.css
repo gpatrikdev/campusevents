@@ -98,6 +98,27 @@ html {
   margin-inline: auto;
 }
 
+/* The faculty logo is sized by height and keeps its proportions. In the top bar
+   it is exactly as tall as the bar's controls: anything taller makes the bar
+   taller than the var(--spacing-12) that page heights subtract for it, and short
+   pages then scroll. The full logo is twice that, so the faculty name under
+   ELTE stays readable. */
+.faculty-logo {
+  display: block;
+  inline-size: auto;
+  max-inline-size: 100%;
+  object-fit: contain;
+}
+
+.faculty-logo-short,
+.faculty-logo-emblem {
+  block-size: var(--size-element-md);
+}
+
+.faculty-logo-full {
+  block-size: calc(2 * var(--spacing-8));
+}
+
 .ticket-qr {
   max-inline-size: min(100%, 44dvh);
   block-size: auto;

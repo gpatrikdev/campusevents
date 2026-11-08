@@ -10,6 +10,7 @@ import { Text } from '@astryxdesign/core/Text';
 import { VStack } from '@astryxdesign/core/VStack';
 import type { ReactNode, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AppBrand } from '../../components/FacultyLogo';
 
 export function LoginCard({
   description,
@@ -26,12 +27,7 @@ export function LoginCard({
   return (
     <Center axis="both" padding={6} paddingInline={compact ? 0 : 6}>
       <VStack gap={4} hAlign="center" width="100%" maxWidth="25rem">
-        <VStack gap={2} hAlign="center">
-          <Icon icon="calendar" size="lg" />
-          <Text weight="bold" size="lg">
-            Campus Events
-          </Text>
-        </VStack>
+        <AppBrand />
         <Card padding={compact ? 4 : 8} width="100%">
           <VStack gap={4} hAlign="stretch">
             <VStack gap={1} hAlign="center">

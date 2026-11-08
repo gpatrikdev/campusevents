@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "recipe": "astryx-oklch-v1",
+  "generatorVersion": "palette-generator-v1",
+  "candidateFormatVersion": "palette-typescript-v1",
+  "candidateSha256": "d71334d2a387ab9c4a3b2e717922205dcaf3775500817efd11eef66929b6fe37",
+  "request": {
+    "recipe": "astryx-oklch-v1",
+    "vibrancy": 50,
+    "neutralProfile": "neutral-v1",
+    "modeStrategy": "light-and-dark",
+    "stops": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40,
+      45,
+      50,
+      55,
+      60,
+      65,
+      70,
+      75,
+      80,
+      85,
+      90,
+      95,
+      100
+    ],
+    "families": [
+      {
+        "id": "ik-teal",
+        "name": "ELTE IK teal (Pantone 321 C)",
+        "seed": "#008c95",
+        "kind": "chromatic",
+        "anchors": [
+          {
+            "mode": "light",
+            "stop": 50,
+            "color": "#008c95",
+            "policy": "exact"
+          }
+        ]
+      },
+      {
+        "id": "elte-blue",
+        "name": "ELTE blue (Pantone 295 C)",
+        "seed": "#012850",
+        "kind": "chromatic",
+        "anchors": [
+          {
+            "mode": "light",
+            "stop": 15,
+            "color": "#012850",
+            "policy": "exact"
+          }
+        ]
+      },
+      {
+        "id": "elte-gray",
+        "name": "ELTE grey (Cool Gray 11 C, Cool Gray 3 C)",
+        "seed": "#53565a",
+        "kind": "neutral",
+        "anchors": [
+          {
+            "mode": "light",
+            "stop": 35,
+            "color": "#53565a",
+            "policy": "exact"
+          },
+          {
+            "mode": "light",
+            "stop": 80,
+            "color": "#c8c9c7",
+            "policy": "flexible"
+          }
+        ]
+      }
+    ]
+  },
+  "diagnostics": {
+    "families": {
+      "ik-teal": {
+        "light": {
+          "monotonic": true,
+          "minimumAdjacentDeltaE": 3.651815693769818,
+          "maximumAdjacentDeltaE": 18.14096851241298,
+          "maximumHueDrift": 3.407849026673489,
+          "hueIdentityRisk": null,
+          "gamutMappedStops": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60,
+            95,
+            100
+          ],
+          "anchors": [
+            {
+              "mode": "light",
+              "stop": 50,
+              "color": "#008c95",
+              "policy": "exact",
+              "generatedColor": "#008c95",
+              "deltaE": 0
+            }
+          ]
+        },
+        "dark": {
+          "monotonic": true,
+          "minimumAdjacentDeltaE": 4.128027546132375,
+          "maximumAdjacentDeltaE": 18.14096851241298,
+          "maximumHueDrift": 3.407849026673489,
+          "hueIdentityRisk": null,
+          "gamutMappedStops": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            95,
+            100
+          ],
+          "anchors": []
+        }
+      },
+      "elte-blue": {
+        "light": {
+          "monotonic": true,
+          "minimumAdjacentDeltaE": 4.144475595826714,
+          "maximumAdjacentDeltaE": 19.443475495342792,
+          "maximumHueDrift": 3.4674707505644164,
+          "hueIdentityRisk": null,
+          "gamutMappedStops": [
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            75,
+            80,
+            85,
+            90,
+            95,
+            100
+          ],
+          "anchors": [
+            {
+              "mode": "light",
+              "stop": 15,
+              "color": "#012850",
+              "policy": "exact",
+              "generatedColor": "#012850",
+              "deltaE": 0
+            }
+          ]
+        },
+        "dark": {
+          "monotonic": true,
+          "minimumAdjacentDeltaE": 4.1775776136634875,
+          "maximumAdjacentDeltaE": 18.781041261420864,
+          "maximumHueDrift": 2.9313271854315417,
+          "hueIdentityRisk": null,
+          "gamutMappedStops": [
+            10,
+            15,
+            20,
+            80,
+            85,
+            90,
+            95,
+            100
+          ],
+          "anchors": []
+        }
+      },
+      "elte-gray": {
+        "light": {
+          "monotonic": true,
+          "minimumAdjacentDeltaE": 4.044477769851954,
+          "maximumAdjacentDeltaE": 17.744682669199655,
+          "maximumHueDrift": 0,
+          "hueIdentityRisk": null,
+          "gamutMappedStops": [],
+          "anchors": [
+            {
+              "mode": "light",
+              "stop": 35,
+              "color": "#53565a",
+              "policy": "exact",
+              "generatedColor": "#53565a",
+              "deltaE": 0
+            },
+            {
+              "mode": "light",
+              "stop": 80,
+              "color": "#c8c9c7",
+              "policy": "flexible",
+              "generatedColor": "#c7c8c6",
+              "deltaE": 0.31126913067010464
+            }
+          ]
+        },
+        "dark": {
+          "monotonic": true,
+          "minimumAdjacentDeltaE": 4.056735649681861,
+          "maximumAdjacentDeltaE": 17.763777191722603,
+          "maximumHueDrift": 0,
+          "hueIdentityRisk": null,
+          "gamutMappedStops": [],
+          "anchors": []
+        }
+      }
+    },
+    "coordination": [
+      {
+        "mode": "light",
+        "stop": 50,
+        "closestFamilies": [
+          "ELTE IK teal (Pantone 321 C)",
+          "ELTE blue (Pantone 295 C)"
+        ],
+        "minimumFamilyDeltaE": 11.425934709850285,
+        "strongestFamily": "ELTE blue (Pantone 295 C)",
+        "weakestFamily": "ELTE IK teal (Pantone 321 C)",
+        "chromaRatio": 1.4764699814900324
+      },
+      {
+        "mode": "dark",
+        "stop": 50,
+        "closestFamilies": [
+          "ELTE IK teal (Pantone 321 C)",
+          "ELTE blue (Pantone 295 C)"
+        ],
+        "minimumFamilyDeltaE": 9.717406469083494,
+        "strongestFamily": "ELTE blue (Pantone 295 C)",
+        "weakestFamily": "ELTE IK teal (Pantone 321 C)",
+        "chromaRatio": 1.2875145087347197
+      }
+    ]
+  }
+}

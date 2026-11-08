@@ -1,7 +1,7 @@
 import type { ITheme } from 'survey-core';
 
-// SurveyJS v3 semantic tokens follow the unmodified Astryx Neutral theme. The
-// sizes copy Astryx's own controls: 14px text with 20px lines, a 36px
+// SurveyJS v3 semantic tokens follow the app's Astryx theme tokens, so the
+// brand colour is the theme accent. The sizes copy Astryx's own controls: 14px text with 20px lines, a 36px
 // large button, and 1.5px emphasized borders on fields.
 export const reviewTheme: ITheme = {
   themeName: 'default',
@@ -18,9 +18,9 @@ export const reviewTheme: ITheme = {
     '--sjs2-typography-font-weight-component-action-large-content': 'var(--font-weight-medium)',
     '--sjs2-layout-component-action-large-box-padding-vertical': 'var(--spacing-2)',
     '--sjs2-layout-component-action-large-box-padding-horizontal': 'var(--spacing-3)',
-    '--sjs2-color-project-brand-600': 'var(--color-text-primary)',
-    '--sjs2-color-project-brand-700': 'var(--color-text-primary)',
-    '--sjs2-color-project-brand-800': 'var(--color-text-primary)',
+    '--sjs2-color-project-brand-600': 'var(--color-accent)',
+    '--sjs2-color-project-brand-700': 'var(--color-text-accent)',
+    '--sjs2-color-project-brand-800': 'var(--color-text-accent)',
     '--sjs2-color-bg-basic-primary': 'var(--color-background-surface)',
     '--sjs2-color-bg-basic-secondary': 'var(--color-background-muted)',
     '--sjs2-color-bg-basic-tertiary': 'var(--color-background-muted)',
@@ -29,7 +29,7 @@ export const reviewTheme: ITheme = {
     '--sjs2-color-fg-basic-primary': 'var(--color-text-primary)',
     '--sjs2-color-fg-basic-secondary': 'var(--color-text-secondary)',
     '--sjs2-color-fg-basic-tertiary': 'var(--color-text-secondary)',
-    '--sjs2-color-fg-brand-on-primary': 'var(--color-background-surface)',
+    '--sjs2-color-fg-brand-on-primary': 'var(--color-on-accent)',
     '--sjs2-color-border-basic-primary': 'var(--color-border-emphasized)',
     '--sjs2-color-border-basic-secondary': 'var(--color-border)',
     '--sjs2-color-utility-surface-survey': 'var(--color-background-surface)',

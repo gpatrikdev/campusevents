@@ -13,6 +13,8 @@ export const hu: Record<string, string> = {
   'System follows your device. This choice is saved in this browser only.':
     'A Rendszer az eszköz beállítását követi. A választást csak ebben a böngészőben mentjük.',
   'Main navigation': 'Fő navigáció',
+  'ELTE Faculty of Informatics': 'ELTE Informatikai Kar',
+  'ELTE IK Campus Events, home': 'ELTE IK Campus Events, kezdőlap',
   Attendee: 'Résztvevő',
   Organizer: 'Szervező',
   Admin: 'Adminisztrátor',
