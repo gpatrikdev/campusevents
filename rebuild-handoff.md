@@ -190,14 +190,16 @@ On 7 November 2026 the user approved review forms built from reusable templates.
 On 8 November 2026 the user approved a Statistics tab for each event. It sits in the event's staff navigation beside Attendees and Review results, and covers that one event only.
 
 - Headline numbers: active registrations, checked-in attendees, no-shows, cancellations, review responses, and certificate requests with the number of failed sends.
-- No-shows are active registrations without a check-in. Cancellations count distinct users who cancelled and have no active registration now.
+- No-shows are active registrations without a check-in. Until the event ends the tile says "Not checked in", because those people can still arrive. Cancellations count distinct users who cancelled and have no active registration now.
 - The attendance rate is checked-in attendees out of active registrations. Show it as counts and a percentage, such as "38 of 52 (73%)", with an Astryx `ProgressBar`.
-- A funnel shows registered, checked in, reviewed, and certificate requested as horizontal bars on one scale. Each step shows its count and its share of the step before it. Events without a review form leave out the reviewed step.
+- A funnel shows registered, checked in, reviewed, and certificate requested as horizontal bars on one scale. Each step shows its count and a share: checked in out of registrations, and reviewed and certificate requested out of check-ins, because only checked-in attendees can do either. Events without a review form leave out the reviewed step.
 - A column chart shows check-ins in equal time intervals across the check-in window, in the event's timezone, with the start time marked.
 - The review response rate divides responses by checked-in attendees, because only they can review. Each rating question shows its average and score distribution. The tab links to the full review results rather than repeating them. There is no overall event score.
 - Every percentage appears with the counts behind it. An event with no registrations, including any draft, shows an empty state instead of 0%.
 - Organizers and admins can open it, and the server enforces this. It shows no attendee names, and reviewer identities stay hidden.
-- Build it from Astryx components and plain CSS, with plain CSS or inline SVG for the bars and columns. Do not add a chart library or use Astryx's dashboard templates, which need `recharts`, `@heroicons/react`, and a StyleX compiler.
+- Draw the charts with `recharts`, approved on 8 November 2026 because Astryx's own dashboard templates use it. Colour them with Astryx's data colour tokens. Build the rest of the tab from Astryx components and plain CSS. Do not scaffold the Astryx dashboard templates, which also need `@heroicons/react` and a StyleX compiler.
+- Each chart has a visible text summary. Screen readers read the chart as one image whose label lists every number. The charts take no keyboard focus.
+- Load the tab's code separately, so public pages do not download `recharts`.
 - Registration and cancellation times are not stored, so the tab has no sign-up timeline.
 
 ## Approved technology choices
@@ -222,6 +224,7 @@ Choose the **latest stable, mutually compatible versions when building**. Do not
 | Authentication | `better-auth`, `@better-auth/drizzle-adapter`; `auth` CLI for schema generation |
 | Localization | `i18next`, `react-i18next`; translations stored in the project, no hosted translation service |
 | Reviews | `survey-core`, `survey-react-ui`; use Astryx for the template and form editors and for staff results |
+| Charts | `recharts`, approved on 8 November 2026, for the event statistics tab only. |
 | Question reordering | `@dnd-kit/core`, `@dnd-kit/sortable`, approved on 7 November 2026. Staff drag a question's handle, or use the keyboard on it, to change the order. |
 | PDF | `pdf-lib`, `@pdf-lib/fontkit` |
 | QR generation | `qrcode`; use one generator for in-app and email images where supported |

@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useApp } from '../api/context';
 import { isStaff, publishIssue, unpublishIssue } from '../domain/rules';
 import { ConfirmDialog } from './ConfirmDialog';
-import { DeleteIcon, EditIcon, QrCodeIcon, ReviewIcon } from './EventIcons';
+import { DeleteIcon, EditIcon, QrCodeIcon, ReviewIcon, StatisticsIcon } from './EventIcons';
 import { AccessNotice, DataBoundary, EmptyNotice, UnavailableEvent } from './Feedback';
 import { PeopleIcon } from './NavIcons';
 
@@ -162,6 +162,12 @@ export function StaffEventLayout({ eventId }: { eventId: string }) {
                 label={t('Attendees')}
                 href={`${base}/attendees`}
                 icon={<Icon icon={PeopleIcon} />}
+              />
+              <Tab
+                value="statistics"
+                label={t('Statistics')}
+                href={`${base}/statistics`}
+                icon={<Icon icon={StatisticsIcon} />}
               />
               <Tab
                 value="scan"

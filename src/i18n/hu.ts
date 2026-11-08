@@ -474,4 +474,34 @@ export const hu: Record<string, string> = {
   'Moving was cancelled. Option {{position}} kept its place.':
     'Az áthelyezés megszakadt. A(z) {{position}}. lehetőség a helyén maradt.',
   '{{score}} out of 5': '{{score}} az 5-ből',
+  Statistics: 'Statisztika',
+  'Attendance, reviews and certificates for this event. Names are not shown.':
+    'Az esemény részvételi, értékelési és tanúsítványadatai. Neveket nem jelenítünk meg.',
+  'Nobody has registered yet': 'Még senki sem jelentkezett',
+  'Drafts have no registrations. Statistics appear once people join the published event.':
+    'A piszkozatokra nem lehet jelentkezni. A statisztika a közzétett eseményre való első jelentkezés után jelenik meg.',
+  'Statistics appear once people join the event.':
+    'A statisztika az első jelentkezés után jelenik meg.',
+  Cancellations: 'Lemondások',
+  'No-shows': 'Nem jelent meg',
+  Certificates: 'Tanúsítványok',
+  'Failed to send: {{count}}': 'Sikertelen küldés: {{count}}',
+  Attendance: 'Részvétel',
+  '{{count}} of {{total}} ({{share}})': '{{count}} / {{total}} ({{share}})',
+  'Rating questions': 'Értékelő kérdések',
+  'View all review results': 'Összes értékelési eredmény',
+  Reviewed: 'Értékelt',
+  'Certificate requested': 'Tanúsítványt kért',
+  'From registration to certificate': 'A jelentkezéstől a tanúsítványig',
+  'Check-in shares are of registrations; later steps are of check-ins.':
+    'A beléptetési arány a jelentkezésekhez, a többi lépés aránya a beléptetésekhez mért.',
+  'Check-in arrivals': 'Érkezések a beléptetésnél',
+  'Check-in opens at {{time}} ({{timezone}}).': 'A beléptetés kezdete: {{time}} ({{timezone}}).',
+  'No check-ins yet.': 'Még nincs beléptetés.',
+  'Busiest: {{count}} check-ins from {{from}} to {{to}} ({{timezone}}).':
+    'Legforgalmasabb: {{count}} beléptetés {{from}} és {{to}} között ({{timezone}}).',
+  'Check-ins': 'Beléptetések',
+  Start: 'Kezdés',
+  'Average {{average}} out of 5 from {{count}} answers.':
+    'Átlag: {{average}} az 5-ből, {{count}} válasz alapján.',
 };

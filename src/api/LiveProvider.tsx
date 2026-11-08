@@ -56,6 +56,10 @@ async function loadPage(path: string, user: User | undefined): Promise<AppData> 
           const { event, attendees } = await read(route.attendees.$get({ param }));
           return { ...emptyData, events: [event], attendees: { [third]: attendees } };
         }
+        if (fourth === 'statistics') {
+          const { event, statistics } = await read(route.statistics.$get({ param }));
+          return { ...emptyData, events: [event], statistics: { [third]: statistics } };
+        }
         if (fourth === 'reviews') {
           const { event, results } = await read(route.reviews.$get({ param }));
           return { ...emptyData, events: [event], results: { [third]: results } };

@@ -69,7 +69,7 @@ The wireframe shows information placement, not final spacing or translated label
 
 ## Event management frame
 
-Create one shared event layout for the management overview, attendees, QR scanner, and review results. It owns the event identity and navigation, rather than repeating them in every page.
+Create one shared event layout for the management overview, attendees, statistics, QR scanner, and review results. It owns the event identity and navigation, rather than repeating them in every page.
 
 ```text
 Events / Open science in practice
@@ -77,8 +77,8 @@ Events / Open science in practice
 Open science in practice                              [external link]
 [Published]
 
-Overview     Attendees     QR scanner     Review results
--------------------------------------------------------------------
+Overview     Attendees     Statistics     QR scanner     Review results
+----------------------------------------------------------------------
                      [Scan QR tickets] [Unpublish event | Delete event]
 (i) Published details are locked.                                      [x]
     An event cannot be unpublished after it starts.
@@ -99,9 +99,10 @@ This example uses the preview's reference clock, when Open science is ongoing. T
 | --------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | Context         | `Breadcrumbs`, `BreadcrumbItem`                   | Return to staff events and identify the current event/task.                             |
 | Header          | `LayoutHeader`, `Heading`, `Badge`, `IconButton`  | Event title, publication badge, and public-page/preview icon at the far right.          |
-| Task navigation | `TabList`, link-based `Tab` items                 | Overview, attendees, scanning, and results at their existing URLs.                      |
+| Task navigation | `TabList`, link-based `Tab` items                 | Overview, attendees, statistics, scanning, and results at their existing URLs.          |
 | Overview        | `Grid`, `MetadataList`, `InfoTip`, `RichTextView` | Schedule and location sections, timezone help, and the existing description.            |
 | Event mutations | `ButtonGroup` and existing `ConfirmDialog`        | Publication, draft editing, and direct deletion, with consequences before confirmation. |
+| Statistics      | `Grid`, `Card`, `ProgressBar`, recharts           | Anonymous counts, the registration funnel, check-in arrivals, and rating distributions. |
 | Task body       | Existing attendee/scanner/results page            | The selected task without another copy of the event header.                             |
 
 The event navigation changes routes, so use link navigation semantics rather than `role="tablist"`. Keep its active state in sync with the route and preserve normal browser link behavior. The collection uses a "Status" `Selector` rather than tabs.

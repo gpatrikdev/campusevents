@@ -349,7 +349,57 @@ function withForms(data: MockData): MockData {
   return data;
 }
 
-const fixtures = withForms(buildFixtures());
+// A crowd for the past ethics roundtable, so the statistics tab has something to chart:
+// 24 of 30 checked in, 4 cancelled, 16 certificates (2 failed) and 13 more reviews.
+const first = [
+  'Anna',
+  'Bence',
+  'Chloé',
+  'Dávid',
+  'Emma',
+  'Gergő',
+  'Hanna',
+  'Jonas',
+  'Lili',
+  'Máté',
+];
+const last = ['Farkas', 'Horváth', 'Kiss', 'Lukács', 'Molnár', 'Novak', 'Papp', 'Varga'];
+function withCrowd(data: MockData): MockData {
+  for (let index = 0; index < 34; index++) {
+    const id = `sample-${index + 1}`;
+    data.users.push({
+      id,
+      name: `${last[index % last.length]} ${first[index % first.length]}`,
+      email: `${id}@example.test`,
+      role: null,
+      profileComplete: true,
+    });
+    data.registrations.push({
+      id: `crowd-${index + 1}`,
+      eventId: 'ethics',
+      userId: id,
+      ticket: `DEMO-ethics-crowd-${index + 1}`,
+      active: index < 30,
+      checkedIn: index < 24,
+      review: null,
+      certificate: index < 14 ? 'sent' : index < 16 ? 'failed' : 'none',
+    });
+  }
+  const formats = ['Case studies', 'Group discussion', 'Talks'];
+  for (let index = 0; index < 13; index++)
+    data.reviews.push({
+      id: `crowd-review-${index + 1}`,
+      eventId: 'ethics',
+      answers: {
+        qrating: [5, 4, 4, 3, 5, 4, 2, 5, 4, 3, 4, 5, 4][index] ?? 4,
+        qformat: formats[index % formats.length] ?? 'Talks',
+        qrecommend: index % 4 !== 3,
+      },
+    });
+  return data;
+}
+
+const fixtures = withForms(withCrowd(buildFixtures()));
 
 export function createFixtures(): MockData {
   return structuredClone(fixtures);

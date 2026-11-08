@@ -279,3 +279,11 @@ html {
 .sortable-item.is-dragging .drag-handle {
   cursor: grabbing;
 }
+
+/* Chart text in the statistics tab uses the theme's text colour and size, so it
+   reads like the surrounding Astryx text in light and dark mode. */
+.chart .recharts-cartesian-axis-tick-value,
+.chart .chart-value {
+  fill: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}

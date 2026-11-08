@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { createContext, useContext } from 'react';
+import type { EventStatistics } from '../domain/eventStatistics';
 import type {
   Action,
   Attendee,
@@ -18,6 +19,7 @@ export type AppData = {
   registrations: Registration[];
   attendees?: Record<string, Attendee[]>;
   results?: Record<string, ReviewResults>;
+  statistics?: Record<string, EventStatistics>;
   templates?: ReviewTemplate[];
 };
 

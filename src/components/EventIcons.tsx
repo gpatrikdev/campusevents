@@ -25,6 +25,14 @@ export function EditIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function StatisticsIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Outline {...props}>
+      <path d="M4 20h16M7 16v-4M12 16V5M17 16V9" />
+    </Outline>
+  );
+}
+
 export function DeleteIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <Outline {...props}>

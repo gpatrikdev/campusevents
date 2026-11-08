@@ -680,3 +680,55 @@ describe('images', () => {
     ).toBeNull();
   });
 });
+
+describe('event statistics', () => {
+  it('gives staff anonymous counts and refuses everyone else', async () => {
+    const start = realNow + HOUR;
+    const id = await seedEvent(start);
+    // seedTicket records a check-in an hour before the clock: 30 minutes before the start.
+    clock = start + 30 * 60_000;
+    const reviewed = await seedTicket(id, attendee, true);
+    await seedTicket(id, other);
+    const cancelled = await seedTicket(id, admin);
+    await database(async (db) => {
+      await db
+        .update(registrations)
+        .set({ answers: { qrating: 4 }, certificate: 'failed' })
+        .where(eq(registrations.id, reviewed.id));
+      await db
+        .update(registrations)
+        .set({ active: false })
+        .where(eq(registrations.id, cancelled.id));
+    });
+    const path = `/staff/events/${id}/statistics`;
+    expect((await request(path)).status).toBe(401);
+    expect((await request(path, attendee.cookie)).status).toBe(403);
+    const response = await request(path, staff.cookie);
+    expect(response.status).toBe(200);
+    const { statistics } = await response.json<{
+      statistics: { arrivals: { count: number }[]; ratings: unknown[] };
+    }>();
+    expect(statistics).toMatchObject({
+      registered: 2,
+      checkedIn: 1,
+      noShows: 1,
+      cancelled: 1,
+      reviewed: 1,
+      certificates: 1,
+      failedCertificates: 1,
+      interval: 5,
+    });
+    // A one-hour event has a two-hour check-in window: 24 five-minute columns.
+    // The check-in 30 minutes after opening lands in the seventh.
+    const arrivals = statistics.arrivals.map((column) => column.count);
+    expect(arrivals).toHaveLength(24);
+    expect(arrivals.indexOf(1)).toBe(6);
+    expect(arrivals.reduce((sum, count) => sum + count, 0)).toBe(1);
+    expect(statistics.ratings).toEqual([
+      expect.objectContaining({ name: 'qrating', average: 4, scores: [0, 0, 0, 1, 0] }),
+    ]);
+    const body = JSON.stringify(statistics);
+    for (const account of [attendee, other, admin]) expect(body).not.toContain(account.id);
+    expect(body).not.toContain('Árvíztűrő');
+  });
+});

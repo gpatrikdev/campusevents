@@ -3,6 +3,7 @@ import { type ReactNode, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../api/context';
 import { keepLocalImage } from '../api/images';
+import { eventStatistics } from '../domain/eventStatistics';
 import { summarize } from '../domain/reviewForm';
 import { instant } from '../domain/rules';
 import type { Outcome } from '../domain/types';
@@ -18,6 +19,9 @@ import { previewHu } from './translations';
 i18n.addResourceBundle('hu', 'translation', previewHu);
 
 type DataState = 'ready' | 'loading' | 'empty' | 'error';
+
+/** Minutes from the start for sample check-ins, most of them shortly before it. */
+const ARRIVALS = [-48, -31, -22, -17, -12, -9, -6, -4, -2, -1, 0, 1, 3, 6, 11, 19, 34, 52];
 type Clock = keyof typeof clocks;
 
 function useMockState() {
@@ -105,12 +109,32 @@ export function MockProvider({ children }: { children: ReactNode }) {
       ),
     ]),
   );
+  const statistics = Object.fromEntries(
+    data.events.map((event) => {
+      // shortcut: sample registrations store no check-in time, so the preview spreads
+      // them around the start. Store real times if the preview ever needs exact ones.
+      const rows = data.registrations
+        .filter((row) => row.eventId === event.id)
+        .map((row, index) => ({
+          ...row,
+          checkedInAt: row.checkedIn
+            ? new Date(
+                instant(event.start) + (ARRIVALS[index % ARRIVALS.length] ?? 0) * 60_000,
+              ).toISOString()
+            : null,
+        }));
+      const responses = data.reviews
+        .filter((row) => row.eventId === event.id)
+        .map((row) => row.answers);
+      return [event.id, eventStatistics(event, rows, responses)];
+    }),
+  );
   return (
     <MockContext.Provider value={value}>
       <AppContext.Provider
         value={{
           ...value,
-          data: { ...data, attendees, results },
+          data: { ...data, attendees, results, statistics },
           preview: { SignIn, Scanner: SampleScanner },
           run: async (action) => value.run(action),
           upload: async (file) =>

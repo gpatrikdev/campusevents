@@ -2,6 +2,7 @@ import { and, asc, eq, gt, isNotNull, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { validator } from 'hono-openapi';
 import { z } from 'zod';
+import { eventStatistics } from '../src/domain/eventStatistics';
 import { answersIssue, answersSchema, summarize } from '../src/domain/reviewForm';
 import {
   certificateIssue,
@@ -56,6 +57,18 @@ const reviewResultsDto = z.object({
   count: z.number(),
   // One summary per question, in form order. Its fields depend on the question's kind.
   questions: z.array(z.record(z.string(), z.unknown())),
+});
+const statisticsDto = z.object({
+  registered: z.number(),
+  checkedIn: z.number(),
+  noShows: z.number(),
+  cancelled: z.number(),
+  reviewed: z.number(),
+  certificates: z.number(),
+  failedCertificates: z.number(),
+  interval: z.number(),
+  arrivals: z.array(z.object({ start: z.string(), count: z.number() })),
+  ratings: z.array(z.record(z.string(), z.unknown())),
 });
 const eventParams = validator('param', z.object({ eventId: idSchema }), validationHook);
 const registrationParams = validator(
@@ -488,6 +501,37 @@ export const eventRoutes = new Hono<ApiEnv>()
         );
       const responses = rows.flatMap((row) => (row.answers ? [row.answers] : []));
       return c.json({ event, results: summarize(event.form, responses) });
+    },
+  )
+  .get(
+    '/staff/events/:eventId/statistics',
+    operation(
+      'Read anonymous attendance, review and certificate counts for one event',
+      z.object({ event: eventDto, statistics: statisticsDto }),
+    ),
+    eventParams,
+    async (c) => {
+      requireStaff(await readAccount(c.var.db, await actorId(c)));
+      const event = await readEvent(c.var.db, c.req.valid('param').eventId);
+      const rows = await c.var.db
+        .select({
+          userId: registrations.userId,
+          active: registrations.active,
+          checkedInAt: registrations.checkedInAt,
+          answers: registrations.answers,
+          certificate: registrations.certificate,
+        })
+        .from(registrations)
+        .where(eq(registrations.eventId, event.id));
+      const statistics = eventStatistics(
+        event,
+        rows.map(({ answers, ...row }) => ({
+          ...row,
+          checkedInAt: row.checkedInAt && new Date(row.checkedInAt).toISOString(),
+        })),
+        rows.flatMap((row) => (row.active && row.answers ? [row.answers] : [])),
+      );
+      return c.json({ event, statistics });
     },
   )
   .post(

@@ -63,6 +63,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-i18next": "17.1.11",
+    "recharts": "3.10.1",
     "survey-core": "3.2.3",
     "survey-react-ui": "3.2.3",
     "zod": "4.6.7",

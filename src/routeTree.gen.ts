@@ -32,6 +32,7 @@ import { Route as StaffEventsEventIdEditRouteImport } from './routes/staff.event
 import { Route as StaffEventsEventIdPreviewRouteImport } from './routes/staff.events.$eventId.preview'
 import { Route as StaffEventsEventIdReviewsRouteImport } from './routes/staff.events.$eventId.reviews'
 import { Route as StaffEventsEventIdScanRouteImport } from './routes/staff.events.$eventId.scan'
+import { Route as StaffEventsEventIdStatisticsRouteImport } from './routes/staff.events.$eventId.statistics'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -152,6 +153,12 @@ const StaffEventsEventIdScanRoute = StaffEventsEventIdScanRouteImport.update({
   path: '/scan',
   getParentRoute: () => StaffEventsEventIdRoute,
 } as any)
+const StaffEventsEventIdStatisticsRoute =
+  StaffEventsEventIdStatisticsRouteImport.update({
+    id: '/statistics',
+    path: '/statistics',
+    getParentRoute: () => StaffEventsEventIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/staff/events/$eventId/preview': typeof StaffEventsEventIdPreviewRoute
   '/staff/events/$eventId/reviews': typeof StaffEventsEventIdReviewsRoute
   '/staff/events/$eventId/scan': typeof StaffEventsEventIdScanRoute
+  '/staff/events/$eventId/statistics': typeof StaffEventsEventIdStatisticsRoute
   '/staff/events/$eventId/': typeof StaffEventsEventIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -199,6 +207,7 @@ export interface FileRoutesByTo {
   '/staff/events/$eventId/preview': typeof StaffEventsEventIdPreviewRoute
   '/staff/events/$eventId/reviews': typeof StaffEventsEventIdReviewsRoute
   '/staff/events/$eventId/scan': typeof StaffEventsEventIdScanRoute
+  '/staff/events/$eventId/statistics': typeof StaffEventsEventIdStatisticsRoute
   '/staff/events/$eventId': typeof StaffEventsEventIdIndexRoute
 }
 export interface FileRoutesById {
@@ -225,6 +234,7 @@ export interface FileRoutesById {
   '/staff/events/$eventId/preview': typeof StaffEventsEventIdPreviewRoute
   '/staff/events/$eventId/reviews': typeof StaffEventsEventIdReviewsRoute
   '/staff/events/$eventId/scan': typeof StaffEventsEventIdScanRoute
+  '/staff/events/$eventId/statistics': typeof StaffEventsEventIdStatisticsRoute
   '/staff/events/$eventId/': typeof StaffEventsEventIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/staff/events/$eventId/preview'
     | '/staff/events/$eventId/reviews'
     | '/staff/events/$eventId/scan'
+    | '/staff/events/$eventId/statistics'
     | '/staff/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/staff/events/$eventId/preview'
     | '/staff/events/$eventId/reviews'
     | '/staff/events/$eventId/scan'
+    | '/staff/events/$eventId/statistics'
     | '/staff/events/$eventId'
   id:
     | '__root__'
@@ -300,6 +312,7 @@ export interface FileRouteTypes {
     | '/staff/events/$eventId/preview'
     | '/staff/events/$eventId/reviews'
     | '/staff/events/$eventId/scan'
+    | '/staff/events/$eventId/statistics'
     | '/staff/events/$eventId/'
   fileRoutesById: FileRoutesById
 }
@@ -479,6 +492,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffEventsEventIdScanRouteImport
       parentRoute: typeof StaffEventsEventIdRoute
     }
+    '/staff/events/$eventId/statistics': {
+      id: '/staff/events/$eventId/statistics'
+      path: '/statistics'
+      fullPath: '/staff/events/$eventId/statistics'
+      preLoaderRoute: typeof StaffEventsEventIdStatisticsRouteImport
+      parentRoute: typeof StaffEventsEventIdRoute
+    }
   }
 }
 
@@ -488,6 +508,7 @@ interface StaffEventsEventIdRouteChildren {
   StaffEventsEventIdPreviewRoute: typeof StaffEventsEventIdPreviewRoute
   StaffEventsEventIdReviewsRoute: typeof StaffEventsEventIdReviewsRoute
   StaffEventsEventIdScanRoute: typeof StaffEventsEventIdScanRoute
+  StaffEventsEventIdStatisticsRoute: typeof StaffEventsEventIdStatisticsRoute
   StaffEventsEventIdIndexRoute: typeof StaffEventsEventIdIndexRoute
 }
 
@@ -497,6 +518,7 @@ const StaffEventsEventIdRouteChildren: StaffEventsEventIdRouteChildren = {
   StaffEventsEventIdPreviewRoute: StaffEventsEventIdPreviewRoute,
   StaffEventsEventIdReviewsRoute: StaffEventsEventIdReviewsRoute,
   StaffEventsEventIdScanRoute: StaffEventsEventIdScanRoute,
+  StaffEventsEventIdStatisticsRoute: StaffEventsEventIdStatisticsRoute,
   StaffEventsEventIdIndexRoute: StaffEventsEventIdIndexRoute,
 }
 
