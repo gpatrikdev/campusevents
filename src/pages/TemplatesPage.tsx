@@ -31,22 +31,22 @@ export function TemplatesPage() {
       padding={compact ? 4 : 6}
       header={
         <LayoutHeader hasDivider>
-          <HStack gap={4} vAlign="center" hAlign="between" wrap="wrap">
-            <VStack gap={3}>
+          <VStack gap={3}>
+            <HStack hAlign="between" gap={4} wrap="wrap" vAlign="center">
               <Heading level={1}>{t('Review templates')}</Heading>
-              <Text color="secondary">
-                {t(
-                  'A draft copies a template into its own review form. Editing a template later does not change events.',
-                )}
-              </Text>
-            </VStack>
-            <Button
-              label={t('New template')}
-              icon={<Icon icon={PlusIcon} />}
-              href="/staff/templates/new"
-              variant="primary"
-            />
-          </HStack>
+              <Button
+                label={t('New template')}
+                icon={<Icon icon={PlusIcon} />}
+                href="/staff/templates/new"
+                variant="primary"
+              />
+            </HStack>
+            <Text color="secondary">
+              {t(
+                'A draft copies a template into its own review form. Editing a template later does not change events.',
+              )}
+            </Text>
+          </VStack>
         </LayoutHeader>
       }
       content={
