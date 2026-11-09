@@ -485,7 +485,7 @@ export const hu: Record<string, string> = {
   '{{score}} out of 5': '{{score}} az 5-ből',
   Statistics: 'Statisztika',
   'Attendance, reviews and certificates for this event. Names are not shown.':
-    'Az esemény részvételi, értékelési és tanúsítványadatai. Neveket nem jelenítünk meg.',
+    'Az esemény részvételi, értékelési és igazolási adatai. Neveket nem jelenítünk meg.',
   'Nobody has registered yet': 'Még senki sem jelentkezett',
   'Drafts have no registrations. Statistics appear once people join the published event.':
     'A piszkozatokra nem lehet jelentkezni. A statisztika a közzétett eseményre való első jelentkezés után jelenik meg.',
@@ -493,15 +493,15 @@ export const hu: Record<string, string> = {
     'A statisztika az első jelentkezés után jelenik meg.',
   Cancellations: 'Lemondások',
   'No-shows': 'Nem jelent meg',
-  Certificates: 'Tanúsítványok',
+  Certificates: 'Igazoláskérések',
   'Failed to send: {{count}}': 'Sikertelen küldés: {{count}}',
   Attendance: 'Részvétel',
   '{{count}} of {{total}} ({{share}})': '{{count}} / {{total}} ({{share}})',
   'Rating questions': 'Értékelő kérdések',
   'View all review results': 'Összes értékelési eredmény',
   Reviewed: 'Értékelt',
-  'Certificate requested': 'Tanúsítványt kért',
-  'From registration to certificate': 'A jelentkezéstől a tanúsítványig',
+  'Certificate requested': 'Igazolást kért',
+  'From registration to certificate': 'A jelentkezéstől az igazolásig',
   'Check-in shares are of registrations; later steps are of check-ins.':
     'A beléptetési arány a jelentkezésekhez, a többi lépés aránya a beléptetésekhez mért.',
   'Check-in arrivals': 'Érkezések a beléptetésnél',
