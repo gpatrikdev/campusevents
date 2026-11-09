@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { defaultThemeSlug, themes } from './astryx-themes';
 import { useColorMode } from './colorMode';
 import { intlLocale } from './domain/format';
+import { astryxOverrides } from './i18n/astryxHu';
 import { routeTree } from './routeTree.gen';
 
 const queryClient = new QueryClient({
@@ -53,6 +54,7 @@ function App({ children }: { children: React.ReactNode }) {
       <InternationalizationProvider
         locale={intlLocale(i18n.language)}
         messages={{ 'hu-HU': huCatalog }}
+        overrides={astryxOverrides}
       >
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </InternationalizationProvider>
