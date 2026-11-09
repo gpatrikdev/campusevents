@@ -59,6 +59,33 @@ pnpm test:worker
 
 The Worker tests use PostgreSQL through local Hyperdrive, run inside workerd, and intercept email delivery. Use a separate development database for these tests. For local git hooks, run `pnpm hooks:install`.
 
+## Load test
+
+The load test uses [Grafana k6](https://grafana.com/docs/k6/latest/set-up/install-k6/), installed separately (on Windows: `winget install GrafanaLabs.k6`). It isn't a project dependency.
+
+1. Fill the test database with 501 events and an ended event with 2,000 attendees. Every row the script creates is marked, and rerunning it replaces them. `--clean` only removes them.
+
+   ```sh
+   DATABASE_URL="$TEST_DATABASE_URL" pnpm perf:seed
+   ```
+
+2. Start the local inbox (`pnpm dev:mail`) and the app on the same database:
+
+   ```sh
+   export CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE="$TEST_DATABASE_URL"
+   pnpm dev
+   ```
+
+3. Run the test. It signs in as the seeded organizer through the local inbox, requests six read endpoints 20 times with one user, then with 20 users for a minute. The results go to the terminal, `perf-results.md` and `perf-results.json`.
+
+   ```sh
+   pnpm perf:load
+   ```
+
+   `BASE_URL`, `MAIL_URL`, `VUS` and `DURATION` change the target and the load, for example `k6 run -e VUS=50 scripts/perf/load.js`.
+
+Run it against a test database only: the seed script writes thousands of rows.
+
 ## Agent tooling
 
 [AGENTS.md](AGENTS.md) says when agents use each tool, and [the specification](rebuild-handoff.md#selected-agent-skills-and-mcps) lists the official sources. None of them are app dependencies. Install them without lifecycle hooks.

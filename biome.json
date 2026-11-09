@@ -10,6 +10,7 @@
       "!dist",
       "!drizzle/meta",
       "!.playwright-mcp",
+      "!perf-results.*",
       "!.wrangler",
       "!node_modules",
       "!.agents",

@@ -10,3 +10,6 @@ dist/
 !.env.example
 
 .playwright-mcp/
+
+# k6 load test output
+/perf-results.*

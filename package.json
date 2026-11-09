@@ -21,7 +21,9 @@
     "db:migrate": "drizzle-kit migrate",
     "test:worker": "vitest run --config vitest.worker.config.ts",
     "dev:preview": "vite --mode mock-preview --host 127.0.0.1 --port 5175 --strictPort",
-    "dev:mail": "node scripts/local-mail.mjs"
+    "dev:mail": "node scripts/local-mail.mjs",
+    "perf:seed": "node scripts/perf/seed.mjs",
+    "perf:load": "k6 run scripts/perf/load.js"
   },
   "dependencies": {
     "@astryxdesign/core": "0.7.9",
